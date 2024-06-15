@@ -16,6 +16,6 @@ console.log(
   "font-style: none",
 );
 console.log(
-  "%c(For Roarer's source code, see https://github.com/mybearworld/roarer-2)",
+  "%c(For Roarer's source code, see https://github.com/engineerrunner/roarer-2-plus)",
   "font-size: 10px",
 );
