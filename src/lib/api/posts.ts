@@ -259,10 +259,16 @@ export const createPostsSlice: Slice<PostsSlice> = (set, get) => {
       posts.forEach((post) => {
         state.addPost(post);
       });
+      const newCredentials = get().credentials;
       return {
         error: false,
         posts: posts.map((post) => post.post_id),
-        stop: page === response.response.pages,
+        // you are not able to access more home posts when logged out.
+        // if the fetch request completed after having logged in, this
+        // makes loading more possible
+        stop:
+          (newCredentials && id === "home" && current === 0) ||
+          page === response.response.pages,
       };
     },
     post: async (content, chat, attachments) => {

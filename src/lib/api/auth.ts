@@ -98,8 +98,9 @@ export const createAuthSlice: Slice<AuthSlice> = (set, get) => {
               if (!home || home.error) {
                 return;
               }
-              // you are not able to access more home posts when logged out -
-              // this is a bit hacky but it doesn't require fetching again
+              // you are not able to access more home posts when logged out.
+              // if the fetch request completed before having logged in, this
+              // makes loading more possible
               home.stopLoadingMore = false;
             });
             if (options.keepLoggedIn) {
