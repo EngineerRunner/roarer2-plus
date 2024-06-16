@@ -303,6 +303,15 @@ export type AttachmentViewProps = {
 };
 export const AttachmentView = (props: AttachmentViewProps) => {
   const download = useRef<HTMLAnchorElement>(null);
+  const closeButton = props.onRemove ? (
+    <Button
+      className="absolute right-2 top-2 opacity-50 hover:opacity-100"
+      aria-label="Remove"
+      onClick={() => props.onRemove?.(props.attachment.id)}
+    >
+      <X />
+    </Button>
+  ) : undefined;
 
   if (props.attachment.mime.startsWith("image/")) {
     return (
@@ -322,15 +331,7 @@ export const AttachmentView = (props: AttachmentViewProps) => {
               width="144"
               height="144"
             />
-            {props.onRemove ? (
-              <Button
-                className="absolute right-2 top-2 opacity-50 hover:opacity-100"
-                aria-label="Remove"
-                onClick={() => props.onRemove?.(props.attachment.id)}
-              >
-                <X />
-              </Button>
-            ) : undefined}
+            {closeButton}
           </button>
         }
       >
@@ -353,7 +354,7 @@ export const AttachmentView = (props: AttachmentViewProps) => {
   }
 
   return (
-    <>
+    <div className="relative inline-block">
       <a ref={download} download={props.attachment.filename} hidden />
       <button
         onClick={async () => {
@@ -382,6 +383,7 @@ export const AttachmentView = (props: AttachmentViewProps) => {
           <div className="text-sm">({byteToHuman(props.attachment.size)})</div>
         </div>
       </button>
-    </>
+      {closeButton}
+    </div>
   );
 };
