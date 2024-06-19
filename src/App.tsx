@@ -6,9 +6,9 @@ import { useShallow } from "zustand/react/shallow";
 import { useAPI } from "./lib/api";
 import { About } from "./components/About";
 import { Account } from "./components/Account";
+import { Chat } from "./components/Chat";
 import { Chats } from "./components/Chats";
 import { Button } from "./components/Button";
-import { Posts } from "./components/Posts";
 import { Ulist } from "./components/Ulist";
 
 export const App = () => {
@@ -34,7 +34,7 @@ export const App = () => {
             <ChevronLeft aria-hidden />
           )}
         </Button>
-        <Posts chat={openChat} />
+        <Chat chat={openChat} />
       </div>
       <Tabs.Root
         defaultValue="ulist"

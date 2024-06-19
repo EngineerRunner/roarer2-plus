@@ -36,8 +36,8 @@ dependencies:
     specifier: ^18.3.1
     version: 18.3.1(react@18.3.1)
   shiki:
-    specifier: ^1.6.4
-    version: 1.6.4
+    specifier: ^1.7.0
+    version: 1.7.0
   tailwind-merge:
     specifier: ^2.3.0
     version: 2.3.0
@@ -68,8 +68,8 @@ devDependencies:
     specifier: ^3.3.2
     version: 3.3.2
   prettier-plugin-tailwindcss:
-    specifier: ^0.6.4
-    version: 0.6.4(prettier@3.3.2)
+    specifier: ^0.6.5
+    version: 0.6.5(prettier@3.3.2)
   tailwindcss:
     specifier: ^3.4.4
     version: 3.4.4
@@ -1294,8 +1294,8 @@ packages:
     dev: true
     optional: true
 
-  /@shikijs/core@1.6.4:
-    resolution: {integrity: sha512-WTU9rzZae1p2v6LOxMf6LhtmZOkIHYYW160IuahUyJy7YXPPjyWZLR1ag+SgD22ZMxZtz1gfU6Tccc8t0Il/XA==}
+  /@shikijs/core@1.7.0:
+    resolution: {integrity: sha512-O6j27b7dGmJbR3mjwh/aHH8Ld+GQvA0OQsNO43wKWnqbAae3AYXrhFyScHGX8hXZD6vX2ngjzDFkZY5srtIJbQ==}
     dev: false
 
   /@swc/core-darwin-arm64@1.5.29:
@@ -1489,7 +1489,7 @@ packages:
   /@williamhorning/cloudlink@4.1.1:
     resolution: {integrity: sha512-GQVOdtPMjeQ92V+UcKwFOC8/NhxWgPSuJ/IryK2PbEhGcZWZtHEnqqExrMfsSdzMZDyahcnmL6yiB1YvqDCY8A==}
     optionalDependencies:
-      ws: 8.17.0
+      ws: 8.17.1
     transitivePeerDependencies:
       - bufferutil
       - utf-8-validate
@@ -2165,8 +2165,8 @@ packages:
       source-map-js: 1.2.0
     dev: true
 
-  /prettier-plugin-tailwindcss@0.6.4(prettier@3.3.2):
-    resolution: {integrity: sha512-3vhbIvlKyAWPaw9bUr2cw6M1BGx2Oy9CCLJyv+nxEiBGCTcL69WcAz2IFMGqx8IXSzQCInGSo2ujAByg9poHLQ==}
+  /prettier-plugin-tailwindcss@0.6.5(prettier@3.3.2):
+    resolution: {integrity: sha512-axfeOArc/RiGHjOIy9HytehlC0ZLeMaqY09mm8YCkMzznKiDkwFzOpBvtuhuv3xG5qB73+Mj7OCe2j/L1ryfuQ==}
     engines: {node: '>=14.21.3'}
     peerDependencies:
       '@ianvs/prettier-plugin-sort-imports': '*'
@@ -2390,10 +2390,10 @@ packages:
     engines: {node: '>=8'}
     dev: true
 
-  /shiki@1.6.4:
-    resolution: {integrity: sha512-X88chM7w8jnadoZtjPTi5ahCJx9pc9f8GfEkZAEYUTlcUZIEw2D/RY86HI/LkkE7Nj8TQWkiBfaFTJ3VJT6ESg==}
+  /shiki@1.7.0:
+    resolution: {integrity: sha512-H5pMn4JA7ayx8H0qOz1k2qANq6mZVCMl1gKLK6kWIrv1s2Ial4EmD4s4jE8QB5Dw03d/oCQUxc24sotuyR5byA==}
     dependencies:
-      '@shikijs/core': 1.6.4
+      '@shikijs/core': 1.7.0
     dev: false
 
   /signal-exit@4.1.0:
@@ -2674,8 +2674,8 @@ packages:
       strip-ansi: 7.1.0
     dev: true
 
-  /ws@8.17.0:
-    resolution: {integrity: sha512-uJq6108EgZMAl20KagGkzCKfMEjxmKvZHG7Tlq0Z6nOky7YF7aq4mOx6xK8TJ/i1LeK4Qus7INktacctDgY8Ow==}
+  /ws@8.17.1:
+    resolution: {integrity: sha512-6XQFvXTkbfUOZOKKILFG1PDK2NDQs4azKQl26T0YS5CxqWLgXajbPZ+h4gZekJyRqFU8pvnbAbbs/3TgRPy+GQ==}
     engines: {node: '>=10.0.0'}
     requiresBuild: true
     peerDependencies:

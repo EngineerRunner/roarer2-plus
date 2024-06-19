@@ -23,10 +23,10 @@ type Reply = {
   username: string;
 };
 
-export type PostsProps = {
+export type ChatProps = {
   chat: string;
 };
-export const Posts = (props: PostsProps) => {
+export const Chat = (props: ChatProps) => {
   const [reply, setReply] = useState<Reply>();
   const [loadingMore, setLoadingMore] = useState(false);
   const [loadMoreError, setLoadMoreError] = useState<string>();

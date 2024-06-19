@@ -150,7 +150,7 @@ export const Markdown = (mdProps: MarkdownProps) => {
           </code>
         ),
         link: (href, text) => {
-          return <Link href={href} text={text} />;
+          return <Link href={href} text={text} key={getKey()} />;
         },
         image: (src, alt, title) =>
           mdProps.inline ? (
@@ -164,7 +164,7 @@ export const Markdown = (mdProps: MarkdownProps) => {
               key={getKey()}
             />
           ) : (
-            <a className="font-bold text-lime-600" href={src}>
+            <a className="font-bold text-lime-600" href={src} key={getKey()}>
               {alt || "Unnamed image"}
             </a>
           ),
