@@ -1,6 +1,6 @@
 import { File, PencilLine, Reply, Trash2, X } from "lucide-react";
 import * as Dialog from "@radix-ui/react-dialog";
-import { ReactNode, useRef, useState, memo, MouseEventHandler } from "react";
+import { ReactNode, useRef, useState, memo } from "react";
 import { useShallow } from "zustand/react/shallow";
 import { useAPI } from "../lib/api";
 import { getReply } from "../lib/reply";
@@ -149,6 +149,9 @@ const PostBase = memo((props: PostBaseProps) => {
                     )}
                   >
                     {props.post.u}
+                    {props.post.u === "Supernoodles99" && !props.reply
+                      ? " 🧀"
+                      : undefined}
                   </button>
                 </User>
                 {props.post.bridge && !props.reply ? (
@@ -248,7 +251,6 @@ type SpeechBubbleProps = {
   speaker: ReactNode;
   bubble: ReactNode;
   transparent?: boolean;
-  onDoubleClick?: MouseEventHandler<HTMLDivElement>;
 };
 const SpeechBubble = (props: SpeechBubbleProps) => {
   return (
@@ -263,11 +265,10 @@ const SpeechBubble = (props: SpeechBubbleProps) => {
             ? "bg-gray-200 dark:bg-gray-800"
             : "bg-gray-100 dark:bg-gray-900",
         )}
-        onDoubleClick={props.onDoubleClick}
       >
         <div
           className={twMerge(
-            "absolute left-[calc(-0.5rem-theme(spacing.2))] top-0 box-content h-0 w-0 border-[length:0.5rem] border-transparent border-r-gray-100",
+            "absolute left-[calc(-0.5rem-theme(spacing.2))] top-0 box-content h-0 w-0 border-[length:0.5rem] border-transparent border-r-gray-100 contrast-more:hidden",
             props.reply && props.reply !== "topLevel"
               ? "border-r-gray-200 dark:border-r-gray-800"
               : "border-r-gray-100 dark:border-r-gray-900",

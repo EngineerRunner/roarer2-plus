@@ -129,6 +129,7 @@ export const createPostsSlice: Slice<PostsSlice> = (set, get) => {
           if (!id) {
             return;
           }
+          delete chatPosts.currentOptimistics[id];
           draft.posts[id] = { error: false, isDeleted: true };
         }
       });

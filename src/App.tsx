@@ -40,7 +40,7 @@ export const App = () => {
         defaultValue="ulist"
         className={`${
           showSideNav ? "" : "hidden"
-        } absolute right-0 top-0 z-[--z-sidebar] h-screen max-h-screen w-[--nav-bar-size] overflow-auto bg-white py-2 dark:bg-gray-950 lg:sticky lg:top-0 lg:block lg:w-auto lg:min-w-[35%]`}
+        } absolute right-0 top-0 z-[--z-sidebar] h-screen max-h-screen w-[--nav-bar-size] min-w-[--nav-bar-size] overflow-auto bg-white py-2 dark:bg-gray-950 lg:sticky lg:top-0 lg:block`}
       >
         <Tabs.List className="mb-2 flex h-8 items-center justify-between px-2">
           <div className="flex items-center gap-2">

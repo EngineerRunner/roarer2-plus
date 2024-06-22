@@ -10,10 +10,10 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@radix-ui/react-dialog": "^1.0.5",
-    "@radix-ui/react-popover": "^1.0.7",
-    "@radix-ui/react-tabs": "^1.0.4",
-    "@radix-ui/react-toggle": "^1.0.3",
+    "@radix-ui/react-dialog": "^1.1.0",
+    "@radix-ui/react-popover": "^1.1.0",
+    "@radix-ui/react-tabs": "^1.1.0",
+    "@radix-ui/react-toggle": "^1.1.0",
     "@williamhorning/cloudlink": "==4.1.1",
     "immer": "^10.1.1",
     "lucide-react": "^0.395.0",

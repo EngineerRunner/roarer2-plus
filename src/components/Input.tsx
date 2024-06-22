@@ -88,7 +88,7 @@ export const Textarea = forwardRef<HTMLTextAreaElement | null, TextareaProps>(
             {...{ ...textareaProps, className: undefined }}
             onInput={handleInput}
             onKeyDown={handleKeyDown}
-            className="mx-2 h-full max-h-64 grow resize-none overflow-y-auto bg-transparent py-1 outline-0"
+            className="mx-2 h-full max-h-64 grow resize-none overflow-y-auto bg-transparent py-1 outline-none"
             rows={1}
             ref={elementRef}
           />
