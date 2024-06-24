@@ -133,6 +133,8 @@ export const createPostsSlice: Slice<PostsSlice> = (set, get) => {
           }
           const [id, content] = optimisticPost;
           post.p = content.real;
+          const state = get();
+          state.editPost(post.post_id, content.real);
           delete chatPosts.currentOptimistics[id];
           draft.posts[id] = { error: false, isDeleted: true };
         }
@@ -323,8 +325,6 @@ export const createPostsSlice: Slice<PostsSlice> = (set, get) => {
         POST_SCHEMA,
       );
       if (!response.error) {
-        const state = get();
-        state.editPost(response.response.post_id, content);
         return;
       }
       set((draft) => {
