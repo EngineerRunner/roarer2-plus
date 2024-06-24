@@ -63,7 +63,7 @@ export type PostsSlice = {
     Errorable<{
       posts: string[];
       stopLoadingMore: boolean;
-      currentOptimistics: Record<string, string>;
+      currentOptimistics: Record<string, { mock: string; real: string }>;
     }>
   >;
   posts: Record<string, Errorable<Post | { isDeleted: true }>>;
@@ -115,7 +115,6 @@ export const createPostsSlice: Slice<PostsSlice> = (set, get) => {
       if (!state.chatPosts[post.post_origin]) {
         return;
       }
-      state.addPost(post);
       set((draft) => {
         const chatPosts = draft.chatPosts[post.post_origin];
         if (!chatPosts || chatPosts.error) {
@@ -123,16 +122,22 @@ export const createPostsSlice: Slice<PostsSlice> = (set, get) => {
         }
         chatPosts.posts.unshift(post.post_id);
         if (post.u === draft.credentials?.username) {
-          const id = Object.entries(chatPosts.currentOptimistics).find(
-            ([_id, optimisticPostContent]) => optimisticPostContent === post.p,
-          )?.[0];
-          if (!id) {
+          const optimisticPost = Object.entries(
+            chatPosts.currentOptimistics,
+          ).find(
+            ([_id, optimisticPostContent]) =>
+              optimisticPostContent.mock === post.p,
+          );
+          if (!optimisticPost) {
             return;
           }
+          const [id, content] = optimisticPost;
+          post.p = content.real;
           delete chatPosts.currentOptimistics[id];
           draft.posts[id] = { error: false, isDeleted: true };
         }
       });
+      state.addPost(post);
     });
     cloudlink.on("direct", (packet: unknown) => {
       const parsed = POST_UPDATE_PACKET_SCHEMA.safeParse(packet);
@@ -279,6 +284,7 @@ export const createPostsSlice: Slice<PostsSlice> = (set, get) => {
       if (!credentials) {
         return;
       }
+      const mockPostContent = createMockPostContent();
       set((draft) => {
         const trimmedContent = content.trim();
         draft.posts[optimisticId] = {
@@ -296,7 +302,10 @@ export const createPostsSlice: Slice<PostsSlice> = (set, get) => {
         const chatPosts = draft.chatPosts[chat];
         if (chatPosts && !chatPosts.error) {
           chatPosts.posts.unshift(optimisticId);
-          chatPosts.currentOptimistics[optimisticId] = trimmedContent;
+          chatPosts.currentOptimistics[optimisticId] = {
+            mock: mockPostContent,
+            real: content,
+          };
         }
       });
       const response = await request(
@@ -307,13 +316,15 @@ export const createPostsSlice: Slice<PostsSlice> = (set, get) => {
               ...(state.credentials ? { Token: state.credentials.token } : {}),
               "Content-Type": "application/json",
             },
-            body: JSON.stringify({ content, attachments }),
+            body: JSON.stringify({ content: mockPostContent, attachments }),
             method: "POST",
           },
         ),
         POST_SCHEMA,
       );
       if (!response.error) {
+        const state = get();
+        state.editPost(response.response.post_id, content);
         return;
       }
       set((draft) => {
@@ -352,3 +363,12 @@ export const createPostsSlice: Slice<PostsSlice> = (set, get) => {
     },
   };
 };
+
+const MOCK_CHARACTERS =
+  "!\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~";
+const createMockPostContent = () =>
+  Array.from({ length: 20 })
+    .map(
+      () => MOCK_CHARACTERS[Math.floor(Math.random() * MOCK_CHARACTERS.length)],
+    )
+    .join("");
