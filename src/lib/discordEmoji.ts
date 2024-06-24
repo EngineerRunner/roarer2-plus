@@ -90,7 +90,7 @@ export const discordEmoji = [
   { name: "hooray", id: "1230023947777609808", isGif: true },
   { name: "boogie", id: "1226311710818959401", isGif: true },
   { name: "ameowdundundun", id: "1226319768236331140", isGif: true },
-  { name: "Misc_Hundred", id: "1226319950570983434", isGif: true },
+  { name: "MiscHundred", id: "1226319950570983434", isGif: true },
   { name: "kick", id: "1231078387704139967", isGif: true },
   { name: "shake", id: "1227279789472354435", isGif: true },
   { name: "sphere", id: "1227279796715917362", isGif: true },
