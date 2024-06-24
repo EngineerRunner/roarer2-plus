@@ -55,7 +55,6 @@ export const discordEmoji = [
   { name: "fubgingcloudlink", id: "1224195287178936392", isGif: false },
   { name: "consume", id: "1224195139082125322", isGif: false },
   { name: "meowyhadsomepepsi", id: "1224195086951383113", isGif: false },
-  { name: "yuhhuh", id: "1227268820213698611", isGif: false },
   { name: "nuhhuh", id: "1233290735999258664", isGif: false },
   { name: "freya", id: "1244778372953935922", isGif: false },
   { name: "dvd", id: "1251187522432798808", isGif: false },
@@ -97,7 +96,7 @@ export const discordEmoji = [
   { name: "shake", id: "1227279789472354435", isGif: true },
   { name: "sphere", id: "1227279796715917362", isGif: true },
   { name: "spin", id: "1227279798015889498", isGif: true },
-  { name: "squish", id: "1227279787072946189", isGif: true },
+  { name: "squish", id: "1227279787072946189", isGif: true }
 ].sort((a, b) => (a.name > b.name ? 1 : a.name < b.name ? -1 : 0));
 
 export const urlFromDiscordEmoji = (emoji: DiscordEmoji) => {
