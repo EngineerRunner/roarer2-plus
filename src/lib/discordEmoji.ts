@@ -55,7 +55,6 @@ export const discordEmoji = [
   { name: "fubgingcloudlink", id: "1224195287178936392", isGif: false },
   { name: "consume", id: "1224195139082125322", isGif: false },
   { name: "meowyhadsomepepsi", id: "1224195086951383113", isGif: false },
-  { name: "nuhhuh", id: "1233290735999258664", isGif: false },
   { name: "freya", id: "1244778372953935922", isGif: false },
   { name: "dvd", id: "1251187522432798808", isGif: false },
   { name: "harry", id: "1251187517433057411", isGif: false },
