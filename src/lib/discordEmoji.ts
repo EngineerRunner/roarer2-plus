@@ -95,12 +95,12 @@ export const discordEmoji = [
   { name: "sphere", id: "1227279796715917362", isGif: true },
   { name: "spin", id: "1227279798015889498", isGif: true },
   { name: "squish", id: "1227279787072946189", isGif: true },
-  { name: "dango", id: "1254883210643374263", isGif: true },
-  { name: "eepy", id: "1254884335514030212", isGif: true },
-  { name: "goobert", id: "1254882434898464922", isGif: true },
-  { name: "octocat", id: "1254884597724872764", isGif: true },
-  { name: "treboog", id: "1254882433900351533", isGif: true },
-  { name: "wallace", id: "1254884015014674585", isGif: true },
+  { name: "dango", id: "1254883210643374263", isGif: false },
+  { name: "eepy", id: "1254884335514030212", isGif: false },
+  { name: "goobert", id: "1254882434898464922", isGif: false },
+  { name: "octocat", id: "1254884597724872764", isGif: false },
+  { name: "treboog", id: "1254882433900351533", isGif: false },
+  { name: "wallace", id: "1254884015014674585", isGif: false },
 ].sort((a, b) => (a.name > b.name ? 1 : a.name < b.name ? -1 : 0));
 
 export const urlFromDiscordEmoji = (emoji: DiscordEmoji) => {
