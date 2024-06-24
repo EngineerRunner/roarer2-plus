@@ -1,4 +1,4 @@
-name: Upload it to GitHub pages
+name: Upload to GitHub pages
 
 on:
   push:
