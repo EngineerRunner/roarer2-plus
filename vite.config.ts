@@ -8,5 +8,5 @@ export default defineConfig({
     react(),
     topLevelAwait(),
   ],
-  base: "/roarer-2-plus",
+  base: "/roarer2-plus",
 });
