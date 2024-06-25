@@ -107,6 +107,10 @@ export const discordEmoji = [
   { name: "qbabyblue", id: "1255190936376578149", isGif: false },
   { name: "qbabyorange", id: "1255190939429896192", isGif: false },
   { name: "qbabypink", id: "1255190938108821514", isGif: false },
+  { name: "scratch", id: "1255200839975567483", isGif: false },
+  { name: "turbowarp", id: "1255200839170261032", isGif: false },
+  { name: "penguinmod", id: "1255200838008442890", isGif: false },
+  { name: "notstonks", id: "1255200842894803075", isGif: false },
 ].sort((a, b) => (a.name > b.name ? 1 : a.name < b.name ? -1 : 0));
 
 export const urlFromDiscordEmoji = (emoji: DiscordEmoji) => {
