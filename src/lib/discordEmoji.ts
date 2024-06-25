@@ -104,9 +104,9 @@ export const discordEmoji = [
   { name: "qbby", id: "1255190940570882089", isGif: false },
   { name: "qucy", id: "1255190933721579591", isGif: false },
   { name: "qudy", id: "1255190934975418519", isGif: false },
-  { name: "qbaby-blue", id: "1255190936376578149", isGif: false },
-  { name: "qbaby-orange", id: "1255190939429896192", isGif: false },
-  { name: "qbaby-pink", id: "1255190938108821514", isGif: false },
+  { name: "qbabyblue", id: "1255190936376578149", isGif: false },
+  { name: "qbabyorange", id: "1255190939429896192", isGif: false },
+  { name: "qbabypink", id: "1255190938108821514", isGif: false },
 ].sort((a, b) => (a.name > b.name ? 1 : a.name < b.name ? -1 : 0));
 
 export const urlFromDiscordEmoji = (emoji: DiscordEmoji) => {
