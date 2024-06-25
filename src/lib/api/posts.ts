@@ -129,13 +129,6 @@ export const createPostsSlice: Slice<PostsSlice> = (set, get) => {
           if (!id) {
             return;
           }
-<<<<<<< HEAD
-          const [id, content] = optimisticPost;
-          post.p = content.real;
-          const state = get();
-          state.editPost(post.post_id, content.real);
-=======
->>>>>>> parent of ab7e0b4 (Make messages garbage to annoy the discord bridge users)
           delete chatPosts.currentOptimistics[id];
           draft.posts[id] = { error: false, isDeleted: true };
         }
