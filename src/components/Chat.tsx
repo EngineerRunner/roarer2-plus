@@ -294,7 +294,7 @@ export const EnterPostBase = (props: EnterPostBaseProps) => {
               <Popover.Anchor />
               <Popover.Portal>
                 <Popover.Content asChild align="end" sideOffset={4}>
-                  <div className="z-[--z-above-sidebar] flex w-72 flex-row flex-wrap gap-2 rounded-lg border border-gray-200 bg-white px-2 py-1 dark:border-gray-800 dark:bg-gray-950">
+                  <div className="z-[--z-above-sidebar] flex w-[272px] flex-row flex-wrap gap-2 rounded-lg border border-gray-200 bg-white px-2 py-1 dark:border-gray-800 dark:bg-gray-950">
                     {discordEmoji.map((emoji) => (
                       <button
                         key={emoji.id}
