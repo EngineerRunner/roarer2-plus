@@ -64,6 +64,7 @@ export type PostsSlice = {
       posts: string[];
       stopLoadingMore: boolean;
       currentOptimistics: Record<string, { mock: string; real: string }>;
+      currentOptimistics: Record<string, string>;
     }>
   >;
   posts: Record<string, Errorable<Post | { isDeleted: true }>>;
@@ -115,6 +116,7 @@ export const createPostsSlice: Slice<PostsSlice> = (set, get) => {
       if (!state.chatPosts[post.post_origin]) {
         return;
       }
+      state.addPost(post);
       set((draft) => {
         const chatPosts = draft.chatPosts[post.post_origin];
         if (!chatPosts || chatPosts.error) {
@@ -129,6 +131,10 @@ export const createPostsSlice: Slice<PostsSlice> = (set, get) => {
               optimisticPostContent.mock === post.p,
           );
           if (!optimisticPost) {
+          const id = Object.entries(chatPosts.currentOptimistics).find(
+            ([_id, optimisticPostContent]) => optimisticPostContent === post.p,
+          )?.[0];
+          if (!id) {
             return;
           }
           const [id, content] = optimisticPost;
@@ -308,6 +314,7 @@ export const createPostsSlice: Slice<PostsSlice> = (set, get) => {
             mock: mockPostContent,
             real: content,
           };
+          chatPosts.currentOptimistics[optimisticId] = trimmedContent;
         }
       });
       const response = await request(
@@ -319,6 +326,7 @@ export const createPostsSlice: Slice<PostsSlice> = (set, get) => {
               "Content-Type": "application/json",
             },
             body: JSON.stringify({ content: mockPostContent, attachments }),
+            body: JSON.stringify({ content, attachments }),
             method: "POST",
           },
         ),
