@@ -1,4 +1,5 @@
 export const discordEmoji = [
+  // Roarer Emojis (from the Meower Server)
   { name: "zed", id: "1208625071766114364", isGif: false },
   { name: "wow", id: "952755842095132752", isGif: false },
   { name: "wiwwy", id: "953882510167773184", isGif: false },
@@ -55,12 +56,7 @@ export const discordEmoji = [
   { name: "fubgingcloudlink", id: "1224195287178936392", isGif: false },
   { name: "consume", id: "1224195139082125322", isGif: false },
   { name: "meowyhadsomepepsi", id: "1224195086951383113", isGif: false },
-  { name: "dvd", id: "1251187522432798808", isGif: false },
-  { name: "harry", id: "1251187517433057411", isGif: false },
-  { name: "hat", id: "1251187521140949083", isGif: false },
-  { name: "3a", id: "1251187519882662012", isGif: false },
-  { name: "ron", id: "1251187515189104730", isGif: false },
-  { name: "stonks", id: "1251187639504343040", isGif: false },
+  // Meo emojis
   { name: "think", id: "1226311619064234086", isGif: false },
   { name: "amog os", id: "1226314396377288726", isGif: false },
   { name: "toasty", id: "1226314396377288726", isGif: false },
@@ -95,6 +91,13 @@ export const discordEmoji = [
   { name: "sphere", id: "1227279796715917362", isGif: true },
   { name: "spin", id: "1227279798015889498", isGif: true },
   { name: "squish", id: "1227279787072946189", isGif: true },
+   // Original emojis
+  { name: "dvd", id: "1251187522432798808", isGif: false },
+  { name: "harry", id: "1251187517433057411", isGif: false },
+  { name: "hat", id: "1251187521140949083", isGif: false },
+  { name: "3a", id: "1251187519882662012", isGif: false },
+  { name: "ron", id: "1251187515189104730", isGif: false },
+  { name: "stonks", id: "1251187639504343040", isGif: false },
   { name: "dango", id: "1254883210643374263", isGif: false },
   { name: "eepy", id: "1254884335514030212", isGif: false },
   { name: "goobert", id: "1254882434898464922", isGif: false },
