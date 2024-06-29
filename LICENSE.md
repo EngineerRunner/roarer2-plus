@@ -42,3 +42,5 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
+
+The emojis included within this client are under different copyrights. Without express permission, you may not redistribute any emojis that are original to this project (detailed [here](https://github.com/EngineerRunner/roarer2-plus/blob/main/src/lib/discordEmoji.ts#L94)
