@@ -22,7 +22,6 @@ export const Popup = (props: PopupProps) => {
         <Dialog.Overlay className="absolute left-0 top-0 z-[--z-popup-bg] h-screen w-screen bg-black/50 backdrop-blur-md" />
         <Dialog.Content
           className={twMerge(
-            "absolute inset-0 z-[--z-popup] m-auto h-fit max-h-[90vh] w-fit max-w-[90vw] overflow-auto rounded-xl bg-white px-2 py-1 dark:bg-gray-900",
             "absolute inset-0 z-[--z-popup] m-auto h-fit max-h-[90vh] w-fit max-w-[90vw] overflow-auto rounded-xl bg-white px-4 py-2 dark:bg-gray-900",
             props.className,
           )}

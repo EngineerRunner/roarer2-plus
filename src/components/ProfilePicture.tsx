@@ -75,7 +75,6 @@ export const ProfilePictureBase = (props: ProfilePictureBaseProps) => {
         }
         src={
           props.pfp.avatar
-            ? `https://uploads.meower.org/icons/${props.pfp.avatar}`
             ? `${uploads}/icons/${props.pfp.avatar}`
             : profilePictures.get(props.pfp.pfp_data ?? 500)
         }

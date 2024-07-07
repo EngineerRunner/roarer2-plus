@@ -1,4 +1,3 @@
-import { File, PencilLine, Reply, Trash2, X } from "lucide-react";
 import { File, Menu, Reply, X } from "lucide-react";
 import * as Dialog from "@radix-ui/react-dialog";
 import * as Popover from "@radix-ui/react-popover";
@@ -152,7 +151,6 @@ const PostBase = memo((props: PostBaseProps) => {
                     )}
                   >
                     {props.post.u}
-                    {props.post.u === "Supernoodles99" && !props.reply
                     {props.post.u === "noodles" && !props.reply
                       ? " 🧀"
                       : undefined}
@@ -164,20 +162,10 @@ const PostBase = memo((props: PostBaseProps) => {
               </div>
               {!props.reply && !props.post.optimistic ? (
                 <div className="flex gap-1">
-                  {credentials?.username === props.post.u ? (
                   {credentials ? (
                     <>
                       <button
                         type="button"
-                        aria-label="Remove"
-                        onClick={handleDelete}
-                      >
-                        <Trash2 className="h-5 w-5" aria-hidden />
-                      </button>
-                      <button
-                        type="button"
-                        aria-label="Edit"
-                        onClick={() => setEditing((e) => !e)}
                         aria-label="Reply"
                         onClick={doReply}
                       >
@@ -227,11 +215,6 @@ const PostBase = memo((props: PostBaseProps) => {
                       </Popover.Root>
                     </>
                   ) : undefined}
-                  {credentials ? (
-                    <button type="button" aria-label="Reply" onClick={doReply}>
-                      <Reply className="h-5 w-5" aria-hidden />
-                    </button>
-                  ) : undefined}
                 </div>
               ) : undefined}
             </div>
@@ -245,9 +228,6 @@ const PostBase = memo((props: PostBaseProps) => {
                 Couldn't delete post. Message: {deleteError}
               </div>
             ) : undefined}
-            {!props.reply && reply?.id ? (
-              <div className="my-1">
-                <Post id={reply.id} reply />
             {!props.reply && reply?.ids ? (
               <div className="my-1 flex flex-col gap-2">
                 {reply.ids.map((id) => (
@@ -358,9 +338,6 @@ export type AttachmentViewProps = {
 };
 export const AttachmentView = (props: AttachmentViewProps) => {
   const download = useRef<HTMLAnchorElement>(null);
-  const closeButton = props.onRemove ? (
-    <Button
-      className="absolute right-2 top-2 opacity-50 hover:opacity-100"
   const closeRow = props.onRemove ? (
     <button
       type="button"
@@ -368,8 +345,6 @@ export const AttachmentView = (props: AttachmentViewProps) => {
       className="flex items-center gap-2 text-wrap font-bold"
       onClick={() => props.onRemove?.(props.attachment.id)}
     >
-      <X />
-    </Button>
       <span>{props.attachment.filename}</span>
       <X className="h-6 w-6" strokeWidth={2.2} aria-hidden />
     </button>
@@ -380,21 +355,6 @@ export const AttachmentView = (props: AttachmentViewProps) => {
       <Popup
         triggerAsChild
         trigger={
-          <button
-            aria-label={props.attachment.filename}
-            className="relative h-36 w-36"
-          >
-            <img
-              key={props.attachment.id}
-              className="h-36 w-36 rounded-xl object-cover"
-              src={`https://uploads.meower.org/attachments/${props.attachment.id}/${props.attachment.filename}?preview`}
-              alt={props.attachment.filename}
-              title={props.attachment.filename}
-              width="144"
-              height="144"
-            />
-            {closeButton}
-          </button>
           <div className="flex flex-col items-center">
             {closeRow}
             <button type="button" aria-label={props.attachment.filename}>
@@ -417,7 +377,6 @@ export const AttachmentView = (props: AttachmentViewProps) => {
             </Dialog.Title>
           </div>
           <img
-            src={`https://uploads.meower.org/attachments/${props.attachment.id}/${props.attachment.filename}`}
             src={`${uploads}/attachments/${props.attachment.id}/${props.attachment.filename}`}
             alt={props.attachment.filename}
             title={props.attachment.filename}
@@ -430,7 +389,6 @@ export const AttachmentView = (props: AttachmentViewProps) => {
   }
 
   return (
-    <div className="relative inline-block">
     <div className="relative inline-flex flex-col items-center">
       <a ref={download} download={props.attachment.filename} hidden />
       {closeRow}
@@ -439,7 +397,6 @@ export const AttachmentView = (props: AttachmentViewProps) => {
           const url = URL.createObjectURL(
             await (
               await fetch(
-                `https://uploads.meower.org/attachments/${props.attachment.id}/${props.attachment.filename}`,
                 `${uploads}/attachments/${props.attachment.id}/${props.attachment.filename}`,
               )
             ).blob(),
@@ -462,7 +419,6 @@ export const AttachmentView = (props: AttachmentViewProps) => {
           <div className="text-sm">({byteToHuman(props.attachment.size)})</div>
         </div>
       </button>
-      {closeButton}
     </div>
   );
 };

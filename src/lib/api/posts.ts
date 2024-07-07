@@ -5,10 +5,6 @@ import { Errorable, loadMore, request } from "./utils";
 import { api } from "../servers";
 import { getReply } from "../reply";
 
-export type Attachment = Omit<
-  z.infer<typeof ATTACHMENT_SCHEMA>,
-  "height" | "width"
-> & { width?: number; height?: number };
 export type Attachment = z.infer<typeof ATTACHMENT_SCHEMA>;
 const ATTACHMENT_SCHEMA = z.object({
   filename: z.string(),
@@ -70,7 +66,6 @@ export type PostsSlice = {
     }>
   >;
   posts: Record<string, Errorable<Post | { isDeleted: true }>>;
-  addPost: (post: Post) => void;
   addPost: (post: Post) => Post;
   loadChatPosts: (id: string) => Promise<void>;
   loadMore: (
@@ -116,8 +111,6 @@ export const createPostsSlice: Slice<PostsSlice> = (set, get) => {
         }
         chat.last_active = Date.now() / 1000;
       });
-      if (!state.chatPosts[post.post_origin]) {
-        return;
       const newPost = state.addPost(post);
       const replylessPost = getReply(newPost.p)?.postContent ?? newPost.p;
       if (
@@ -191,7 +184,6 @@ export const createPostsSlice: Slice<PostsSlice> = (set, get) => {
     addPost: (post: Post) => {
       const bridge = post.u === "Discord" ? "discord" : undefined;
       const match = bridge
-        ? post.p.match(/(?<username>[a-z0-9_\-]+): (?<post>[\s\S]+)/i)
         ? post.p.match(/^(?<username>[a-z0-9_\-]+)(?:\: (?<post>[\s\S]+))?/i)
         : null;
       const username = match?.groups?.username;
@@ -204,13 +196,6 @@ export const createPostsSlice: Slice<PostsSlice> = (set, get) => {
         error: false,
       } as const;
       set((draft) => {
-        draft.posts[post.post_id] = {
-          ...post,
-          ...(bridge && username && postContent
-            ? { bridge, u: username, p: postContent }
-            : {}),
-          error: false,
-        };
         draft.posts[post.post_id] = newPost;
       });
       return newPost;
@@ -222,7 +207,6 @@ export const createPostsSlice: Slice<PostsSlice> = (set, get) => {
       loadingPosts.add(post);
       const state = get();
       const response = await request(
-        fetch(`https://api.meower.org/posts?id=${encodeURIComponent(post)}`, {
         fetch(`${api}/posts?id=${encodeURIComponent(post)}`, {
           headers: state.credentials ? { Token: state.credentials.token } : {},
         }),
@@ -273,7 +257,6 @@ export const createPostsSlice: Slice<PostsSlice> = (set, get) => {
       const { page, remove } = loadMore(current);
       const response = await request(
         fetch(
-          `https://api.meower.org/${id === "home" ? "home" : `posts/${encodeURIComponent(id)}`}?page=${page}`,
           `${api}/${id === "home" ? "home" : `posts/${encodeURIComponent(id)}`}?page=${page}`,
           {
             headers: state.credentials
@@ -331,7 +314,6 @@ export const createPostsSlice: Slice<PostsSlice> = (set, get) => {
       });
       const response = await request(
         fetch(
-          `https://api.meower.org/${chat === "home" ? "home" : `posts/${encodeURIComponent(chat)}`}`,
           `${api}/${chat === "home" ? "home" : `posts/${encodeURIComponent(chat)}`}`,
           {
             headers: {
@@ -358,7 +340,6 @@ export const createPostsSlice: Slice<PostsSlice> = (set, get) => {
     editPost: (id, newContent) => {
       const state = get();
       return request(
-        fetch(`https://api.meower.org/posts?id=${encodeURIComponent(id)}`, {
         fetch(`${api}/posts?id=${encodeURIComponent(id)}`, {
           headers: {
             ...(state.credentials ? { Token: state.credentials.token } : {}),
@@ -373,7 +354,6 @@ export const createPostsSlice: Slice<PostsSlice> = (set, get) => {
     deletePost: (id) => {
       const state = get();
       return request(
-        fetch(`https://api.meower.org/posts?id=${encodeURIComponent(id)}`, {
         fetch(`${api}/posts?id=${encodeURIComponent(id)}`, {
           headers: {
             ...(state.credentials ? { Token: state.credentials.token } : {}),

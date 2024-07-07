@@ -8,7 +8,6 @@ import {
 } from "./auth";
 import { createChatsSlice, ChatsSlice } from "./chats";
 import { createPostsSlice, PostsSlice } from "./posts";
-import { createRoarerSlice, RoarerSlice } from "./roarer";
 import { createRoarerSlice, RoarerSlice, NOTIFICATION_STORAGE } from "./roarer";
 import { createTypingSlice, TypingSlice } from "./typing";
 import { createUlistSlice, UlistSlice } from "./ulist";

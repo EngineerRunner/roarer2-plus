@@ -30,11 +30,9 @@ export type ChatProps = {
   chat: string;
 };
 export const Chat = (props: ChatProps) => {
-  const [reply, setReply] = useState<Reply>();
   const [replies, setReplies] = useState<Reply[]>([]);
   const [loadingMore, setLoadingMore] = useState(false);
   const [loadMoreError, setLoadMoreError] = useState<string>();
-  const [posts, loadChatPosts, loadMore] = useAPI(
   const [credentials, chat, loadChat, posts, loadChatPosts, loadMore] = useAPI(
     useShallow((state) => [
       state.credentials,
@@ -50,7 +48,6 @@ export const Chat = (props: ChatProps) => {
 
   const setReplyFromPost = useCallback(
     (id: string, content: string, username: string) => {
-      setReply({ id, content, username });
       setReplies((replies) => [...replies, { id, content, username }]);
     },
     [],
@@ -79,11 +76,6 @@ export const Chat = (props: ChatProps) => {
 
   return (
     <div className="flex flex-col gap-2">
-      <EnterPost
-        chat={props.chat}
-        reply={reply}
-        removeReply={() => setReply(undefined)}
-      />
       {props.chat === "home" ? undefined : (
         <p className="font-bold">
           {chat
@@ -145,8 +137,6 @@ const TypingIndicator = (props: TypingIndicatorProps) => {
 
 type EnterPostProps = {
   chat: string;
-  reply?: Reply | undefined;
-  removeReply?: () => void;
   replies?: Reply[];
   setReplies?: (replies: Reply[]) => void;
 };
@@ -164,8 +154,6 @@ const EnterPost = (props: EnterPostProps) => {
 
 export type EnterPostBaseProps = {
   chat: string;
-  reply?: Reply | undefined;
-  removeReply?: () => void;
   replies?: Reply[];
   setReplies?: (replies: Reply[]) => void;
   basePostContent?: string;
@@ -194,7 +182,6 @@ export const EnterPostBase = (props: EnterPostBaseProps) => {
   const textArea = useRef<HTMLTextAreaElement | null>(null);
   useEffect(() => {
     textArea.current?.focus?.();
-  }, [props.reply]);
   }, [props.replies]);
 
   if (!credentials) {
@@ -208,9 +195,6 @@ export const EnterPostBase = (props: EnterPostBaseProps) => {
     }
     setState("posting");
     const response = await props.onSubmit(
-      (props.reply
-        ? `@${props.reply.username} ${trimmedPost(props.reply.content)} (${props.reply.id})\n`
-        : "") + postContent,
       replies
         .map(
           (reply) =>
@@ -227,7 +211,6 @@ export const EnterPostBase = (props: EnterPostBaseProps) => {
       setPostContent("");
       setAttachments([]);
       setError("");
-      props.removeReply?.();
       setPreview(false);
       props.setReplies?.([]);
     }
@@ -242,38 +225,12 @@ export const EnterPostBase = (props: EnterPostBaseProps) => {
   const upload = async (files: FileList) => {
     const errors: string[] = [];
     setState("uploading");
-    (
-      await Promise.all(
-        [...files].map(async (file) => {
-          const uploadedFile = await uploadFile(file, "attachments");
-          console.log(uploadedFile);
-          if (uploadedFile.error) {
-            return { type: "error", message: uploadedFile.message } as const;
-          } else {
-            return {
-              type: "file",
-              file: {
-                filename: file.name,
-                id: uploadedFile.response.id,
-                mime: file.type,
-                size: file.size,
-              } satisfies Attachment,
-            } as const;
-          }
-        }),
-      )
-    ).forEach((result) => {
-      if (result.type === "error") {
-        errors.push(result.message);
-        return;
     for (const file of files) {
       const uploadedFile = await uploadFile(file, "attachments");
       if (uploadedFile.error) {
         errors.push(uploadedFile.message);
         break;
       }
-      setAttachments((attachments) => [...attachments, result.file]);
-    });
       const imageSize = await getImageSize(URL.createObjectURL(file));
       setAttachments((attachments) => [
         ...attachments,
@@ -303,7 +260,6 @@ export const EnterPostBase = (props: EnterPostBaseProps) => {
         onInput={() => sendTyping(props.chat)}
         onKeyDown={(e) => {
           if (e.key === "Escape") {
-            props.removeReply?.();
             props.setReplies?.([]);
           }
         }}
@@ -383,7 +339,9 @@ export const EnterPostBase = (props: EnterPostBaseProps) => {
           </div>
         }
         above={
-                <Post id={props.reply.id} reply="topLevel" />
+          <div className="flex flex-col gap-2">
+            {replies.map((reply, index) => (
+              <div className="flex gap-2" key={index}>
                 <div className="grow">
                   <Post id={reply.id} reply="topLevel" />
                 </div>
@@ -399,23 +357,13 @@ export const EnterPostBase = (props: EnterPostBaseProps) => {
                   <X aria-hidden />
                 </button>
               </div>
-                onClick={() => props.removeReply?.()}
-              >
-                <X aria-hidden />
-              </button>
-            </div>
-          ) : undefined
+            ))}
+          </div>
         }
         below={
-                attachment={attachment}
-                key={attachment.id}
-                onRemove={(id) =>
-                  setAttachments((attachments) =>
-                    attachments.filter((attachment) => attachment.id !== id),
-                  )
-                }
-              />
-            ))}
+          <div>
+            <div className="float-right">
+              <label className="flex gap-2">
                 <Checkbox checked={preview} onInput={setPreview} />
                 <span>Preview</span>
               </label>

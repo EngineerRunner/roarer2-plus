@@ -147,4 +147,8 @@ export const syntaxForDiscordEmoji = (emoji: DiscordEmoji) => {
   return `<${emoji.isGif ? "a" : ""}:${emoji.name}:${emoji.id}>`;
 };
 
-export type DiscordEmoji = (typeof discordEmoji)[number];
+export type DiscordEmoji = {
+  name: string;
+  id: string;
+  isGif: boolean;
+};

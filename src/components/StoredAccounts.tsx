@@ -15,7 +15,6 @@ export const StoredAccounts = (props: StoredAccountsProps) => {
   const accountEntries = Object.entries(storedAccounts);
   return (
     <Popup trigger={props.children} triggerAsChild className="min-w-72 px-0">
-      <p className="mx-2 text-lg font-bold">Choose an account</p>
       <p className="mx-4 text-lg font-bold">Choose an account</p>
       {credentials && credentials.username in storedAccounts ? (
         <StoredAccount {...credentials} isLoggedIn />
@@ -27,7 +26,6 @@ export const StoredAccounts = (props: StoredAccountsProps) => {
           ) : undefined,
         )
       ) : (
-        <div className="mx-2">
         <div className="mx-4">
           You currently do not have any stored accounts.
         </div>
@@ -63,7 +61,6 @@ const StoredAccount = (props: StoredAccountProps) => {
       />
       <button
         aria-label="Remove"
-        className="bg-white px-2 py-1 hover:bg-gray-100 dark:bg-gray-900 dark:hover:bg-gray-800"
         className="bg-white px-4 py-1 hover:bg-gray-100 dark:bg-gray-900 dark:hover:bg-gray-800"
         onClick={() => removeStoredAccount(props.username)}
       >

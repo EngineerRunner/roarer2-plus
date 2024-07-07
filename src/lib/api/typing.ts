@@ -57,7 +57,6 @@ export const createTypingSlice: Slice<TypingSlice> = (set, get) => {
       }
       lastSentIndicator = Date.now();
       fetch(
-        `https://api.meower.org/${chat === "home" ? "home" : `chats/${chat}`}/typing`,
         `${api}/${chat === "home" ? "home" : `chats/${chat}`}/typing`,
         {
           method: "POST",

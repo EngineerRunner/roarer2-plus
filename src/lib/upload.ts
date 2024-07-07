@@ -35,7 +35,6 @@ export const uploadFile = async (
   try {
     response = IMAGE_SCHEMA.parse(
       await (
-        await fetch(`https://uploads.meower.org/${type}`, {
         await fetch(`${uploads}/${type}`, {
           method: "POST",
           body: form,

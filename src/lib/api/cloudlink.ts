@@ -2,7 +2,6 @@ import { CloudlinkClient } from "@williamhorning/cloudlink";
 import { cl } from "../servers";
 
 const cloudlinkClient = new CloudlinkClient({
-  url: "wss://server.meower.org",
   url: cl,
   log: import.meta.env.DEV,
 });

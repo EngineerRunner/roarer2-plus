@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import { ChevronLeft, ChevronRight, Moon, Sun } from "lucide-react";
 import { ChevronLeft, Bell, BellOff, Moon, Sun, X } from "lucide-react";
 import * as Dialog from "@radix-ui/react-dialog";
 import * as Tabs from "@radix-ui/react-tabs";
@@ -21,31 +20,19 @@ export const App = () => {
   );
 
   return (
-    <div className="flex h-screen max-h-screen divide-x divide-gray-200 overflow-auto bg-white [--nav-bar-size:min(theme(spacing.96),90vw)] dark:divide-gray-800 dark:bg-gray-950">
     <div className="flex h-screen max-h-screen divide-x divide-gray-200 overflow-auto bg-white dark:divide-gray-800 dark:bg-gray-950">
       <div className="max-h-screen w-full min-w-[65%] overflow-auto bg-white p-2 dark:bg-gray-950">
         <Button
-          className={twMerge(
-            "absolute bottom-[50%] z-[--z-sidebar] h-14 rounded-none rounded-s-lg px-1 py-2 lg:hidden",
-            showSideNav ? "right-[--nav-bar-size]" : "right-0",
           className="absolute bottom-[50%] right-0 z-[--z-sidebar] h-14 rounded-none rounded-s-lg px-1 py-2 lg:hidden"
           onClick={() => setShowSideNav((n) => !n)}
           aria-label="Open navigation bar"
         >
-          {showSideNav ? (
-            <ChevronRight aria-hidden />
-          ) : (
-            <ChevronLeft aria-hidden />
-          )}
           <ChevronLeft aria-hidden />
         </Button>
         <Chat chat={openChat} />
       </div>
       <Tabs.Root
         defaultValue="ulist"
-        className={`${
-          showSideNav ? "" : "hidden"
-        } absolute right-0 top-0 z-[--z-sidebar] h-screen max-h-screen w-[--nav-bar-size] min-w-[--nav-bar-size] overflow-auto bg-white py-2 dark:bg-gray-950 lg:sticky lg:top-0 lg:block`}
         className={twMerge(
           "max-w-screen absolute right-0 top-0 z-[--z-sidebar] h-screen max-h-screen w-screen overflow-auto bg-white py-2 dark:bg-gray-950 lg:sticky lg:top-0 lg:block",
           showSideNav ? "" : "hidden",

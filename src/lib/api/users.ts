@@ -68,7 +68,6 @@ export const createUsersSlice: Slice<UsersSlice> = (set, get) => {
       }
       loadingUsers.add(username);
       const response = await request(
-        fetch(`https://api.meower.org/users/${encodeURIComponent(username)}`),
         fetch(`${api}/users/${encodeURIComponent(username)}`),
         USER_SCHEMA,
       );
