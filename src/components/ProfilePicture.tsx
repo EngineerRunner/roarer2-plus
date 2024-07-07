@@ -2,6 +2,7 @@ import { CSSProperties } from "react";
 import { twMerge } from "tailwind-merge";
 import { useShallow } from "zustand/react/shallow";
 import { useAPI } from "../lib/api";
+import { uploads } from "../lib/servers";
 import { NO_PROFILE_PICTURE } from "../lib/noProfilePicture";
 import { profilePictures } from "../assets/pfp";
 
@@ -75,6 +76,7 @@ export const ProfilePictureBase = (props: ProfilePictureBaseProps) => {
         src={
           props.pfp.avatar
             ? `https://uploads.meower.org/icons/${props.pfp.avatar}`
+            ? `${uploads}/icons/${props.pfp.avatar}`
             : profilePictures.get(props.pfp.pfp_data ?? 500)
         }
         aria-hidden

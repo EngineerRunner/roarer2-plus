@@ -1,6 +1,7 @@
 import { z } from "zod";
 import { useAPI } from "./api";
 import { byteToHuman } from "./byteToHuman";
+import { uploads } from "./servers";
 
 const ICON_MAX_SIZE = 5 << 20;
 const ATTACHMENT_MAX_SIZE = 25 << 20;
@@ -35,6 +36,7 @@ export const uploadFile = async (
     response = IMAGE_SCHEMA.parse(
       await (
         await fetch(`https://uploads.meower.org/${type}`, {
+        await fetch(`${uploads}/${type}`, {
           method: "POST",
           body: form,
           headers: { Authorization: token },

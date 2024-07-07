@@ -2,11 +2,14 @@ import { z } from "zod";
 import { Slice } from ".";
 import { getCloudlink } from "./cloudlink";
 import { Errorable, loadMore, request } from "./utils";
+import { api } from "../servers";
+import { getReply } from "../reply";
 
 export type Attachment = Omit<
   z.infer<typeof ATTACHMENT_SCHEMA>,
   "height" | "width"
 > & { width?: number; height?: number };
+export type Attachment = z.infer<typeof ATTACHMENT_SCHEMA>;
 const ATTACHMENT_SCHEMA = z.object({
   filename: z.string(),
   height: z.number(),
@@ -68,6 +71,7 @@ export type PostsSlice = {
   >;
   posts: Record<string, Errorable<Post | { isDeleted: true }>>;
   addPost: (post: Post) => void;
+  addPost: (post: Post) => Post;
   loadChatPosts: (id: string) => Promise<void>;
   loadMore: (
     id: string,
@@ -114,6 +118,20 @@ export const createPostsSlice: Slice<PostsSlice> = (set, get) => {
       });
       if (!state.chatPosts[post.post_origin]) {
         return;
+      const newPost = state.addPost(post);
+      const replylessPost = getReply(newPost.p)?.postContent ?? newPost.p;
+      if (
+        state.notificationState === "enabled" &&
+        newPost.u !== state.credentials?.username &&
+        replylessPost.includes("@" + state.credentials?.username) &&
+        (document.hidden || state.openChat !== newPost.post_origin)
+      ) {
+        new Notification(`${newPost.u} mentioned you:`, {
+          body: replylessPost,
+        }).addEventListener("click", () => {
+          state.setOpenChat(post.post_origin);
+          focus();
+        });
       }
       state.addPost(post);
       set((draft) => {
@@ -174,9 +192,17 @@ export const createPostsSlice: Slice<PostsSlice> = (set, get) => {
       const bridge = post.u === "Discord" ? "discord" : undefined;
       const match = bridge
         ? post.p.match(/(?<username>[a-z0-9_\-]+): (?<post>[\s\S]+)/i)
+        ? post.p.match(/^(?<username>[a-z0-9_\-]+)(?:\: (?<post>[\s\S]+))?/i)
         : null;
       const username = match?.groups?.username;
       const postContent = match?.groups?.post;
+      const newPost = {
+        ...post,
+        ...(bridge && username
+          ? ({ bridge, u: username, p: postContent ?? "" } as const)
+          : {}),
+        error: false,
+      } as const;
       set((draft) => {
         draft.posts[post.post_id] = {
           ...post,
@@ -185,7 +211,9 @@ export const createPostsSlice: Slice<PostsSlice> = (set, get) => {
             : {}),
           error: false,
         };
+        draft.posts[post.post_id] = newPost;
       });
+      return newPost;
     },
     loadPost: async (post: string) => {
       if (post in get().posts || loadingPosts.has(post)) {
@@ -195,6 +223,7 @@ export const createPostsSlice: Slice<PostsSlice> = (set, get) => {
       const state = get();
       const response = await request(
         fetch(`https://api.meower.org/posts?id=${encodeURIComponent(post)}`, {
+        fetch(`${api}/posts?id=${encodeURIComponent(post)}`, {
           headers: state.credentials ? { Token: state.credentials.token } : {},
         }),
         POST_SCHEMA,
@@ -245,6 +274,7 @@ export const createPostsSlice: Slice<PostsSlice> = (set, get) => {
       const response = await request(
         fetch(
           `https://api.meower.org/${id === "home" ? "home" : `posts/${encodeURIComponent(id)}`}?page=${page}`,
+          `${api}/${id === "home" ? "home" : `posts/${encodeURIComponent(id)}`}?page=${page}`,
           {
             headers: state.credentials
               ? { Token: state.credentials.token }
@@ -302,6 +332,7 @@ export const createPostsSlice: Slice<PostsSlice> = (set, get) => {
       const response = await request(
         fetch(
           `https://api.meower.org/${chat === "home" ? "home" : `posts/${encodeURIComponent(chat)}`}`,
+          `${api}/${chat === "home" ? "home" : `posts/${encodeURIComponent(chat)}`}`,
           {
             headers: {
               ...(state.credentials ? { Token: state.credentials.token } : {}),
@@ -328,6 +359,7 @@ export const createPostsSlice: Slice<PostsSlice> = (set, get) => {
       const state = get();
       return request(
         fetch(`https://api.meower.org/posts?id=${encodeURIComponent(id)}`, {
+        fetch(`${api}/posts?id=${encodeURIComponent(id)}`, {
           headers: {
             ...(state.credentials ? { Token: state.credentials.token } : {}),
             "Content-Type": "application/json",
@@ -342,6 +374,7 @@ export const createPostsSlice: Slice<PostsSlice> = (set, get) => {
       const state = get();
       return request(
         fetch(`https://api.meower.org/posts?id=${encodeURIComponent(id)}`, {
+        fetch(`${api}/posts?id=${encodeURIComponent(id)}`, {
           headers: {
             ...(state.credentials ? { Token: state.credentials.token } : {}),
           },

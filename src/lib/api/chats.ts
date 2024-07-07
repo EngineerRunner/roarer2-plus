@@ -1,5 +1,6 @@
 import { z } from "zod";
 import { Slice } from ".";
+import { api } from "../servers";
 import { request, Errorable } from "./utils";
 
 export const CHAT_SCHEMA = z
@@ -62,6 +63,7 @@ export const createChatsSlice: Slice<ChatsSlice> = (set, get) => {
       const credentials = get().credentials;
       const response = await request(
         fetch("https://api.meower.org/chats", {
+        fetch(`${api}/chats`, {
           headers: credentials ? { Token: credentials.token } : {},
         }),
         CHATS_RESPONSE_SCHEMA,
@@ -87,6 +89,7 @@ export const createChatsSlice: Slice<ChatsSlice> = (set, get) => {
       loadingChats.add(chat);
       const response = await request(
         fetch(`https://api.meower.org/chats/${encodeURIComponent(chat)}`),
+        fetch(`${api}/chats/${encodeURIComponent(chat)}`),
         CHAT_SCHEMA,
       );
       if (response.error) {
@@ -112,6 +115,7 @@ export const createChatsSlice: Slice<ChatsSlice> = (set, get) => {
           await (
             await fetch(
               `https://api.meower.org/users/${encodeURIComponent(username)}/dm`,
+              `${api}/users/${encodeURIComponent(username)}/dm`,
               {
                 headers: state.credentials
                   ? { Token: state.credentials.token }

@@ -1,0 +1,15 @@
+{
+  "name": "Roarer",
+  "icons": [
+    {
+      "src": "bear.svg",
+      "sizes": "any"
+    }
+  ],
+  "display": "standalone",
+  "categories": ["communication", "chat", "messaging"],
+  "orientation": "portrait-primary",
+  "id": "roarer2",
+  "theme_color": "#030712",
+  "start_url": "/roarer-2"
+}

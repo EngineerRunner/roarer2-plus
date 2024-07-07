@@ -9,6 +9,7 @@ import {
 import { createChatsSlice, ChatsSlice } from "./chats";
 import { createPostsSlice, PostsSlice } from "./posts";
 import { createRoarerSlice, RoarerSlice } from "./roarer";
+import { createRoarerSlice, RoarerSlice, NOTIFICATION_STORAGE } from "./roarer";
 import { createTypingSlice, TypingSlice } from "./typing";
 import { createUlistSlice, UlistSlice } from "./ulist";
 import { createUsersSlice, UsersSlice } from "./users";
@@ -45,3 +46,10 @@ if (storedUsername && storedToken) {
     storeAccount: false,
   });
 }
+localStorage.setItem(NOTIFICATION_STORAGE, state.notificationState);
+useAPI.subscribe((state, prevState) => {
+  if (state.notificationState === prevState.notificationState) {
+    return;
+  }
+  localStorage.setItem(NOTIFICATION_STORAGE, state.notificationState);
+});

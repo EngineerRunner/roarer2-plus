@@ -54,6 +54,7 @@ export const Markdown = (mdProps: MarkdownProps) => {
               ) : (
                 <code>{code}</code>
               )}
+              <SyntaxHighlight code={code?.toString()} lang={lang} />
             </pre>
           );
         },
@@ -149,6 +150,21 @@ export const Markdown = (mdProps: MarkdownProps) => {
             {code}
           </code>
         ),
+        codespan: (code) => {
+          const match = code?.toString()?.match(/^\((\w+)\) (.*)$/);
+          return (
+            <code
+              className="rounded-lg bg-gray-800 px-1 py-0.5 text-gray-100"
+              key={getKey()}
+            >
+              {match ? (
+                <SyntaxHighlight lang={match[1]} code={match[2]} inline />
+              ) : (
+                code
+              )}
+            </code>
+          );
+        },
         link: (href, text) => {
           return <Link href={href} text={text} key={getKey()} />;
         },
@@ -231,5 +247,26 @@ const Link = (props: LinkProps) => {
     >
       {props.text}
     </a>
+  );
+};
+
+type SyntaxHighlightProps = {
+  lang?: string;
+  code?: string;
+  inline?: boolean;
+};
+const SyntaxHighlight = (props: SyntaxHighlightProps) => {
+  const [syntaxHighlighted, setSyntaxHighlighted] = useState("");
+  if (props.lang) {
+    codeToHtml(props.code ?? "", {
+      lang: props.lang,
+      theme: "github-dark-default",
+      structure: "inline",
+    }).then(setSyntaxHighlighted);
+  }
+  return syntaxHighlighted ? (
+    <span dangerouslySetInnerHTML={{ __html: syntaxHighlighted }} />
+  ) : (
+    props.code
   );
 };

@@ -1,4 +1,5 @@
 import { User } from "./User";
+import { api, cl, uploads } from "../lib/servers";
 
 export const About = () => {
   return (
@@ -30,6 +31,29 @@ export const About = () => {
         </a>
         .
       </p>
+      <div>
+        You are using to the following servers:
+        <ul className="list-inside list-disc">
+          <li>
+            API:{" "}
+            <a className="font-bold text-lime-600" href={api}>
+              {api}
+            </a>
+          </li>
+          <li>
+            Cloudlink:{" "}
+            <a className="font-bold text-lime-600" href={cl}>
+              {cl}
+            </a>
+          </li>
+          <li>
+            Uploads:{" "}
+            <a className="font-bold text-lime-600" href={uploads}>
+              {uploads}
+            </a>
+          </li>
+        </ul>
+      </div>
       <div className="flex justify-center text-lg">
         <a
           href="https://github.com/engineerrunner/roarer-2-plus"

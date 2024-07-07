@@ -3,6 +3,7 @@ const REPLY_REGEX =
 
 export type Reply = {
   id: string;
+  ids: string[];
   postContent: string;
   replyText: string;
 };
@@ -23,10 +24,14 @@ export const getReply = (post: string): Reply | null => {
   if (id === undefined) {
     throw new Error("ID is not defined");
   }
+  const subReply = getReply(postContent);
   return {
     id,
     postContent,
     replyText,
+    ids: [id, ...(subReply?.ids ?? [])],
+    postContent: subReply?.postContent ?? postContent,
+    replyText: subReply ? replyText + subReply.replyText : replyText,
   };
 };
 

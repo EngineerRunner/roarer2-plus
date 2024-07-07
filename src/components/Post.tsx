@@ -1,11 +1,14 @@
 import { File, PencilLine, Reply, Trash2, X } from "lucide-react";
+import { File, Menu, Reply, X } from "lucide-react";
 import * as Dialog from "@radix-ui/react-dialog";
+import * as Popover from "@radix-ui/react-popover";
 import { ReactNode, useRef, useState, memo } from "react";
 import { useShallow } from "zustand/react/shallow";
 import { useAPI } from "../lib/api";
 import { getReply } from "../lib/reply";
 import { Attachment, Post as APIPost } from "../lib/api/posts";
 import { NO_PROFILE_PICTURE } from "../lib/noProfilePicture";
+import { uploads } from "../lib/servers";
 import { byteToHuman } from "../lib/byteToHuman";
 import { Button } from "./Button";
 import { EnterPostBase } from "./Chat";
@@ -150,6 +153,7 @@ const PostBase = memo((props: PostBaseProps) => {
                   >
                     {props.post.u}
                     {props.post.u === "Supernoodles99" && !props.reply
+                    {props.post.u === "noodles" && !props.reply
                       ? " 🧀"
                       : undefined}
                   </button>
@@ -161,6 +165,7 @@ const PostBase = memo((props: PostBaseProps) => {
               {!props.reply && !props.post.optimistic ? (
                 <div className="flex gap-1">
                   {credentials?.username === props.post.u ? (
+                  {credentials ? (
                     <>
                       <button
                         type="button"
@@ -173,9 +178,53 @@ const PostBase = memo((props: PostBaseProps) => {
                         type="button"
                         aria-label="Edit"
                         onClick={() => setEditing((e) => !e)}
+                        aria-label="Reply"
+                        onClick={doReply}
                       >
-                        <PencilLine className="h-5 w-5" aria-hidden />
+                        <Reply className="h-6 w-6" aria-hidden />
                       </button>
+                      <Popover.Root>
+                        <Popover.Trigger
+                          aria-label="Actions"
+                          className="flex items-center"
+                        >
+                          <Menu className="h-6 w-6" aria-hidden />
+                        </Popover.Trigger>
+                        <Popover.Anchor />
+                        <Popover.Portal>
+                          <Popover.Content
+                            className="z-[--z-above-sidebar] flex flex-col rounded-lg border border-gray-200 bg-white dark:border-gray-800 dark:bg-gray-950"
+                            align="end"
+                            sideOffset={4}
+                          >
+                            <button
+                              className="rounded-e-lg px-2 py-1 text-left opacity-70"
+                              type="button"
+                              disabled
+                            >
+                              Report
+                            </button>
+                            {credentials.username === props.post.u ? (
+                              <>
+                                <Popover.Close
+                                  className="px-2 py-1 text-left hover:bg-gray-100 dark:hover:bg-gray-800"
+                                  type="button"
+                                  onClick={() => setEditing((e) => !e)}
+                                >
+                                  Edit
+                                </Popover.Close>
+                                <Popover.Close
+                                  className="rounded-b-lg px-2 py-1 text-left hover:bg-gray-100 dark:hover:bg-gray-800"
+                                  type="button"
+                                  onClick={handleDelete}
+                                >
+                                  Delete
+                                </Popover.Close>
+                              </>
+                            ) : undefined}
+                          </Popover.Content>
+                        </Popover.Portal>
+                      </Popover.Root>
                     </>
                   ) : undefined}
                   {credentials ? (
@@ -199,6 +248,11 @@ const PostBase = memo((props: PostBaseProps) => {
             {!props.reply && reply?.id ? (
               <div className="my-1">
                 <Post id={reply.id} reply />
+            {!props.reply && reply?.ids ? (
+              <div className="my-1 flex flex-col gap-2">
+                {reply.ids.map((id) => (
+                  <Post id={id} reply key={id} />
+                ))}
               </div>
             ) : undefined}
             <div
@@ -307,11 +361,18 @@ export const AttachmentView = (props: AttachmentViewProps) => {
   const closeButton = props.onRemove ? (
     <Button
       className="absolute right-2 top-2 opacity-50 hover:opacity-100"
+  const closeRow = props.onRemove ? (
+    <button
+      type="button"
       aria-label="Remove"
+      className="flex items-center gap-2 text-wrap font-bold"
       onClick={() => props.onRemove?.(props.attachment.id)}
     >
       <X />
     </Button>
+      <span>{props.attachment.filename}</span>
+      <X className="h-6 w-6" strokeWidth={2.2} aria-hidden />
+    </button>
   ) : undefined;
 
   if (props.attachment.mime.startsWith("image/")) {
@@ -334,6 +395,19 @@ export const AttachmentView = (props: AttachmentViewProps) => {
             />
             {closeButton}
           </button>
+          <div className="flex flex-col items-center">
+            {closeRow}
+            <button type="button" aria-label={props.attachment.filename}>
+              <img
+                key={props.attachment.id}
+                className="ounded-xl max-h-40"
+                src={`${uploads}/attachments/${props.attachment.id}/${props.attachment.filename}?preview`}
+                alt={props.attachment.filename}
+                title={props.attachment.filename}
+                height={Math.min(160, props.attachment.height)} // max-h-40
+              />
+            </button>
+          </div>
         }
       >
         <div className="flex flex-col gap-2">
@@ -344,6 +418,7 @@ export const AttachmentView = (props: AttachmentViewProps) => {
           </div>
           <img
             src={`https://uploads.meower.org/attachments/${props.attachment.id}/${props.attachment.filename}`}
+            src={`${uploads}/attachments/${props.attachment.id}/${props.attachment.filename}`}
             alt={props.attachment.filename}
             title={props.attachment.filename}
             width={props.attachment.width}
@@ -356,13 +431,16 @@ export const AttachmentView = (props: AttachmentViewProps) => {
 
   return (
     <div className="relative inline-block">
+    <div className="relative inline-flex flex-col items-center">
       <a ref={download} download={props.attachment.filename} hidden />
+      {closeRow}
       <button
         onClick={async () => {
           const url = URL.createObjectURL(
             await (
               await fetch(
                 `https://uploads.meower.org/attachments/${props.attachment.id}/${props.attachment.filename}`,
+                `${uploads}/attachments/${props.attachment.id}/${props.attachment.filename}`,
               )
             ).blob(),
           );

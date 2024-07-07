@@ -2,6 +2,7 @@ import { z } from "zod";
 import { Slice } from ".";
 import { getCloudlink } from "./cloudlink";
 import { request, Errorable } from "./utils";
+import { api } from "../servers";
 
 export const USER_SCHEMA = z.object({
   _id: z.string(),
@@ -68,6 +69,7 @@ export const createUsersSlice: Slice<UsersSlice> = (set, get) => {
       loadingUsers.add(username);
       const response = await request(
         fetch(`https://api.meower.org/users/${encodeURIComponent(username)}`),
+        fetch(`${api}/users/${encodeURIComponent(username)}`),
         USER_SCHEMA,
       );
       set((state) => {

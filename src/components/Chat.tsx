@@ -9,6 +9,7 @@ import {
   urlFromDiscordEmoji,
   DiscordEmoji,
 } from "../lib/discordEmoji";
+import { getImageSize } from "../lib/imageSize";
 import { trimmedPost } from "../lib/reply";
 import { uploadFile } from "../lib/upload";
 import { useShallow } from "zustand/react/shallow";
@@ -16,6 +17,8 @@ import { Button } from "./Button";
 import { Textarea } from "./Input";
 import { AttachmentView, Post } from "./Post";
 import { Attachment } from "../lib/api/posts";
+import { Checkbox } from "./Checkbox";
+import { Markdown } from "./Markdown";
 
 type Reply = {
   id: string;
@@ -28,20 +31,27 @@ export type ChatProps = {
 };
 export const Chat = (props: ChatProps) => {
   const [reply, setReply] = useState<Reply>();
+  const [replies, setReplies] = useState<Reply[]>([]);
   const [loadingMore, setLoadingMore] = useState(false);
   const [loadMoreError, setLoadMoreError] = useState<string>();
   const [posts, loadChatPosts, loadMore] = useAPI(
+  const [credentials, chat, loadChat, posts, loadChatPosts, loadMore] = useAPI(
     useShallow((state) => [
+      state.credentials,
+      state.chats[props.chat],
+      state.loadChat,
       state.chatPosts[props.chat],
       state.loadChatPosts,
       state.loadMore,
     ]),
   );
+  loadChat(props.chat);
   loadChatPosts(props.chat);
 
   const setReplyFromPost = useCallback(
     (id: string, content: string, username: string) => {
       setReply({ id, content, username });
+      setReplies((replies) => [...replies, { id, content, username }]);
     },
     [],
   );
@@ -74,6 +84,22 @@ export const Chat = (props: ChatProps) => {
         reply={reply}
         removeReply={() => setReply(undefined)}
       />
+      {props.chat === "home" ? undefined : (
+        <p className="font-bold">
+          {chat
+            ? chat.error
+              ? `Failed getting chat. Message: ${chat.message}`
+              : chat.deleted
+                ? ""
+                : chat.nickname ??
+                  "@" +
+                    chat.members.find(
+                      (member) => member !== credentials?.username,
+                    )
+            : "Loading chat name..."}
+        </p>
+      )}
+      <EnterPost chat={props.chat} replies={replies} setReplies={setReplies} />
       <TypingIndicator chat={props.chat} />
       {posts.posts.map((post) => (
         <Post key={post} id={post} onReply={setReplyFromPost} />
@@ -121,6 +147,8 @@ type EnterPostProps = {
   chat: string;
   reply?: Reply | undefined;
   removeReply?: () => void;
+  replies?: Reply[];
+  setReplies?: (replies: Reply[]) => void;
 };
 const EnterPost = (props: EnterPostProps) => {
   const post = useAPI((state) => state.post);
@@ -138,6 +166,8 @@ export type EnterPostBaseProps = {
   chat: string;
   reply?: Reply | undefined;
   removeReply?: () => void;
+  replies?: Reply[];
+  setReplies?: (replies: Reply[]) => void;
   basePostContent?: string;
   onSuccess?: () => void;
   dontDisableWhenPosting?: boolean;
@@ -148,6 +178,8 @@ export type EnterPostBaseProps = {
   noAttachments?: boolean;
 };
 export const EnterPostBase = (props: EnterPostBaseProps) => {
+  const replies = props.replies ?? [];
+
   const [credentials, sendTyping] = useAPI(
     useShallow((state) => [state.credentials, state.sendTyping]),
   );
@@ -157,11 +189,13 @@ export const EnterPostBase = (props: EnterPostBaseProps) => {
     "writing",
   );
   const [attachments, setAttachments] = useState<Attachment[]>([]);
+  const [preview, setPreview] = useState(false);
   const fileInput = useRef<HTMLInputElement | null>(null);
   const textArea = useRef<HTMLTextAreaElement | null>(null);
   useEffect(() => {
     textArea.current?.focus?.();
   }, [props.reply]);
+  }, [props.replies]);
 
   if (!credentials) {
     return <></>;
@@ -177,6 +211,12 @@ export const EnterPostBase = (props: EnterPostBaseProps) => {
       (props.reply
         ? `@${props.reply.username} ${trimmedPost(props.reply.content)} (${props.reply.id})\n`
         : "") + postContent,
+      replies
+        .map(
+          (reply) =>
+            `@${reply.username} ${trimmedPost(reply.content)} (${reply.id})\n`,
+        )
+        .join("") + postContent,
       attachments.map((attachment) => attachment.id),
     );
     setState("writing");
@@ -188,6 +228,8 @@ export const EnterPostBase = (props: EnterPostBaseProps) => {
       setAttachments([]);
       setError("");
       props.removeReply?.();
+      setPreview(false);
+      props.setReplies?.([]);
     }
   };
 
@@ -224,9 +266,27 @@ export const EnterPostBase = (props: EnterPostBaseProps) => {
       if (result.type === "error") {
         errors.push(result.message);
         return;
+    for (const file of files) {
+      const uploadedFile = await uploadFile(file, "attachments");
+      if (uploadedFile.error) {
+        errors.push(uploadedFile.message);
+        break;
       }
       setAttachments((attachments) => [...attachments, result.file]);
     });
+      const imageSize = await getImageSize(URL.createObjectURL(file));
+      setAttachments((attachments) => [
+        ...attachments,
+        {
+          filename: file.name,
+          id: uploadedFile.response.id,
+          mime: file.type,
+          size: file.size,
+          width: imageSize.width,
+          height: imageSize.height,
+        } satisfies Attachment,
+      ]);
+    }
     if (errors.length) {
       setError(`Some files couldn't be uploaded. Errors: ${errors.join(",")}`);
     }
@@ -244,6 +304,7 @@ export const EnterPostBase = (props: EnterPostBaseProps) => {
         onKeyDown={(e) => {
           if (e.key === "Escape") {
             props.removeReply?.();
+            props.setReplies?.([]);
           }
         }}
         disabled={
@@ -294,7 +355,7 @@ export const EnterPostBase = (props: EnterPostBaseProps) => {
               <Popover.Anchor />
               <Popover.Portal>
                 <Popover.Content asChild align="end" sideOffset={4}>
-                  <div className="z-[--z-above-sidebar] flex w-[267px] flex-row flex-wrap gap-2 rounded-lg border border-gray-200 bg-white px-2 py-1 dark:border-gray-800 dark:bg-gray-950">
+                  <div className="z-[--z-above-sidebar] flex w-60 flex-row flex-wrap gap-2 rounded-lg border border-gray-200 bg-white px-2 py-1 dark:border-gray-800 dark:bg-gray-950">
                     {discordEmoji.map((emoji) => (
                       <button
                         key={emoji.id}
@@ -322,14 +383,22 @@ export const EnterPostBase = (props: EnterPostBaseProps) => {
           </div>
         }
         above={
-          props.reply ? (
-            <div className="flex gap-2">
-              <div className="grow">
                 <Post id={props.reply.id} reply="topLevel" />
+                <div className="grow">
+                  <Post id={reply.id} reply="topLevel" />
+                </div>
+                <button
+                  type="button"
+                  aria-label="Remove reply"
+                  onClick={() =>
+                    props.setReplies?.(
+                      replies.slice(0, index).concat(replies.slice(index + 1)),
+                    )
+                  }
+                >
+                  <X aria-hidden />
+                </button>
               </div>
-              <button
-                type="button"
-                aria-label="Remove reply"
                 onClick={() => props.removeReply?.()}
               >
                 <X aria-hidden />
@@ -338,9 +407,6 @@ export const EnterPostBase = (props: EnterPostBaseProps) => {
           ) : undefined
         }
         below={
-          <div className="flex flex-wrap gap-2">
-            {attachments.map((attachment) => (
-              <AttachmentView
                 attachment={attachment}
                 key={attachment.id}
                 onRemove={(id) =>
@@ -350,7 +416,32 @@ export const EnterPostBase = (props: EnterPostBaseProps) => {
                 }
               />
             ))}
+                <Checkbox checked={preview} onInput={setPreview} />
+                <span>Preview</span>
+              </label>
+            </div>
+            <div className="flex flex-wrap gap-2">
+              {attachments.map((attachment) => (
+                <AttachmentView
+                  attachment={attachment}
+                  key={attachment.id}
+                  onRemove={
+                    preview
+                      ? undefined
+                      : (id) =>
+                          setAttachments((attachments) =>
+                            attachments.filter(
+                              (attachment) => attachment.id !== id,
+                            ),
+                          )
+                  }
+                />
+              ))}
+            </div>
           </div>
+        }
+        replaceTextarea={
+          preview ? <Markdown>{postContent}</Markdown> : undefined
         }
         onPaste={(e) => {
           if (showAttachments && e.clipboardData.files.length) {

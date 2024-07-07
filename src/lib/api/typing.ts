@@ -1,6 +1,7 @@
 import { z } from "zod";
 import { Slice } from ".";
 import { getCloudlink } from "./cloudlink";
+import { api } from "../servers";
 
 const TYPING_SCHEMA = z.object({
   cmd: z.literal("direct"),
@@ -57,6 +58,7 @@ export const createTypingSlice: Slice<TypingSlice> = (set, get) => {
       lastSentIndicator = Date.now();
       fetch(
         `https://api.meower.org/${chat === "home" ? "home" : `chats/${chat}`}/typing`,
+        `${api}/${chat === "home" ? "home" : `chats/${chat}`}/typing`,
         {
           method: "POST",
           headers: state.credentials ? { Token: state.credentials.token } : {},
