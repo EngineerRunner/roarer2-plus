@@ -48,6 +48,7 @@ export const Textarea = forwardRef<HTMLTextAreaElement | null, TextareaProps>(
     delete textareaProps.above;
     delete textareaProps.below;
     delete textareaProps.onEnter;
+    delete textareaProps.replaceTextarea;
     const elementRef = useRef<HTMLTextAreaElement | null>(null);
 
     useImperativeHandle(ref, () => elementRef.current!);

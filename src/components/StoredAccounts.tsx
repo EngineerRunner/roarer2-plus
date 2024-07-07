@@ -4,6 +4,7 @@ import { useShallow } from "zustand/react/shallow";
 import { Popup } from "./Popup";
 import { UserView } from "./UserView";
 import { useAPI } from "../lib/api";
+import * as Dialog from "@radix-ui/react-dialog";
 
 export type StoredAccountsProps = {
   children: ReactNode;
@@ -15,7 +16,9 @@ export const StoredAccounts = (props: StoredAccountsProps) => {
   const accountEntries = Object.entries(storedAccounts);
   return (
     <Popup trigger={props.children} triggerAsChild className="min-w-72 px-0">
-      <p className="mx-4 text-lg font-bold">Choose an account</p>
+      <Dialog.Title>
+        <p className="mx-4 text-lg font-bold">Choose an account</p>
+      </Dialog.Title>
       {credentials && credentials.username in storedAccounts ? (
         <StoredAccount {...credentials} isLoggedIn />
       ) : undefined}

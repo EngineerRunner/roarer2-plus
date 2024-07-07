@@ -116,7 +116,7 @@ export const createPostsSlice: Slice<PostsSlice> = (set, get) => {
       if (
         state.notificationState === "enabled" &&
         newPost.u !== state.credentials?.username &&
-        replylessPost.includes("@" + state.credentials?.username) &&
+        newPost.p.includes("@" + state.credentials?.username) &&
         (document.hidden || state.openChat !== newPost.post_origin)
       ) {
         new Notification(`${newPost.u} mentioned you:`, {
@@ -335,6 +335,10 @@ export const createPostsSlice: Slice<PostsSlice> = (set, get) => {
           return;
         }
         post.optimistic = { error: response.message };
+        const chatPosts = draft.chatPosts[chat];
+        if (chatPosts && !chatPosts.error) {
+          delete chatPosts.currentOptimistics[optimisticId];
+        }
       });
     },
     editPost: (id, newContent) => {

@@ -1,12 +1,12 @@
 const REPLY_REGEX =
   /^(@[a-z_0-9-]+(?: "[^\n]*" (?:\(([a-f0-9\-]+)\))| \[([a-f0-9\-]+)\])(?:\n| )?)(.*)$/is;
 
-export type Reply = {
+export type PostWithReplies = {
   ids: string[];
   postContent: string;
   replyText: string;
 };
-export const getReply = (post: string): Reply | null => {
+export const getReply = (post: string): PostWithReplies | null => {
   const match = post.match(REPLY_REGEX);
   if (!match) {
     return null;

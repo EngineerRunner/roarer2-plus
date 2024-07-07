@@ -5,6 +5,7 @@ import { Button } from "./Button";
 import { Checkbox } from "./Checkbox";
 import { Input } from "./Input";
 import { ProfilePicture } from "./ProfilePicture";
+import { Menu, MenuItem } from "./Menu";
 import { StoredAccounts } from "./StoredAccounts";
 import { useAPI } from "../lib/api";
 
@@ -95,7 +96,7 @@ const SignInButton = () => {
               <span>Store account</span>
             </label>
             {mode === "sign up" ? (
-              <label className="flex items-center gap-2 ">
+              <label className="flex items-center gap-2">
                 <Checkbox checked={tosAgreed} onInput={setTosAgreed} />
                 <span>
                   I agree to Meower's{" "}
@@ -156,36 +157,20 @@ const AccountMenu = (props: AccountMenuProps) => {
   const signOut = useAPI((store) => store.signOut);
 
   return (
-    <Popover.Root>
-      <Popover.Trigger className="flex items-center">
-        <ProfilePicture username={props.username} dontShowOnline />
-        <ChevronDown />
-      </Popover.Trigger>
-      <Popover.Anchor />
-      <Popover.Portal>
-        <Popover.Content
-          className="z-[--z-above-sidebar] flex flex-col rounded-lg border border-gray-200 bg-white dark:border-gray-800 dark:bg-gray-950"
-          align="end"
-          sideOffset={4}
-        >
-          <span className="px-2 pt-1 text-sm font-bold">{props.username}</span>
-          <StoredAccounts>
-            <button
-              className="rounded-e-lg px-2 py-1 text-left hover:bg-gray-100 dark:hover:bg-gray-800"
-              type="button"
-            >
-              Switch account
-            </button>
-          </StoredAccounts>
-          <button
-            className="rounded-e-lg px-2 py-1 text-left hover:bg-gray-100 dark:hover:bg-gray-800"
-            type="button"
-            onClick={signOut}
-          >
-            Sign out
-          </button>
-        </Popover.Content>
-      </Popover.Portal>
-    </Popover.Root>
+    <Menu
+      trigger={
+        <button type="button" className="flex items-center gap-1">
+          <ProfilePicture username={props.username} dontShowOnline />
+          <ChevronDown />
+        </button>
+      }
+    >
+      <span className="px-2 pt-1 text-sm font-bold">{props.username}</span>
+      <StoredAccounts>
+        {/* StoredAccounts doesn't seem to work when closing */}
+        <MenuItem dontClose>Switch account</MenuItem>
+      </StoredAccounts>
+      <MenuItem onClick={signOut}>Sign out</MenuItem>
+    </Menu>
   );
 };
