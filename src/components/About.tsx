@@ -32,7 +32,7 @@ export const About = () => {
         .
       </p>
       <div>
-        You are using to the following servers:
+        You are using the following servers:
         <ul className="list-inside list-disc">
           <li>
             API:{" "}
