@@ -82,7 +82,12 @@ export const createChatsSlice: Slice<ChatsSlice> = (set, get) => {
       });
     },
     loadChat: async (chat: string) => {
-      if (chat in get().chats || loadingChats.has(chat)) {
+      if (
+        chat in get().chats ||
+        loadingChats.has(chat) ||
+        chat === "home" ||
+        chat === "livechat"
+      ) {
         return;
       }
       loadingChats.add(chat);
@@ -111,14 +116,11 @@ export const createChatsSlice: Slice<ChatsSlice> = (set, get) => {
       try {
         response = CHAT_SCHEMA.parse(
           await (
-            await fetch(
-              `${api}/users/${encodeURIComponent(username)}/dm`,
-              {
-                headers: state.credentials
-                  ? { Token: state.credentials.token }
-                  : {},
-              },
-            )
+            await fetch(`${api}/users/${encodeURIComponent(username)}/dm`, {
+              headers: state.credentials
+                ? { Token: state.credentials.token }
+                : {},
+            })
           ).json(),
         );
       } catch (e) {

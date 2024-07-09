@@ -55,7 +55,6 @@ const StoredAccount = (props: StoredAccountProps) => {
         onClick={() =>
           logIn(props.username, props.token, {
             signUp: false,
-            keepLoggedIn: true,
             storeAccount: true,
           })
         }

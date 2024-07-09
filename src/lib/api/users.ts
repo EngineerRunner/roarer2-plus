@@ -22,13 +22,10 @@ export const USER_SCHEMA = z.object({
 export type User = z.infer<typeof USER_SCHEMA>;
 
 const UPDATE_USER_SCHEMA = z.object({
-  cmd: z.literal("direct"),
-  val: z.object({
-    mode: z.literal("update_profile"),
-    payload: USER_SCHEMA.omit({ _id: true })
-      .partial()
-      .and(z.object({ _id: z.string() })),
-  }),
+  cmd: z.literal("update_profile"),
+  val: USER_SCHEMA.omit({ _id: true })
+    .partial()
+    .and(z.object({ _id: z.string() })),
 });
 
 export type UsersSlice = {
@@ -43,13 +40,13 @@ export const createUsersSlice: Slice<UsersSlice> = (set, get) => {
       if (!parsed.success) {
         return;
       }
-      const username = parsed.data.val.payload._id;
+      const username = parsed.data.val._id;
       const user = get().users[username];
       if (!user || user.error) {
         return;
       }
       set((draft) => {
-        draft.users[username] = { ...user, ...parsed.data.val.payload };
+        draft.users[username] = { ...user, ...parsed.data.val };
       });
     });
   });

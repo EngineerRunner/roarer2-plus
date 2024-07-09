@@ -24,7 +24,9 @@ export const Chat = (props: ChatProps) => {
       state.loadMore,
     ]),
   );
-  loadChat(props.chat);
+  if (props.chat !== "home" && props.chat !== "lievchat") {
+    loadChat(props.chat);
+  }
   loadChatPosts(props.chat);
 
   const setReplyFromPost = useCallback(
@@ -59,17 +61,19 @@ export const Chat = (props: ChatProps) => {
     <div className="flex flex-col gap-2">
       {props.chat === "home" ? undefined : (
         <p className="font-bold">
-          {chat
-            ? chat.error
-              ? `Failed getting chat. Message: ${chat.message}`
-              : chat.deleted
-                ? ""
-                : chat.nickname ??
-                  "@" +
-                    chat.members.find(
-                      (member) => member !== credentials?.username,
-                    )
-            : "Loading chat name..."}
+          {props.chat === "livechat"
+            ? "Livechat"
+            : chat
+              ? chat.error
+                ? `Failed getting chat. Message: ${chat.message}`
+                : chat.deleted
+                  ? ""
+                  : chat.nickname ??
+                    "@" +
+                      chat.members.find(
+                        (member) => member !== credentials?.username,
+                      )
+              : "Loading chat name..."}
         </p>
       )}
       <EnterPost chat={props.chat} replies={replies} setReplies={setReplies} />

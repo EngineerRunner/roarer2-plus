@@ -1,27 +1,18 @@
 import { z } from "zod";
 import { Slice } from ".";
-import { getCloudlink } from "./cloudlink";
 import { USER_SCHEMA } from "./users";
+import { getCloudlink, initCloudlink } from "./cloudlink";
+import { request } from "./utils";
+import { api } from "../servers";
 
-const AUTH_RESPONSE = z
-  .object({
-    cmd: z.literal("direct"),
-    listener: z.literal("loginRequest"),
-    val: z.object({
-      mode: z.literal("auth"),
-      payload: z.object({
-        account: USER_SCHEMA,
-        token: z.string(),
-      }),
-    }),
-  })
-  .or(
-    z.object({
-      cmd: z.literal("statuscode"),
-      listener: z.literal("loginRequest"),
-      val: z.string(),
-    }),
-  );
+const AUTH_RESPONSE = z.object({
+  account: USER_SCHEMA,
+  token: z.string(),
+});
+const AUTH_CL_RESPOSNE = z.object({
+  cmd: z.literal("auth"),
+  val: AUTH_RESPONSE,
+});
 
 const STORED_ACCOUNTS_SCHEMA = z.record(z.string(), z.string());
 
@@ -49,7 +40,10 @@ export type AuthSlice = {
   logIn: (
     username: string,
     password: string,
-    options: { signUp: boolean; keepLoggedIn: boolean; storeAccount: boolean },
+    options: { storeAccount: boolean } & (
+      | { signUp: false }
+      | { signUp: true; captcha: string }
+    ),
   ) => Promise<{ error: true; message: string } | { error: false }>;
   signOut: () => void;
 };
@@ -60,71 +54,60 @@ export const createAuthSlice: Slice<AuthSlice> = (set, get) => {
   const storedAccounts = parsedStoredAccounts.error
     ? {}
     : parsedStoredAccounts.accounts;
+  initCloudlink(localStorage.getItem(TOKEN_STORAGE));
+  getCloudlink().then((cloudlink) => {
+    cloudlink.on("packet", (packet: unknown) => {
+      const parsed = AUTH_CL_RESPOSNE.safeParse(packet);
+      if (!parsed.success) {
+        return;
+      }
+      localStorage.setItem(TOKEN_STORAGE, parsed.data.val.token);
+      set((draft) => {
+        draft.credentials = {
+          username: parsed.data.val.account._id,
+          token: parsed.data.val.token,
+        };
+        const home = draft.chatPosts.home;
+        if (!home || home.error) {
+          return;
+        }
+        home.stopLoadingMore = false;
+      });
+    });
+  });
   return {
     credentials: null,
     storedAccounts,
-    logIn: (username, password, options) => {
-      return new Promise((resolve) => {
-        const state = get();
-        if (state.credentials) {
-          if (options.keepLoggedIn) {
-            localStorage.setItem(USERNAME_STORAGE, username);
-            localStorage.setItem(TOKEN_STORAGE, password);
-            location.reload();
-          } else {
-            throw new Error(
-              "logIn called while already logged in without keepLoggedIn",
-            );
-          }
-          return;
-        }
-        getCloudlink().then((cloudlink) => {
-          cloudlink.on("packet", (packet: unknown) => {
-            const parsed = AUTH_RESPONSE.safeParse(packet);
-            if (!parsed.success) {
-              return;
-            }
-            if (parsed.data.cmd === "statuscode") {
-              if (parsed.data.val === "I:100 | OK") {
-                return;
-              }
-              resolve({ error: true, message: parsed.data.val });
-              return;
-            }
-            const token = parsed.data.val.payload.token;
-            set((draft) => {
-              draft.credentials = { username, token };
-              const home = draft.chatPosts["home"];
-              if (!home || home.error) {
-                return;
-              }
-              // you are not able to access more home posts when logged out.
-              // if the fetch request completed before having logged in, this
-              // makes loading more possible
-              home.stopLoadingMore = false;
-            });
-            if (options.keepLoggedIn) {
-              localStorage.setItem(USERNAME_STORAGE, username);
-              localStorage.setItem(TOKEN_STORAGE, token);
-            }
-            const state = get();
-            if (options.storeAccount && options.keepLoggedIn) {
-              state.storeAccount(username, token);
-            }
-            state.addUser(parsed.data.val.payload.account);
-            state.loadChats();
-            resolve({ error: false });
-          });
-          cloudlink.send({
-            cmd: options.signUp ? "gen_account" : "authpswd",
-            val: {
-              username,
-              pswd: password,
-            },
-            listener: "loginRequest",
-          });
-        });
-      });
+    logIn: async (username, password, options) => {
+      const state = get();
+      if (state.credentials) {
+        localStorage.setItem(USERNAME_STORAGE, username);
+        localStorage.setItem(TOKEN_STORAGE, password);
+        location.reload();
+      }
+      const response = await request(
+        fetch(`${api}/auth/${options.signUp ? "register" : "login"}`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            username,
+            password,
+            ...(options.signUp ? { captcha: options.captcha } : {}),
+          }),
+        }),
+        AUTH_RESPONSE,
+      );
+      if (response.error) {
+        return response;
+      }
+      const token = response.response.token;
+      localStorage.setItem(USERNAME_STORAGE, username);
+      localStorage.setItem(TOKEN_STORAGE, token);
+      if (options.storeAccount) {
+        state.storeAccount(username, token);
+      }
+      location.reload();
+      return { error: false };
     },
     storeAccount: (username, token) => {
       set((state) => {

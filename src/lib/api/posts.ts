@@ -34,25 +34,21 @@ export const POST_SCHEMA = z.object({
 });
 
 const POST_DELETE_PACKET_SCHEMA = z.object({
-  cmd: z.literal("direct"),
+  cmd: z.literal("delete_post"),
   val: z.object({
-    mode: z.literal("delete"),
-    id: z.string(),
+    post_id: z.string(),
   }),
 });
 const POST_UPDATE_PACKET_SCHEMA = z.object({
-  cmd: z.literal("direct"),
-  val: z.object({
-    mode: z.literal("update_post"),
-    payload: POST_SCHEMA,
-  }),
+  cmd: z.literal("update_post"),
+  val: POST_SCHEMA,
 });
 const MORE_POSTS_SCHEMA = z.object({
   autoget: POST_SCHEMA.array(),
   pages: z.number(),
 });
 const POST_PACKET_SCHEMA = z.object({
-  cmd: z.literal("direct"),
+  cmd: z.literal("post"),
   val: POST_SCHEMA,
 });
 
@@ -94,7 +90,7 @@ export type PostsSlice = {
 };
 export const createPostsSlice: Slice<PostsSlice> = (set, get) => {
   getCloudlink().then((cloudlink) => {
-    cloudlink.on("direct", async (packet: unknown) => {
+    cloudlink.on("packet", async (packet: unknown) => {
       const parsed = POST_PACKET_SCHEMA.safeParse(packet);
       if (!parsed.success) {
         return;
@@ -145,23 +141,26 @@ export const createPostsSlice: Slice<PostsSlice> = (set, get) => {
         }
       });
     });
-    cloudlink.on("direct", (packet: unknown) => {
+    cloudlink.on("packet", (packet: unknown) => {
       const parsed = POST_UPDATE_PACKET_SCHEMA.safeParse(packet);
       if (!parsed.success) {
         return;
       }
-      const post = parsed.data.val.payload;
+      const post = parsed.data.val;
       set((draft) => {
         draft.posts[post.post_id] = { ...post, error: false };
       });
     });
-    cloudlink.on("direct", (packet: unknown) => {
+    cloudlink.on("packet", (packet: unknown) => {
       const parsed = POST_DELETE_PACKET_SCHEMA.safeParse(packet);
       if (!parsed.success) {
         return;
       }
       set((draft) => {
-        draft.posts[parsed.data.val.id] = { isDeleted: true, error: false };
+        draft.posts[parsed.data.val.post_id] = {
+          isDeleted: true,
+          error: false,
+        };
       });
     });
   });
@@ -212,11 +211,13 @@ export const createPostsSlice: Slice<PostsSlice> = (set, get) => {
         }),
         POST_SCHEMA,
       );
-      set((draft) => {
-        draft.posts[post] = response.error
-          ? response
-          : { error: false, ...response.response };
-      });
+      if (response.error) {
+        set((draft) => {
+          draft.posts[post] = response;
+        });
+      } else {
+        state.addPost(response.response);
+      }
       loadingPosts.delete(post);
     },
     loadMore: async (id: string) => {
@@ -226,7 +227,12 @@ export const createPostsSlice: Slice<PostsSlice> = (set, get) => {
         return { error: false };
       }
       loadingChats.add(id);
-      const response = await state.loadPosts(id, posts?.posts?.length ?? 0);
+      const response = await state.loadPosts(
+        id,
+        posts?.posts?.filter(
+          (post) => !state.posts[post]?.error && !state.posts[post]?.isDeleted,
+        )?.length ?? 0,
+      );
       if (response.error) {
         return response;
       }
@@ -269,20 +275,18 @@ export const createPostsSlice: Slice<PostsSlice> = (set, get) => {
       if (response.error) {
         return response;
       }
-      const posts = response.response.autoget.slice(0, remove);
+      const posts = response.response.autoget.slice(remove);
       posts.forEach((post) => {
         state.addPost(post);
       });
-      const newCredentials = get().credentials;
+      const newState = get();
       return {
         error: false,
         posts: posts.map((post) => post.post_id),
-        // you are not able to access more home posts when logged out.
-        // if the fetch request completed after having logged in, this
-        // makes loading more possible
         stop:
-          (newCredentials && id === "home" && current === 0) ||
-          page === response.response.pages,
+          newState.credentials && id === "home"
+            ? false
+            : page === response.response.pages,
       };
     },
     post: async (content, chat, attachments) => {

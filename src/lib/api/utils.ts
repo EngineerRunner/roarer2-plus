@@ -12,7 +12,7 @@ export const orError = <TSchema extends ZodSchema>(schema: TSchema) => {
 const PER_PAGE = 25;
 export const loadMore = (amount: number) => {
   const page = Math.floor(amount / PER_PAGE) + 1;
-  const remove = PER_PAGE - (amount % PER_PAGE);
+  const remove = amount % PER_PAGE;
   return { page, remove };
 };
 

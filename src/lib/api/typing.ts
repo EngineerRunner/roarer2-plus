@@ -4,11 +4,10 @@ import { getCloudlink } from "./cloudlink";
 import { api } from "../servers";
 
 const TYPING_SCHEMA = z.object({
-  cmd: z.literal("direct"),
+  cmd: z.literal("typing"),
   val: z.object({
-    chatid: z.string(),
-    u: z.string(),
-    state: z.literal(101).or(z.literal(100)),
+    chat_id: z.string(),
+    username: z.string(),
   }),
 });
 
@@ -25,9 +24,8 @@ export const createTypingSlice: Slice<TypingSlice> = (set, get) => {
       if (!parsed.success) {
         return;
       }
-      const id =
-        parsed.data.val.chatid === "livechat" ? "home" : parsed.data.val.chatid;
-      const user = parsed.data.val.u;
+      const id = parsed.data.val.chat_id;
+      const user = parsed.data.val.username;
       set((draft) => {
         if (draft.typingUsers[id]?.includes(user)) {
           return;
@@ -56,13 +54,10 @@ export const createTypingSlice: Slice<TypingSlice> = (set, get) => {
         return;
       }
       lastSentIndicator = Date.now();
-      fetch(
-        `${api}/${chat === "home" ? "home" : `chats/${chat}`}/typing`,
-        {
-          method: "POST",
-          headers: state.credentials ? { Token: state.credentials.token } : {},
-        },
-      );
+      fetch(`${api}/${chat === "home" ? "home" : `chats/${chat}`}/typing`, {
+        method: "POST",
+        headers: state.credentials ? { Token: state.credentials.token } : {},
+      });
       lastSentIndicator = Date.now();
     },
   };

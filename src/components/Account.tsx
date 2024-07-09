@@ -2,6 +2,7 @@ import { FormEvent, useState } from "react";
 import * as Popover from "@radix-ui/react-popover";
 import { ChevronDown } from "lucide-react";
 import { Button } from "./Button";
+import { isCaptcha, Captcha } from "./Captcha";
 import { Checkbox } from "./Checkbox";
 import { Input } from "./Input";
 import { ProfilePicture } from "./ProfilePicture";
@@ -19,25 +20,27 @@ const SignInButton = () => {
   const [mode, setMode] = useState<"sign in" | "sign up">("sign in");
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const [keepLoggedIn, setKeepLoggedIn] = useState(true);
   const [storeAccount, setStoreAccount] = useState(true);
   const [confirmPassword, setConfirmPassword] = useState("");
   const [tosAgreed, setTosAgreed] = useState(false);
+  const [captcha, setCaptcha] = useState<string>();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string>();
   const logIn = useAPI((store) => store.logIn);
 
   const canLogIn = username && password;
-  const canSignUp = canLogIn && confirmPassword === password && tosAgreed;
+  const canSignUp =
+    canLogIn && confirmPassword === password && tosAgreed && captcha;
   const canSubmit = mode === "sign in" ? canLogIn : canSignUp;
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setLoading(true);
     const loginResult = await logIn(username, password, {
-      signUp: mode === "sign up",
-      keepLoggedIn,
       storeAccount,
+      ...(mode === "sign up"
+        ? { signUp: true, captcha: captcha ?? "" }
+        : { signUp: false }),
     });
     if (loginResult.error) {
       setError(loginResult.message);
@@ -52,7 +55,16 @@ const SignInButton = () => {
       </Popover.Trigger>
       <Popover.Anchor />
       <Popover.Portal>
-        <Popover.Content asChild align="end" sideOffset={4}>
+        <Popover.Content
+          asChild
+          align="end"
+          sideOffset={4}
+          onFocusOutside={(e) => {
+            if (isCaptcha(e.target as HTMLElement)) {
+              e.preventDefault();
+            }
+          }}
+        >
           <form
             className="z-[--z-above-sidebar] flex flex-col gap-2 rounded-lg border border-gray-200 bg-white px-2 py-1 dark:border-gray-800 dark:bg-gray-950"
             onSubmit={handleSubmit}
@@ -84,15 +96,7 @@ const SignInButton = () => {
               />
             ) : undefined}
             <label className="flex items-center gap-2">
-              <Checkbox checked={keepLoggedIn} onInput={setKeepLoggedIn} />
-              <span>Keep me logged in</span>
-            </label>
-            <label className="flex items-center gap-2">
-              <Checkbox
-                checked={keepLoggedIn ? storeAccount : false}
-                onInput={setStoreAccount}
-                disabled={!keepLoggedIn}
-              />
+              <Checkbox checked={storeAccount} onInput={setStoreAccount} />
               <span>Store account</span>
             </label>
             {mode === "sign up" ? (
@@ -110,6 +114,12 @@ const SignInButton = () => {
                   .
                 </span>
               </label>
+            ) : undefined}
+            {mode === "sign up" ? (
+              <Captcha
+                onVerify={setCaptcha}
+                onExpire={() => setCaptcha(undefined)}
+              />
             ) : undefined}
             {error ? <div className="text-red-500">{error}</div> : null}
             <div>

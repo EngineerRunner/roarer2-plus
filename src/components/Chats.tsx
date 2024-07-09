@@ -7,9 +7,17 @@ export type ChatsProps = {
   currentChat: string;
 };
 export const Chats = (props: ChatsProps) => {
-  const [chats, userChats, credentials] = useAPI(
-    useShallow((store) => [store.chats, store.userChats, store.credentials]),
+  const [chats, userChats, credentials, loadChats] = useAPI(
+    useShallow((store) => [
+      store.chats,
+      store.userChats,
+      store.credentials,
+      store.loadChats,
+    ]),
   );
+  if (credentials) {
+    loadChats();
+  }
 
   if (!credentials) {
     return (
@@ -66,7 +74,7 @@ export const Chats = (props: ChatsProps) => {
         onClick={props.onChatClick}
         current={props.currentChat === "home"}
       />
-            <Chat
+      <Chat
         chat="livechat"
         onClick={props.onChatClick}
         current={props.currentChat === "livechat"}

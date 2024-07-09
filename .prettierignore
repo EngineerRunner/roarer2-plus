@@ -1,0 +1,10 @@
+pnpm-lock.yaml
+LICENSE
+*.ttf
+*.svg
+*.png
+*.txt
+node_modules
+.gitignore
+.prettierignore
+.prettierrc

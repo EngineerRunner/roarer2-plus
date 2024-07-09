@@ -1,11 +1,6 @@
 import { create, StateCreator } from "zustand";
 import { immer } from "zustand/middleware/immer";
-import {
-  createAuthSlice,
-  AuthSlice,
-  USERNAME_STORAGE,
-  TOKEN_STORAGE,
-} from "./auth";
+import { createAuthSlice, AuthSlice } from "./auth";
 import { createChatsSlice, ChatsSlice } from "./chats";
 import { createPostsSlice, PostsSlice } from "./posts";
 import { createRoarerSlice, RoarerSlice, NOTIFICATION_STORAGE } from "./roarer";
@@ -36,15 +31,6 @@ export const useAPI = create<Store>()(
   }),
 );
 const state = useAPI.getState();
-const storedUsername = localStorage.getItem(USERNAME_STORAGE);
-const storedToken = localStorage.getItem(TOKEN_STORAGE);
-if (storedUsername && storedToken) {
-  state.logIn(storedUsername, storedToken, {
-    keepLoggedIn: false,
-    signUp: false,
-    storeAccount: false,
-  });
-}
 localStorage.setItem(NOTIFICATION_STORAGE, state.notificationState);
 useAPI.subscribe((state, prevState) => {
   if (state.notificationState === prevState.notificationState) {
