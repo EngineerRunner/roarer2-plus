@@ -1,6 +1,8 @@
 import { twMerge } from "tailwind-merge";
 import { useShallow } from "zustand/react/shallow";
 import { useAPI } from "../lib/api";
+import { ProfilePicture, ChatProfilePicture } from "./ProfilePicture";
+import { Chat as APIChat } from "../lib/api/chats";
 
 export type ChatsProps = {
   onChatClick: (chat: string) => void;
@@ -132,11 +134,13 @@ const Chat = (props: ChatProps) => {
   }
 
   const isDM = chat !== "home" && chat !== "livechat" && !chat.owner;
+  const dmRecipient = (chat: APIChat) =>
+    chat.members.find((member) => member !== credentials?.username);
 
   return (
     <button
       className={twMerge(
-        "flex w-full max-w-full items-center px-2 py-1 text-left",
+        "flex w-full max-w-full items-center gap-2 px-2 py-1 text-left",
         props.current
           ? "bg-gray-100 dark:bg-gray-900"
           : "bg-white hover:bg-gray-100 dark:bg-gray-950 dark:hover:bg-gray-900",
@@ -146,10 +150,15 @@ const Chat = (props: ChatProps) => {
         props.onClick(props.chat);
       }}
     >
+      {isDM ? (
+        <ProfilePicture username={dmRecipient(chat)} />
+      ) : chat !== "home" && chat !== "livechat" ? (
+        <ChatProfilePicture chat={props.chat} />
+      ) : undefined}
       <div className="grow">
         <div className="font-bold">
           {isDM
-            ? `@${chat.members.find((member) => member !== credentials?.username)}`
+            ? `@${dmRecipient(chat)}`
             : chat === "home"
               ? "Home"
               : chat === "livechat"

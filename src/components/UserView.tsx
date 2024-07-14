@@ -1,6 +1,7 @@
 import { twMerge } from "tailwind-merge";
 import { MouseEventHandler, forwardRef } from "react";
 import { ProfilePicture } from "./ProfilePicture";
+import { useAPI } from "../lib/api";
 
 export type UserViewProps = {
   username: string;
@@ -9,9 +10,14 @@ export type UserViewProps = {
   disabled?: boolean;
   secondary?: boolean;
   className?: string;
+  force?: boolean;
 };
 export const UserView = forwardRef<HTMLButtonElement, UserViewProps>(
   (props: UserViewProps, ref) => {
+    const loadUser = useAPI((state) => state.loadUser);
+    if (props.force) {
+      loadUser(props.username, { force: true });
+    }
     return (
       <button
         ref={ref}

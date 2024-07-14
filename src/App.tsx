@@ -87,6 +87,7 @@ export const App = () => {
   );
 };
 
+// "roarer3" was an accident, but I can't really fix it now
 const DARK_MODE_STORAGE = "roarer3:dark";
 const DarkMode = () => {
   const [darkMode, setDarkMode] = useState(

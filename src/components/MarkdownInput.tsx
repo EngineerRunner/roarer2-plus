@@ -4,9 +4,8 @@ import { CirclePlus, SendHorizontal, Smile, X } from "lucide-react";
 import { twMerge } from "tailwind-merge";
 import { useAPI } from "../lib/api";
 import {
-  discordEmoji,
-  syntaxForDiscordEmoji,
-  urlFromDiscordEmoji,
+  userSyntaxForDiscordEmoji,
+  userToRegularDiscordEmojiSyntax,
   DiscordEmoji,
 } from "../lib/discordEmoji";
 import { getImageSize } from "../lib/imageSize";
@@ -17,6 +16,7 @@ import { Textarea } from "./Input";
 import { AttachmentView, Post } from "./Post";
 import { Attachment } from "../lib/api/posts";
 import { Checkbox } from "./Checkbox";
+import { EmojiPicker } from "./EmojiPicker";
 import { Markdown } from "./Markdown";
 
 export type Reply = {
@@ -72,7 +72,7 @@ export const MarkdownInput = (props: MarkdownInputProps) => {
           (reply) =>
             `@${reply.username} ${trimmedPost(reply.content)} (${reply.id})\n`,
         )
-        .join("") + postContent,
+        .join("") + userToRegularDiscordEmojiSyntax(postContent),
       attachments.map((attachment) => attachment.id),
     );
     setState("writing");
@@ -88,8 +88,16 @@ export const MarkdownInput = (props: MarkdownInputProps) => {
     }
   };
 
-  const handleEmoji = (emoji: DiscordEmoji) => {
-    setPostContent((p) => p + syntaxForDiscordEmoji(emoji));
+  const handleEmoji = (emoji: DiscordEmoji | string) => {
+    const stringEmoji =
+      typeof emoji === "string" ? emoji : userSyntaxForDiscordEmoji(emoji);
+    setPostContent((p) =>
+      textArea.current
+        ? p.slice(0, textArea.current.selectionStart) +
+          stringEmoji +
+          p.slice(textArea.current.selectionEnd)
+        : p + stringEmoji,
+    );
   };
 
   const showAttachments = !props.noAttachments;
@@ -182,22 +190,8 @@ export const MarkdownInput = (props: MarkdownInputProps) => {
               </Popover.Trigger>
               <Popover.Anchor />
               <Popover.Portal>
-                <Popover.Content asChild align="end" sideOffset={4}>
-                  <div className="z-[--z-above-sidebar] flex w-[267px] flex-row flex-wrap gap-2 rounded-lg border border-gray-200 bg-white px-2 py-1 dark:border-gray-800 dark:bg-gray-950">
-                    {discordEmoji.map((emoji) => (
-                      <button
-                        key={emoji.id}
-                        className="h-6 w-6"
-                        title={emoji.name}
-                        onClick={() => handleEmoji(emoji)}
-                      >
-                        <img
-                          src={urlFromDiscordEmoji(emoji)}
-                          alt={emoji.name}
-                        />
-                      </button>
-                    ))}
-                  </div>
+                <Popover.Content align="end" sideOffset={4}>
+                  <EmojiPicker onEmoji={handleEmoji} />
                 </Popover.Content>
               </Popover.Portal>
             </Popover.Root>
@@ -261,7 +255,9 @@ export const MarkdownInput = (props: MarkdownInputProps) => {
           </div>
         }
         replaceTextarea={
-          preview ? <Markdown>{postContent}</Markdown> : undefined
+          preview ? (
+            <Markdown>{userToRegularDiscordEmojiSyntax(postContent)}</Markdown>
+          ) : undefined
         }
         onPaste={(e) => {
           if (showAttachments && e.clipboardData.files.length) {

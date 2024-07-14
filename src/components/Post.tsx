@@ -13,6 +13,7 @@ import { Popup } from "./Popup";
 import { User } from "./User";
 import { Menu, MenuItem } from "./Menu";
 import { Markdown } from "./Markdown";
+import { Mention } from "./Mention";
 import { MarkdownInput } from "./MarkdownInput";
 import { ProfilePicture, ProfilePictureBase } from "./ProfilePicture";
 import { twMerge } from "tailwind-merge";
@@ -126,40 +127,52 @@ const PostBase = memo((props: PostBaseProps) => {
       <SpeechBubble
         reply={props.reply}
         transparent={!!props.post.optimistic}
+        arrow={false}
         speaker={
-          <User username={props.post.u}>
-            <button aria-label={props.post.u}>
-              <ProfilePicture
-                size={props.reply ? "h-7 min-h-7 w-7 min-w-7" : undefined}
-                username={props.post.u}
-              />
-            </button>
-          </User>
+          props.reply ? undefined : (
+            <User username={props.post.u}>
+              <button aria-label={props.post.u}>
+                <ProfilePicture
+                  size={props.reply ? "h-7 min-h-7 w-7 min-w-7" : undefined}
+                  username={props.post.u}
+                />
+              </button>
+            </User>
+          )
         }
         bubble={
           <div
             className={twMerge(
               "flex max-w-full",
-              props.reply ? "flex-row items-center gap-2" : "flex-col",
+              props.reply ? "flex-row items-center gap-3" : "flex-col",
             )}
           >
             <div className="flex justify-between">
               <div>
-                <User username={props.post.u}>
-                  <button
-                    className={twMerge(
-                      "text-nowrap text-left font-bold",
-                      props.reply ? "" : "text-sm",
-                    )}
-                  >
-                    {props.post.u}
-                    {props.post.u === "noodles" && !props.reply
-                      ? " 🧀"
-                      : undefined}
-                  </button>
-                </User>
+                {props.reply ? (
+                  <Mention username={props.post.u} />
+                ) : (
+                  <User username={props.post.u}>
+                    <button
+                      className={twMerge(
+                        "text-nowrap text-left font-bold",
+                        props.reply ? "" : "text-sm",
+                      )}
+                    >
+                      {props.post.u}
+                      {props.post.u === "noodles" ? " 🧀" : undefined}
+                    </button>
+                  </User>
+                )}
                 {props.post.bridge && !props.reply ? (
-                  <span className="ml-2 text-xs opacity-70">Bridged</span>
+                  <User username="Discord">
+                    <button className="ml-2 text-xs opacity-70">
+                      Bridged{" "}
+                      <span className="text-[0.6rem]">
+                        (Harmful. Click to learn more)
+                      </span>
+                    </button>
+                  </User>
                 ) : undefined}
               </div>
               {!props.reply && !props.post.optimistic ? (
@@ -286,30 +299,39 @@ type SpeechBubbleProps = {
   speaker: ReactNode;
   bubble: ReactNode;
   transparent?: boolean;
+  arrow?: boolean;
 };
 const SpeechBubble = (props: SpeechBubbleProps) => {
   return (
     <div
-      className={twMerge("flex gap-3", props.transparent ? "opacity-70" : "")}
+      className={twMerge(
+        "flex",
+        props.arrow ?? true ? "gap-3" : "gap-1",
+        props.reply ? "items-center" : "",
+        props.transparent ? "opacity-70" : "",
+      )}
     >
       <div>{props.speaker}</div>
       <div
         className={twMerge(
-          "relative min-w-0 grow break-words rounded-lg rounded-ss-none px-2 py-1",
+          "relative min-w-0 grow break-words rounded-lg px-2 py-1",
           props.reply && props.reply !== "topLevel"
             ? "bg-gray-200 dark:bg-gray-800"
             : "bg-gray-100 dark:bg-gray-900",
+          props.arrow ?? true ? "rounded-ss-none" : "",
         )}
       >
-        <div
-          className={twMerge(
-            "absolute left-[calc(-0.5rem-theme(spacing.2))] top-0 box-content h-0 w-0 border-[length:0.5rem] border-transparent border-r-gray-100 contrast-more:hidden",
-            props.reply && props.reply !== "topLevel"
-              ? "border-r-gray-200 dark:border-r-gray-800"
-              : "border-r-gray-100 dark:border-r-gray-900",
-          )}
-          aria-hidden
-        />
+        {props.arrow ?? true ? (
+          <div
+            className={twMerge(
+              "absolute left-[calc(-0.5rem-theme(spacing.2))] top-0 box-content h-0 w-0 border-[length:0.5rem] border-transparent border-r-gray-100 contrast-more:hidden",
+              props.reply && props.reply !== "topLevel"
+                ? "border-r-gray-200 dark:border-r-gray-800"
+                : "border-r-gray-100 dark:border-r-gray-900",
+            )}
+            aria-hidden
+          />
+        ) : undefined}
         {props.bubble}
       </div>
     </div>

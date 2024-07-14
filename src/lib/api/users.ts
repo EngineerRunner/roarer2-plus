@@ -31,7 +31,7 @@ const UPDATE_USER_SCHEMA = z.object({
 export type UsersSlice = {
   users: Record<string, Errorable<User>>;
   addUser: (user: User) => void;
-  loadUser: (username: string) => Promise<void>;
+  loadUser: (username: string, options?: { force?: boolean }) => Promise<void>;
 };
 export const createUsersSlice: Slice<UsersSlice> = (set, get) => {
   getCloudlink().then((cloudlink) => {
@@ -59,8 +59,14 @@ export const createUsersSlice: Slice<UsersSlice> = (set, get) => {
         state.users[user._id] = { ...user, error: false };
       });
     },
-    loadUser: async (username: string) => {
-      if (username in get().users || loadingUsers.has(username)) {
+    loadUser: async (username: string, options) => {
+      const force = options?.force ?? false;
+      const state = get();
+      if (
+        (username in state.users &&
+          (!state.users[username]?.error || !force)) ||
+        loadingUsers.has(username)
+      ) {
         return;
       }
       loadingUsers.add(username);

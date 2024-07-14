@@ -1,5 +1,4 @@
 import { FormEvent, useState } from "react";
-import * as Popover from "@radix-ui/react-popover";
 import { ChevronDown } from "lucide-react";
 import { Button } from "./Button";
 import { isCaptcha, Captcha } from "./Captcha";
@@ -49,113 +48,103 @@ const SignInButton = () => {
   };
 
   return (
-    <Popover.Root>
-      <Popover.Trigger asChild>
-        <Button>Sign in</Button>
-      </Popover.Trigger>
-      <Popover.Anchor />
-      <Popover.Portal>
-        <Popover.Content
-          asChild
-          align="end"
-          sideOffset={4}
-          onFocusOutside={(e) => {
-            if (isCaptcha(e.target as HTMLElement)) {
-              e.preventDefault();
-            }
-          }}
-        >
-          <form
-            className="z-[--z-above-sidebar] flex flex-col gap-2 rounded-lg border border-gray-200 bg-white px-2 py-1 dark:border-gray-800 dark:bg-gray-950"
-            onSubmit={handleSubmit}
-          >
-            <Input
-              label="Username"
-              placeholder="Username"
-              value={username}
-              type="text"
-              required
-              onInput={(e) => setUsername(e.currentTarget.value)}
-            />
-            <Input
-              label="Password"
-              placeholder="Password"
-              value={password}
-              type="password"
-              required
-              onInput={(e) => setPassword(e.currentTarget.value)}
-            />
-            {mode === "sign up" ? (
-              <Input
-                label="Confirm password"
-                placeholder="Confirm password"
-                value={confirmPassword}
-                type="password"
-                required
-                onInput={(e) => setConfirmPassword(e.currentTarget.value)}
-              />
-            ) : undefined}
-            <label className="flex items-center gap-2">
-              <Checkbox checked={storeAccount} onInput={setStoreAccount} />
-              <span>Store account</span>
-            </label>
-            {mode === "sign up" ? (
-              <label className="flex items-center gap-2">
-                <Checkbox checked={tosAgreed} onInput={setTosAgreed} />
-                <span>
-                  I agree to Meower's{" "}
-                  <a
-                    className="font-bold text-lime-600"
-                    target="_blank"
-                    href="https://meower.org/legal"
-                  >
-                    terms
-                  </a>
-                  .
-                </span>
-              </label>
-            ) : undefined}
-            {mode === "sign up" ? (
-              <Captcha
-                onVerify={setCaptcha}
-                onExpire={() => setCaptcha(undefined)}
-              />
-            ) : undefined}
-            {error ? <div className="text-red-500">{error}</div> : null}
-            <div>
-              <div className="flex gap-2">
-                <Button
-                  type="submit"
-                  className="grow"
-                  disabled={!canSubmit || loading}
-                >
-                  {mode === "sign in" ? "Sign in" : "Sign up"}
-                </Button>
-                <Button
-                  type="button"
-                  secondary
-                  onClick={() =>
-                    setMode(mode === "sign in" ? "sign up" : "sign in")
-                  }
-                  disabled={loading}
-                >
-                  {mode === "sign in" ? "Sign up" : "Sign in"}
-                </Button>
-              </div>
-              <div className="text-right">
-                ...or use a{" "}
-                <StoredAccounts>
-                  <button className="inline font-bold text-lime-600">
-                    stored account
-                  </button>
-                </StoredAccounts>
-                .
-              </div>
-            </div>
-          </form>
-        </Popover.Content>
-      </Popover.Portal>
-    </Popover.Root>
+    <Menu
+      trigger={<Button>Sign in</Button>}
+      contextMenu={false}
+      contentProps={{
+        onFocusOutside: (e) => {
+          if (isCaptcha(e.target as HTMLElement)) {
+            e.preventDefault();
+          }
+        },
+      }}
+    >
+      <form className="flex flex-col gap-2" onSubmit={handleSubmit}>
+        <Input
+          label="Username"
+          placeholder="Username"
+          value={username}
+          type="text"
+          required
+          onInput={(e) => setUsername(e.currentTarget.value)}
+        />
+        <Input
+          label="Password"
+          placeholder="Password"
+          value={password}
+          type="password"
+          required
+          onInput={(e) => setPassword(e.currentTarget.value)}
+        />
+        {mode === "sign up" ? (
+          <Input
+            label="Confirm password"
+            placeholder="Confirm password"
+            value={confirmPassword}
+            type="password"
+            required
+            onInput={(e) => setConfirmPassword(e.currentTarget.value)}
+          />
+        ) : undefined}
+        <label className="flex items-center gap-2">
+          <Checkbox checked={storeAccount} onInput={setStoreAccount} />
+          <span>Store account</span>
+        </label>
+        {mode === "sign up" ? (
+          <label className="flex items-center gap-2">
+            <Checkbox checked={tosAgreed} onInput={setTosAgreed} />
+            <span>
+              I agree to Meower's{" "}
+              <a
+                className="font-bold text-lime-600"
+                target="_blank"
+                href="https://meower.org/legal"
+              >
+                terms
+              </a>
+              .
+            </span>
+          </label>
+        ) : undefined}
+        {mode === "sign up" ? (
+          <Captcha
+            onVerify={setCaptcha}
+            onExpire={() => setCaptcha(undefined)}
+          />
+        ) : undefined}
+        {error ? <div className="text-red-500">{error}</div> : null}
+        <div>
+          <div className="flex gap-2">
+            <Button
+              type="submit"
+              className="grow"
+              disabled={!canSubmit || loading}
+            >
+              {mode === "sign in" ? "Sign in" : "Sign up"}
+            </Button>
+            <Button
+              type="button"
+              secondary
+              onClick={() =>
+                setMode(mode === "sign in" ? "sign up" : "sign in")
+              }
+              disabled={loading}
+            >
+              {mode === "sign in" ? "Sign up" : "Sign in"}
+            </Button>
+          </div>
+          <div className="text-right">
+            ...or use a{" "}
+            <StoredAccounts>
+              <button className="inline font-bold text-lime-600">
+                stored account
+              </button>
+            </StoredAccounts>
+            .
+          </div>
+        </div>
+      </form>
+    </Menu>
   );
 };
 

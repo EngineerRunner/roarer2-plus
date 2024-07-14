@@ -32,6 +32,7 @@ const UlistUser = (props: UlistUserProps) => {
       <UserView
         username={props.username}
         text={props.you ? "You" : undefined}
+        force
       />
     </User>
   );

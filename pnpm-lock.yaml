@@ -42,6 +42,9 @@ importers:
       react-dom:
         specifier: ^18.3.1
         version: 18.3.1(react@18.3.1)
+      scratchblocks:
+        specifier: ^3.6.4
+        version: 3.6.4
       shiki:
         specifier: ^1.10.3
         version: 1.10.3
@@ -1430,6 +1433,9 @@ packages:
   scheduler@0.23.2:
     resolution: {integrity: sha512-UOShsPwz7NrMUqhR6t0hWjFduvOzbtv7toDH1/hIrfRNIDBnnBWd0CwJTGvTpngVlmwGCdP9/Zl/tVrDqcuYzQ==}
 
+  scratchblocks@3.6.4:
+    resolution: {integrity: sha512-2qesRNViXrceNG7OvMim3D2rBQ2qDjH24VwRVijef1XQlLmEKNiMItx/3dQpdybnUDXTnfZyRU41vc/if+Au7w==}
+
   semver@6.3.1:
     resolution: {integrity: sha512-BR7VvDCVHO+q2xBEWskxS6DJE1qRnb7DxzUrogb71CWoSficBxYsiAGd+Kl0mmq/MprG9yArRkyrQxTO6XjMzA==}
     hasBin: true
@@ -2808,6 +2814,8 @@ snapshots:
   scheduler@0.23.2:
     dependencies:
       loose-envify: 1.4.0
+
+  scratchblocks@3.6.4: {}
 
   semver@6.3.1: {}
 

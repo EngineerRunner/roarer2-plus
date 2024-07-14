@@ -8,3 +8,4 @@ node_modules
 .gitignore
 .prettierignore
 .prettierrc
+src/lib/emoji/data/data.json

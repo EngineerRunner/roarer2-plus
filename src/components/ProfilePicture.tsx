@@ -40,6 +40,40 @@ export const ProfilePicture = (props: ProfilePictureProps) => {
   );
 };
 
+export type ChatProfilePictureProps = {
+  chat: string | undefined;
+  className?: string;
+  size?: string;
+};
+export const ChatProfilePicture = (props: ChatProfilePictureProps) => {
+  const [chat, loadChat] = useAPI(
+    useShallow((state) => [
+      props.chat ? state.chats[props.chat] : undefined,
+      state.loadChat,
+    ]),
+  );
+  if (props.chat) {
+    loadChat(props.chat);
+  }
+
+  return (
+    <ProfilePictureBase
+      pfp={
+        chat && !chat.error && "icon" in chat && "icon_color" in chat
+          ? {
+              avatar: chat.icon ?? "",
+              avatar_color: chat.icon_color ?? "",
+              pfp_data: null,
+            }
+          : NO_PROFILE_PICTURE
+      }
+      className={props.className}
+      size={props.size}
+      placeholder={22}
+    />
+  );
+};
+
 export type ProfilePictureBaseProps = {
   pfp: {
     avatar: string;
@@ -49,6 +83,7 @@ export type ProfilePictureBaseProps = {
   className?: string;
   online?: boolean;
   size?: string;
+  placeholder?: number;
 };
 export const ProfilePictureBase = (props: ProfilePictureBaseProps) => {
   return (
@@ -76,7 +111,9 @@ export const ProfilePictureBase = (props: ProfilePictureBaseProps) => {
         src={
           props.pfp.avatar
             ? `${uploads}/icons/${props.pfp.avatar}`
-            : profilePictures.get(props.pfp.pfp_data ?? 500)
+            : profilePictures.get(
+                props.pfp.pfp_data ?? props.placeholder ?? 500,
+              )
         }
         aria-hidden
       />

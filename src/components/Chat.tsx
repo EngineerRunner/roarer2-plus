@@ -74,6 +74,7 @@ export const Chat = (props: ChatProps) => {
                         (member) => member !== credentials?.username,
                       )
               : "Loading chat name..."}
+          <span className="ml-2 text-xs font-medium">({props.chat})</span>
         </p>
       )}
       <EnterPost chat={props.chat} replies={replies} setReplies={setReplies} />

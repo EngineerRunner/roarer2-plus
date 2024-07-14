@@ -22,5 +22,6 @@
     "noUncheckedIndexedAccess": true
   },
   "include": ["src"],
+  "exclude": ["src/lib/emoji/generate"],
   "references": [{ "path": "./tsconfig.node.json" }]
 }

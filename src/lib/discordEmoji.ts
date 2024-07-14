@@ -146,6 +146,15 @@ export const urlFromDiscordEmoji = (emoji: DiscordEmoji) => {
 export const syntaxForDiscordEmoji = (emoji: DiscordEmoji) => {
   return `<${emoji.isGif ? "a" : ""}:${emoji.name}:${emoji.id}>`;
 };
+export const userSyntaxForDiscordEmoji = (emoji: DiscordEmoji) => {
+  return `:${emoji.name}:`;
+};
+export const userToRegularDiscordEmojiSyntax = (string: string) => {
+  return string.replace(/(?<!\<a?):(\w+):/g, (s, name) => {
+    const emoji = discordEmoji.find((emoji) => emoji.name === name);
+    return emoji ? syntaxForDiscordEmoji(emoji) : s;
+  });
+};
 
 export type DiscordEmoji = {
   name: string;

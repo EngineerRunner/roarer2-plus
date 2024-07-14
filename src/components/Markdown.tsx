@@ -2,14 +2,14 @@ import { Fragment, ReactNode, useState } from "react";
 import { twMerge } from "tailwind-merge";
 import Marked from "marked-react";
 import { codeToHtml } from "shiki";
-import { useAPI } from "../lib/api";
 import { urlFromDiscordEmoji } from "../lib/discordEmoji";
 import { hostWhitelist } from "../lib/hostWhitelist";
+import { Mention } from "./Mention";
 import { User } from "./User";
-import { ProfilePicture } from "./ProfilePicture";
+import { Scratchblocks } from "./Scratchblocks";
 
 const TEXT_REGEX =
-  /(?:(?<mention>@[a-zA-Z0-9\-_]+)|(?<emoji>\<(?<emojiAnimated>a?):(?<emojiName>\w+):(?<emojiId>\d+)>)|[^@\<]+|.)/g;
+  /(?:@(?<mention>[a-zA-Z0-9\-_]+)|(?<emoji>\<(?<emojiAnimated>a?):(?<emojiName>\w+):(?<emojiId>\d+)>)|[^@\<]+|.)/g;
 
 const HEADING_TO_SIZE = {
   1: "text-2xl",
@@ -157,7 +157,7 @@ export const Markdown = (mdProps: MarkdownProps) => {
               src={src}
               alt={alt}
               title={title ?? ""}
-              className="inline-block"
+              className="inline-block max-h-40"
               key={getKey()}
             />
           ) : (
@@ -166,29 +166,13 @@ export const Markdown = (mdProps: MarkdownProps) => {
             </a>
           ),
         text: (text) => {
-          const credentials = useAPI((state) => state.credentials);
           const matches = [...(text?.toString() ?? "").matchAll(TEXT_REGEX)];
           return (
             <Fragment key={getKey()}>
               {matches.map((match) => (
                 <Fragment key={getKey()}>
                   {match.groups?.mention ? (
-                    <Link
-                      href={`https://app.meower.org/users/${match[0].slice(1)}`}
-                      orange={match[0].slice(1) === credentials?.username}
-                    >
-                      <div>
-                        <div className="inline-block align-text-top">
-                          <ProfilePicture
-                            username={match[0].slice(1)}
-                            dontShowOnline
-                            size="w-5 h-5 min-w-5 min-h-5"
-                          />
-                        </div>
-                        &nbsp;
-                        <span>{match[0].slice(1)}</span>
-                      </div>
-                    </Link>
+                    <Mention username={match[0].slice(1)} />
                   ) : match.groups?.emoji ? (
                     <img
                       className="inline-block"
@@ -216,7 +200,6 @@ export const Markdown = (mdProps: MarkdownProps) => {
 
 type LinkProps = {
   href: string;
-  orange?: boolean;
   children?: ReactNode;
 };
 const Link = (props: LinkProps) => {
@@ -227,13 +210,7 @@ const Link = (props: LinkProps) => {
     const username = match[1]!;
     return (
       <User username={username} key={getKey()}>
-        <button
-          type="button"
-          className={twMerge(
-            "font-bold",
-            props.orange ? "text-yellow-600" : "text-lime-600",
-          )}
-        >
+        <button type="button" className="font-bold text-lime-600">
           {props.children}
         </button>
       </User>
@@ -258,6 +235,9 @@ type SyntaxHighlightProps = {
 };
 const SyntaxHighlight = (props: SyntaxHighlightProps) => {
   const [syntaxHighlighted, setSyntaxHighlighted] = useState("");
+  if (props.lang === "scratch") {
+    return <Scratchblocks code={props.code ?? ""} inline={props.inline} />;
+  }
   if (props.lang) {
     codeToHtml(props.code ?? "", {
       lang: props.lang,
