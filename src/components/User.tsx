@@ -56,7 +56,7 @@ export const User = (props: UserProps) => {
             <>
               <Markdown>
                 {props.username === "Discord"
-                  ? "This user is used to bridge posts from the official Meower Discord servers and other servers to Meower.\nTherefore, it gives people the opportunity to not use Meower at all while still interacting with its community.\n**This is harmful to Meower.** Features that Meower lacks are compensated for using this feature.\nBecause of this, Meower never gets a chance to improve - as people can just use Discord instead.\nPlease, *do not* use the bridge. This is vital for Meower's existence.\n\n_This message was added by Roarer._"
+                  ? "womp womp, discord is ded <a:hooray:1230023947777609808>"
                   : user.quote ?? ""}
               </Markdown>
               {credentials && credentials.username !== props.username ? (
