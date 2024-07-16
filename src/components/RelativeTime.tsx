@@ -26,8 +26,9 @@ export const RelativeTime = (props: RelativeTimeProps) => {
     }, 1000);
     return () => clearInterval(interval);
   }, []);
+  const dateRepresentation = new Date(props.time * 1000).toString();
 
-  return string;
+  return <span title={dateRepresentation}>{string}</span>;
 };
 
 const formatter = new Intl.RelativeTimeFormat("en", { style: "short" });
