@@ -29,11 +29,10 @@ export const ProfilePicture = (props: ProfilePictureProps) => {
       pfp={user && !user.error ? user : NO_PROFILE_PICTURE}
       className={props.className}
       online={
-        props.dontShowOnline ?? false
-          ? false
-          : props.username
-            ? ulist.includes(props.username)
-            : false
+        props.dontShowOnline ?? false ? false
+        : props.username ?
+          ulist.includes(props.username)
+        : false
       }
       size={props.size}
     />
@@ -59,13 +58,13 @@ export const ChatProfilePicture = (props: ChatProfilePictureProps) => {
   return (
     <ProfilePictureBase
       pfp={
-        chat && !chat.error && "icon" in chat && "icon_color" in chat
-          ? {
-              avatar: chat.icon ?? "",
-              avatar_color: chat.icon_color ?? "",
-              pfp_data: null,
-            }
-          : NO_PROFILE_PICTURE
+        chat && !chat.error && "icon" in chat && "icon_color" in chat ?
+          {
+            avatar: chat.icon ?? "",
+            avatar_color: chat.icon_color ?? "",
+            pfp_data: null,
+          }
+        : NO_PROFILE_PICTURE
       }
       className={props.className}
       size={props.size}
@@ -103,25 +102,23 @@ export const ProfilePictureBase = (props: ProfilePictureBaseProps) => {
           {
             "--border-color": "#" + props.pfp.avatar_color,
             "--border-style":
-              props.pfp.avatar && props.pfp.avatar_color !== "!color"
-                ? "solid"
-                : "none",
+              props.pfp.avatar && props.pfp.avatar_color !== "!color" ?
+                "solid"
+              : "none",
           } as CSSProperties
         }
         src={
-          props.pfp.avatar
-            ? `${uploads}/icons/${props.pfp.avatar}`
-            : profilePictures.get(
-                props.pfp.pfp_data ?? props.placeholder ?? 500,
-              )
+          props.pfp.avatar ?
+            `${uploads}/icons/${props.pfp.avatar}`
+          : profilePictures.get(props.pfp.pfp_data ?? props.placeholder ?? 500)
         }
         aria-hidden
       />
-      {props.online ? (
+      {props.online ?
         <div className="absolute -bottom-1 -right-1 h-4 w-4 rounded-full border border-green-600 bg-green-400 dark:border-green-500 dark:bg-green-600">
           <span className="sr-only">Online</span>
         </div>
-      ) : undefined}
+      : undefined}
     </div>
   );
 };

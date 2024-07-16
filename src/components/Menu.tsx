@@ -50,9 +50,7 @@ export const MenuItem = (props: MenuItemProps) => {
       {props.children}
     </button>
   );
-  return props.dontClose ? (
-    renderedButton
-  ) : (
-    <Popover.Close children={renderedButton} asChild />
-  );
+  return props.dontClose ? renderedButton : (
+      <Popover.Close children={renderedButton} asChild />
+    );
 };

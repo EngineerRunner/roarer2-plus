@@ -10,13 +10,13 @@ export const Ulist = () => {
 
   return (
     <div>
-      {credentials ? (
+      {credentials ?
         <UlistUser username={credentials.username} you />
-      ) : undefined}
+      : undefined}
       {ulist.map((user) =>
-        user !== credentials?.username ? (
+        user !== credentials?.username ?
           <UlistUser key={user} username={user} />
-        ) : undefined,
+        : undefined,
       )}
     </div>
   );

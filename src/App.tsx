@@ -101,7 +101,9 @@ const DarkMode = () => {
 
   return (
     <button type="button" onClick={() => setDarkMode((d) => !d)}>
-      {darkMode ? <Sun /> : <Moon />}
+      {darkMode ?
+        <Sun />
+      : <Moon />}
     </button>
   );
 };
@@ -115,44 +117,46 @@ const NotificationToggle = () => {
     ]),
   );
 
-  return notificationState === "disabled" ? (
-    <button
-      type="button"
-      aria-label="Enable notifications"
-      onClick={enableNotifications}
-    >
-      <BellOff aria-hidden />
-    </button>
-  ) : notificationState === "enabled" ? (
-    <button
-      type="button"
-      aria-label="Disable notifications"
-      onClick={disableNotifications}
-    >
-      <Bell aria-hidden />
-    </button>
-  ) : (
-    <Popup
-      triggerAsChild
-      trigger={
-        <button
-          className="opacity-70"
-          type="button"
-          aria-label="Enable notifications"
-        >
-          <BellOff aria-hidden />
-        </button>
-      }
-    >
-      <div className="flex flex-col items-start gap-2">
-        <p>
-          You have denied Roarer the permission to send notifications. Reenable
-          them in your browser, then try again.
-        </p>
-        <Dialog.Close>
-          <Button>Ok</Button>
-        </Dialog.Close>
-      </div>
-    </Popup>
+  return (
+    notificationState === "disabled" ?
+      <button
+        type="button"
+        aria-label="Enable notifications"
+        onClick={enableNotifications}
+      >
+        <BellOff aria-hidden />
+      </button>
+    : notificationState === "enabled" ?
+      <button
+        type="button"
+        aria-label="Disable notifications"
+        onClick={disableNotifications}
+      >
+        <Bell aria-hidden />
+      </button>
+    : <Popup
+        triggerAsChild
+        trigger={
+          <button
+            className="opacity-70"
+            type="button"
+            aria-label="Enable notifications"
+          >
+            <BellOff aria-hidden />
+          </button>
+        }
+      >
+        <div className="flex flex-col items-start gap-2">
+          <p>
+            You have denied Roarer the permission to send notifications, or your
+            browser doesn't support them.
+            <br />
+            Reenable them in your browser, then try again.
+          </p>
+          <Dialog.Close>
+            <Button>Ok</Button>
+          </Dialog.Close>
+        </div>
+      </Popup>
   );
 };

@@ -9,7 +9,6 @@ import {
   DiscordEmoji,
 } from "../lib/discordEmoji";
 import { getImageSize } from "../lib/imageSize";
-import { trimmedPost } from "../lib/reply";
 import { uploadFile } from "../lib/upload";
 import { useShallow } from "zustand/react/shallow";
 import { Textarea } from "./Input";
@@ -19,20 +18,16 @@ import { Checkbox } from "./Checkbox";
 import { EmojiPicker } from "./EmojiPicker";
 import { Markdown } from "./Markdown";
 
-export type Reply = {
-  id: string;
-  content: string;
-  username: string;
-};
 export type MarkdownInputProps = {
   chat: string;
-  replies?: Reply[];
-  setReplies?: (replies: Reply[]) => void;
+  replies?: string[];
+  setReplies?: (replies: string[]) => void;
   basePostContent?: string;
   onSuccess?: () => void;
   dontDisableWhenPosting?: boolean;
   onSubmit: (
     postContent: string,
+    replies: string[],
     attachments: string[],
   ) => Promise<{ error: true; message: string } | { error: false }>;
   noAttachments?: boolean;
@@ -67,12 +62,8 @@ export const MarkdownInput = (props: MarkdownInputProps) => {
     }
     setState("posting");
     const response = await props.onSubmit(
-      replies
-        .map(
-          (reply) =>
-            `@${reply.username} ${trimmedPost(reply.content)} (${reply.id})\n`,
-        )
-        .join("") + userToRegularDiscordEmojiSyntax(postContent),
+      userToRegularDiscordEmojiSyntax(postContent),
+      replies,
       attachments.map((attachment) => attachment.id),
     );
     setState("writing");
@@ -92,11 +83,11 @@ export const MarkdownInput = (props: MarkdownInputProps) => {
     const stringEmoji =
       typeof emoji === "string" ? emoji : userSyntaxForDiscordEmoji(emoji);
     setPostContent((p) =>
-      textArea.current
-        ? p.slice(0, textArea.current.selectionStart) +
-          stringEmoji +
-          p.slice(textArea.current.selectionEnd)
-        : p + stringEmoji,
+      textArea.current ?
+        p.slice(0, textArea.current.selectionStart) +
+        stringEmoji +
+        p.slice(textArea.current.selectionEnd)
+      : p + stringEmoji,
     );
   };
 
@@ -150,7 +141,7 @@ export const MarkdownInput = (props: MarkdownInputProps) => {
         onEnter={handlePost}
         before={
           <>
-            {showAttachments ? (
+            {showAttachments ?
               <button
                 type="button"
                 aria-label="Upload attachment"
@@ -173,7 +164,7 @@ export const MarkdownInput = (props: MarkdownInputProps) => {
                 />
                 <CirclePlus aria-hidden />
               </button>
-            ) : undefined}
+            : undefined}
           </>
         }
         after={
@@ -209,7 +200,7 @@ export const MarkdownInput = (props: MarkdownInputProps) => {
             {replies.map((reply, index) => (
               <div className="flex gap-2" key={index}>
                 <div className="grow">
-                  <Post id={reply.id} reply="topLevel" />
+                  <Post id={reply} reply="topLevel" />
                 </div>
                 <button
                   type="button"
@@ -240,14 +231,14 @@ export const MarkdownInput = (props: MarkdownInputProps) => {
                   attachment={attachment}
                   key={attachment.id}
                   onRemove={
-                    preview
-                      ? undefined
-                      : (id) =>
-                          setAttachments((attachments) =>
-                            attachments.filter(
-                              (attachment) => attachment.id !== id,
-                            ),
-                          )
+                    preview ? undefined : (
+                      (id) =>
+                        setAttachments((attachments) =>
+                          attachments.filter(
+                            (attachment) => attachment.id !== id,
+                          ),
+                        )
+                    )
                   }
                 />
               ))}
@@ -255,9 +246,9 @@ export const MarkdownInput = (props: MarkdownInputProps) => {
           </div>
         }
         replaceTextarea={
-          preview ? (
+          preview ?
             <Markdown>{userToRegularDiscordEmojiSyntax(postContent)}</Markdown>
-          ) : undefined
+          : undefined
         }
         onPaste={(e) => {
           if (showAttachments && e.clipboardData.files.length) {
@@ -271,7 +262,9 @@ export const MarkdownInput = (props: MarkdownInputProps) => {
           }
         }}
       />
-      {error ? <span className="text-red-500">{error}</span> : undefined}
+      {error ?
+        <span className="text-red-500">{error}</span>
+      : undefined}
     </form>
   );
 };

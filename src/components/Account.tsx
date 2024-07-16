@@ -37,9 +37,9 @@ const SignInButton = () => {
     setLoading(true);
     const loginResult = await logIn(username, password, {
       storeAccount,
-      ...(mode === "sign up"
-        ? { signUp: true, captcha: captcha ?? "" }
-        : { signUp: false }),
+      ...(mode === "sign up" ?
+        { signUp: true, captcha: captcha ?? "" }
+      : { signUp: false }),
     });
     if (loginResult.error) {
       setError(loginResult.message);
@@ -76,7 +76,7 @@ const SignInButton = () => {
           required
           onInput={(e) => setPassword(e.currentTarget.value)}
         />
-        {mode === "sign up" ? (
+        {mode === "sign up" ?
           <Input
             label="Confirm password"
             placeholder="Confirm password"
@@ -85,12 +85,12 @@ const SignInButton = () => {
             required
             onInput={(e) => setConfirmPassword(e.currentTarget.value)}
           />
-        ) : undefined}
+        : undefined}
         <label className="flex items-center gap-2">
           <Checkbox checked={storeAccount} onInput={setStoreAccount} />
           <span>Store account</span>
         </label>
-        {mode === "sign up" ? (
+        {mode === "sign up" ?
           <label className="flex items-center gap-2">
             <Checkbox checked={tosAgreed} onInput={setTosAgreed} />
             <span>
@@ -105,14 +105,16 @@ const SignInButton = () => {
               .
             </span>
           </label>
-        ) : undefined}
-        {mode === "sign up" ? (
+        : undefined}
+        {mode === "sign up" ?
           <Captcha
             onVerify={setCaptcha}
             onExpire={() => setCaptcha(undefined)}
           />
-        ) : undefined}
-        {error ? <div className="text-red-500">{error}</div> : null}
+        : undefined}
+        {error ?
+          <div className="text-red-500">{error}</div>
+        : null}
         <div>
           <div className="flex gap-2">
             <Button

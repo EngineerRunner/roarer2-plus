@@ -17,13 +17,15 @@ export const createRoarerSlice: Slice<RoarerSlice> = (set) => {
       set({ openChat });
     },
     notificationState:
-      Notification.permission === "denied"
-        ? "denied"
-        : Notification.permission === "granted" &&
-            notificationPreference &&
-            notificationPreference === "enabled"
-          ? "enabled"
-          : "disabled",
+      !("Notification" in window) || Notification.permission === "denied" ?
+        "denied"
+      : (
+        Notification.permission === "granted" &&
+        notificationPreference &&
+        notificationPreference === "enabled"
+      ) ?
+        "enabled"
+      : "disabled",
     enableNotifications: async () => {
       if (Notification.permission === "granted") {
         set((state) => {
@@ -33,11 +35,9 @@ export const createRoarerSlice: Slice<RoarerSlice> = (set) => {
       const permission = await Notification.requestPermission();
       set((state) => {
         state.notificationState =
-          permission === "granted"
-            ? "enabled"
-            : permission === "denied"
-              ? "denied"
-              : "disabled";
+          permission === "granted" ? "enabled"
+          : permission === "denied" ? "denied"
+          : "disabled";
       });
     },
     disableNotifications: () => {

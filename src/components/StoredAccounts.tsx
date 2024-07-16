@@ -19,20 +19,19 @@ export const StoredAccounts = (props: StoredAccountsProps) => {
       <Dialog.Title>
         <p className="mx-4 text-lg font-bold">Choose an account</p>
       </Dialog.Title>
-      {credentials && credentials.username in storedAccounts ? (
+      {credentials && credentials.username in storedAccounts ?
         <StoredAccount {...credentials} isLoggedIn />
-      ) : undefined}
-      {accountEntries.length ? (
+      : undefined}
+      {accountEntries.length ?
         accountEntries.map(([username, token]) =>
-          credentials?.username !== username ? (
+          credentials?.username !== username ?
             <StoredAccount username={username} token={token} key={username} />
-          ) : undefined,
+          : undefined,
         )
-      ) : (
-        <div className="mx-4">
+      : <div className="mx-4">
           You currently do not have any stored accounts.
         </div>
-      )}
+      }
     </Popup>
   );
 };

@@ -44,29 +44,28 @@ export const User = (props: UserProps) => {
         <ProfilePicture username={props.username} />
         <div className="flex flex-col gap-1">
           <span className="text-xl font-bold"> {props.username}</span>
-          {!user ? (
+          {!user ?
             <div>Loading...</div>
-          ) : user.error ? (
+          : user.error ?
             <div>
               An error occured getting the user!
               <br />
               Message: {user.message}
             </div>
-          ) : (
-            <>
-              <Markdown>
-                {props.username === "Discord"
-                  ? "womp womp, discord is ded <a:hooray:1230023947777609808>"
-                  : user.quote ?? ""}
-              </Markdown>
-              {credentials && credentials.username !== props.username ? (
+          : <>
+              {user.quote ?
+                <Markdown children={user.quote} />
+              : undefined}
+              {credentials && credentials.username !== props.username ?
                 <Button type="button" onClick={dm}>
                   DM
                 </Button>
-              ) : undefined}
-              {error ? <div className="text-red-500">{error}</div> : undefined}
+              : undefined}
+              {error ?
+                <div className="text-red-500">{error}</div>
+              : undefined}
             </>
-          )}
+          }
         </div>
       </div>
     </Popup>

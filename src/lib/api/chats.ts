@@ -11,7 +11,8 @@ export const CHAT_SCHEMA = z
     members: z.string().array(),
     type: z.number(),
     _id: z.string(),
-    icon: z.string().optional(), icon_color: z.string().optional()
+    icon: z.string().optional(),
+    icon_color: z.string().optional(),
   })
   .and(
     z
@@ -25,7 +26,7 @@ export const CHAT_SCHEMA = z
           owner: z.null(),
         }),
       ),
-  )
+  );
 export type Chat = z.infer<typeof CHAT_SCHEMA>;
 
 const CHATS_RESPONSE_SCHEMA = z.object({
@@ -74,12 +75,13 @@ export const createChatsSlice: Slice<ChatsSlice> = (set, get) => {
         });
       }
       set({
-        userChats: response.error
-          ? response
-          : ({
+        userChats:
+          response.error ? response : (
+            ({
               error: false,
               chats: response.response.autoget.map((chat) => chat._id),
-            } as const),
+            } as const)
+          ),
       });
     },
     loadChat: async (chat: string) => {
@@ -118,9 +120,8 @@ export const createChatsSlice: Slice<ChatsSlice> = (set, get) => {
         response = CHAT_SCHEMA.parse(
           await (
             await fetch(`${api}/users/${encodeURIComponent(username)}/dm`, {
-              headers: state.credentials
-                ? { Token: state.credentials.token }
-                : {},
+              headers:
+                state.credentials ? { Token: state.credentials.token } : {},
             })
           ).json(),
         );

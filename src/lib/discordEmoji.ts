@@ -1,4 +1,5 @@
-export const discordEmoji = [
+export const discordEmoji = (
+  [
   // Roarer Emojis (from the Meower Server)
   { name: "zed", id: "1208625071766114364", isGif: false },
   { name: "wow", id: "952755842095132752", isGif: false },
@@ -138,7 +139,8 @@ export const discordEmoji = [
   { name: "snooga6", id: "1258860432719085638", isGif: false },
   { name: "snooga7", id: "1258860434497343590", isGif: false },
   { name: "snooga8", id: "1258860443468824616", isGif: false },
-].sort((a, b) => (a.name > b.name ? 1 : a.name < b.name ? -1 : 0));
+] satisfies DiscordEmoji[]
+).sort((a, b) => (a.name > b.name ? 1 : a.name < b.name ? -1 : 0));
 
 export const urlFromDiscordEmoji = (emoji: DiscordEmoji) => {
   return `https://cdn.discordapp.com/emojis/${encodeURIComponent(emoji.id)}.${emoji.isGif ? "gif" : "webp"}?size=24&quality=lossless`;

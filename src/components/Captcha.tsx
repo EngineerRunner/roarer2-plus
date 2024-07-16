@@ -18,8 +18,8 @@ export const Captcha = (props: CatchaProps) => {
       props.onVerify(e.token);
     });
     element.current?.addEventListener("expired", () => {
-      props.onExpire()
-    })
+      props.onExpire();
+    });
   }, []);
 
   // @ts-expect-error - h-captcha is not a react element

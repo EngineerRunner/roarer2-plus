@@ -16,9 +16,9 @@ export const EmojiPicker = (props: EmojiPickerProps) => {
   const storageSkinTone = localStorage.getItem(SKIN_TONE_STORAGE_KEY);
   const numberStorageSkinTone = Number(storageSkinTone);
   const [skinTone, setSkinTone] = useState(
-    storageSkinTone && !Number.isNaN(numberStorageSkinTone)
-      ? numberStorageSkinTone
-      : 0,
+    storageSkinTone && !Number.isNaN(numberStorageSkinTone) ?
+      numberStorageSkinTone
+    : 0,
   );
 
   const allowDiscordEmoji = props.discordEmoji ?? true;
@@ -49,7 +49,7 @@ export const EmojiPicker = (props: EmojiPickerProps) => {
               </button>
             </Tabs.Trigger>
           ))}
-          {allowDiscordEmoji ? (
+          {allowDiscordEmoji ?
             <Tabs.Trigger asChild value="meower">
               <button
                 aria-label="Meower"
@@ -58,7 +58,7 @@ export const EmojiPicker = (props: EmojiPickerProps) => {
                 ✨
               </button>
             </Tabs.Trigger>
-          ) : undefined}
+          : undefined}
         </Tabs.List>
         {emojiCategories.map((category) => (
           <Tabs.Content value={category.id} key={category.id}>
@@ -79,7 +79,7 @@ export const EmojiPicker = (props: EmojiPickerProps) => {
                 );
               })}
             </div>
-            {category.id === "people" ? (
+            {category.id === "people" ?
               <div className="flex justify-end">
                 <Menu
                   trigger={
@@ -100,10 +100,10 @@ export const EmojiPicker = (props: EmojiPickerProps) => {
                   ))}
                 </Menu>
               </div>
-            ) : undefined}
+            : undefined}
           </Tabs.Content>
         ))}
-        {allowDiscordEmoji ? (
+        {allowDiscordEmoji ?
           <Tabs.Content value="meower">
             <div className="grid max-h-80 grid-cols-7 flex-wrap justify-center gap-0 overflow-auto px-2">
               {discordEmoji.map((emoji) => (
@@ -118,7 +118,7 @@ export const EmojiPicker = (props: EmojiPickerProps) => {
               ))}
             </div>
           </Tabs.Content>
-        ) : undefined}
+        : undefined}
       </Tabs.Root>
     </div>
   );

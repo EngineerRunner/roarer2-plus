@@ -15,19 +15,19 @@ export const Mention = (props: MentionProps) => {
       <button
         className={twMerge(
           "text-nowrap font-bold",
-          props.username === credentials?.username
-            ? "text-yellow-600"
-            : "text-lime-600",
+          props.username === credentials?.username ?
+            "text-yellow-600"
+          : "text-lime-600",
         )}
       >
         <span className="inline-block align-text-top">
-          {props.pfp ?? true ? (
+          {props.pfp ?? true ?
             <ProfilePicture
               username={props.username}
               dontShowOnline
               size="w-5 h-5 min-w-5 min-h-5"
             />
-          ) : undefined}
+          : undefined}
         </span>
         &nbsp;
         <span className="inline-block">

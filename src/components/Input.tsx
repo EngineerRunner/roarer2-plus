@@ -86,12 +86,11 @@ export const Textarea = forwardRef<HTMLTextAreaElement | null, TextareaProps>(
         {props.above}
         <div className="flex">
           {props.before}
-          {props.replaceTextarea ? (
+          {props.replaceTextarea ?
             <div className="mx-2 max-h-64 min-h-8 grow overflow-y-auto py-1">
               {props.replaceTextarea}
             </div>
-          ) : (
-            <textarea
+          : <textarea
               {...{ ...textareaProps, className: undefined }}
               onInput={handleInput}
               onKeyDown={handleKeyDown}
@@ -99,7 +98,7 @@ export const Textarea = forwardRef<HTMLTextAreaElement | null, TextareaProps>(
               rows={1}
               ref={elementRef}
             />
-          )}
+          }
           {props.after}
         </div>
         {props.below}

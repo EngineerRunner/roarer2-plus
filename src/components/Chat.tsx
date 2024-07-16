@@ -4,14 +4,14 @@ import { twMerge } from "tailwind-merge";
 import { useAPI } from "../lib/api";
 import { useShallow } from "zustand/react/shallow";
 import { Button } from "./Button";
-import { Reply, MarkdownInput } from "./MarkdownInput";
+import { MarkdownInput } from "./MarkdownInput";
 import { Post } from "./Post";
 
 export type ChatProps = {
   chat: string;
 };
 export const Chat = (props: ChatProps) => {
-  const [replies, setReplies] = useState<Reply[]>([]);
+  const [replies, setReplies] = useState<string[]>([]);
   const [loadingMore, setLoadingMore] = useState(false);
   const [loadMoreError, setLoadMoreError] = useState<string>();
   const [credentials, chat, loadChat, posts, loadChatPosts, loadMore] = useAPI(
@@ -29,12 +29,9 @@ export const Chat = (props: ChatProps) => {
   }
   loadChatPosts(props.chat);
 
-  const setReplyFromPost = useCallback(
-    (id: string, content: string, username: string) => {
-      setReplies((replies) => [...replies, { id, content, username }]);
-    },
-    [],
-  );
+  const setReplyFromPost = useCallback((id: string) => {
+    setReplies((replies) => [...replies, id]);
+  }, []);
 
   if (!posts) {
     return <>Loading posts...</>;
@@ -59,37 +56,38 @@ export const Chat = (props: ChatProps) => {
 
   return (
     <div className="flex flex-col gap-2">
-      {props.chat === "home" ? undefined : (
-        <p className="font-bold">
-          {props.chat === "livechat"
-            ? "Livechat"
-            : chat
-              ? chat.error
-                ? `Failed getting chat. Message: ${chat.message}`
-                : chat.deleted
-                  ? ""
-                  : chat.nickname ??
-                    "@" +
-                      chat.members.find(
-                        (member) => member !== credentials?.username,
-                      )
-              : "Loading chat name..."}
+      {props.chat === "home" ?
+        undefined
+      : <p className="font-bold">
+          {props.chat === "livechat" ?
+            "Livechat"
+          : chat ?
+            chat.error ?
+              `Failed getting chat. Message: ${chat.message}`
+            : chat.deleted ?
+              ""
+            : chat.nickname ??
+              "@" +
+                chat.members.find((member) => member !== credentials?.username)
+
+          : "Loading chat name..."}
           <span className="ml-2 text-xs font-medium">({props.chat})</span>
         </p>
-      )}
+      }
       <EnterPost chat={props.chat} replies={replies} setReplies={setReplies} />
       <TypingIndicator chat={props.chat} />
       {posts.posts.map((post) => (
         <Post key={post} id={post} onReply={setReplyFromPost} />
       ))}
-      {posts.stopLoadingMore ? undefined : (
-        <Button type="button" onClick={handleLoadMore} disabled={loadingMore}>
+      {posts.stopLoadingMore ?
+        undefined
+      : <Button type="button" onClick={handleLoadMore} disabled={loadingMore}>
           Load more
         </Button>
-      )}
-      {loadMoreError ? (
+      }
+      {loadMoreError ?
         <div className="text-red-500">{loadMoreError}</div>
-      ) : null}
+      : null}
     </div>
   );
 };
@@ -123,13 +121,17 @@ const TypingIndicator = (props: TypingIndicatorProps) => {
 
 type EnterPostProps = {
   chat: string;
-  replies?: Reply[];
-  setReplies?: (replies: Reply[]) => void;
+  replies?: string[];
+  setReplies?: (replies: string[]) => void;
 };
 const EnterPost = (props: EnterPostProps) => {
   const post = useAPI((state) => state.post);
-  const handleSubmit = (postContent: string, attachments: string[]) => {
-    post(postContent, props.chat, attachments);
+  const handleSubmit = (
+    postContent: string,
+    replies: string[],
+    attachments: string[],
+  ) => {
+    post(postContent, props.chat, replies, attachments);
     return Promise.resolve({ error: false } as const);
   };
 

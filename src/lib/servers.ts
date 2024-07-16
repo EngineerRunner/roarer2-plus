@@ -1,7 +1,9 @@
 const searchParams = new URLSearchParams(location.search);
 
 const removeSlash = (s: string | null) =>
-  !s ? s : s.endsWith("/") ? s.slice(0, -1) : s;
+  !s ? s
+  : s.endsWith("/") ? s.slice(0, -1)
+  : s;
 
 export const api =
   removeSlash(searchParams.get("api")) ?? "https://api.meower.org";

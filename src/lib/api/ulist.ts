@@ -18,7 +18,11 @@ export const createUlistSlice: Slice<UlistSlice> = (set) => {
           .sort((a, b) => {
             const aLower = a.toLowerCase();
             const bLower = b.toLowerCase();
-            return aLower < bLower ? -1 : aLower > bLower ? 1 : 0;
+            return (
+              aLower < bLower ? -1
+              : aLower > bLower ? 1
+              : 0
+            );
           }),
       });
     };

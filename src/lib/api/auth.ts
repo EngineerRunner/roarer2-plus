@@ -51,9 +51,8 @@ export const createAuthSlice: Slice<AuthSlice> = (set, get) => {
   const parsedStoredAccounts = parseStoredAccounts(
     localStorage.getItem(STORED_ACCOUNTS_STORAGE) ?? "",
   );
-  const storedAccounts = parsedStoredAccounts.error
-    ? {}
-    : parsedStoredAccounts.accounts;
+  const storedAccounts =
+    parsedStoredAccounts.error ? {} : parsedStoredAccounts.accounts;
   initCloudlink(localStorage.getItem(TOKEN_STORAGE));
   getCloudlink().then((cloudlink) => {
     cloudlink.on("packet", (packet: unknown) => {

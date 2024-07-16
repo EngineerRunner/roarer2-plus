@@ -138,11 +138,9 @@ export const Markdown = (mdProps: MarkdownProps) => {
               className="rounded-lg bg-gray-800 px-1 py-0.5 text-gray-100"
               key={getKey()}
             >
-              {match ? (
+              {match ?
                 <SyntaxHighlight lang={match[1]} code={match[2]} inline />
-              ) : (
-                code
-              )}
+              : code}
             </code>
           );
         },
@@ -150,9 +148,8 @@ export const Markdown = (mdProps: MarkdownProps) => {
           return <Link href={href} children={text} key={getKey()} />;
         },
         image: (src, alt, title) =>
-          mdProps.inline ? (
-            <></>
-          ) : hostWhitelist.some((host) => src.startsWith(host)) ? (
+          mdProps.inline ? <></>
+          : hostWhitelist.some((host) => src.startsWith(host)) ?
             <img
               src={src}
               alt={alt}
@@ -160,20 +157,18 @@ export const Markdown = (mdProps: MarkdownProps) => {
               className="inline-block max-h-40"
               key={getKey()}
             />
-          ) : (
-            <a className="font-bold text-lime-600" href={src} key={getKey()}>
+          : <a className="font-bold text-lime-600" href={src} key={getKey()}>
               {alt || "Unnamed image"}
-            </a>
-          ),
+            </a>,
         text: (text) => {
           const matches = [...(text?.toString() ?? "").matchAll(TEXT_REGEX)];
           return (
             <Fragment key={getKey()}>
               {matches.map((match) => (
                 <Fragment key={getKey()}>
-                  {match.groups?.mention ? (
+                  {match.groups?.mention ?
                     <Mention username={match[0].slice(1)} />
-                  ) : match.groups?.emoji ? (
+                  : match.groups?.emoji ?
                     <img
                       className="inline-block"
                       src={urlFromDiscordEmoji({
@@ -183,9 +178,7 @@ export const Markdown = (mdProps: MarkdownProps) => {
                       })}
                       alt={match.groups?.emojiName}
                     />
-                  ) : (
-                    match[0]
-                  )}
+                  : match[0]}
                 </Fragment>
               ))}
             </Fragment>
@@ -245,9 +238,7 @@ const SyntaxHighlight = (props: SyntaxHighlightProps) => {
       structure: "inline",
     }).then(setSyntaxHighlighted);
   }
-  return syntaxHighlighted ? (
-    <span dangerouslySetInnerHTML={{ __html: syntaxHighlighted }} />
-  ) : (
-    props.code
-  );
+  return syntaxHighlighted ?
+      <span dangerouslySetInnerHTML={{ __html: syntaxHighlighted }} />
+    : props.code;
 };
