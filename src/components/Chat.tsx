@@ -1,4 +1,4 @@
-import { useState, useCallback } from "react";
+import { useRef, useState, useCallback } from "react";
 import { Keyboard } from "lucide-react";
 import { twMerge } from "tailwind-merge";
 import { useAPI } from "../lib/api";
@@ -14,6 +14,7 @@ export const Chat = (props: ChatProps) => {
   const [replies, setReplies] = useState<string[]>([]);
   const [loadingMore, setLoadingMore] = useState(false);
   const [loadMoreError, setLoadMoreError] = useState<string>();
+  const container = useRef<HTMLDivElement | null>(null);
   const [credentials, chat, loadChat, posts, loadChatPosts, loadMore] = useAPI(
     useShallow((state) => [
       state.credentials,
@@ -55,7 +56,7 @@ export const Chat = (props: ChatProps) => {
   };
 
   return (
-    <div className="flex flex-col gap-2">
+    <div className="flex flex-col gap-2" ref={container}>
       {props.chat === "home" ?
         undefined
       : <p className="font-bold">
@@ -66,15 +67,25 @@ export const Chat = (props: ChatProps) => {
               `Failed getting chat. Message: ${chat.message}`
             : chat.deleted ?
               ""
-            : chat.nickname ??
+            : (chat.nickname ??
               "@" +
-                chat.members.find((member) => member !== credentials?.username)
+                chat.members.find((member) => member !== credentials?.username))
 
           : "Loading chat name..."}
           <span className="ml-2 text-xs font-medium">({props.chat})</span>
         </p>
       }
-      <EnterPost chat={props.chat} replies={replies} setReplies={setReplies} />
+      <EnterPost
+        chat={props.chat}
+        replies={replies}
+        setReplies={setReplies}
+        onPost={() => {
+          if (!container.current || !container.current.parentElement) {
+            return;
+          }
+          container.current.parentElement.scrollTop = 0;
+        }}
+      />
       <TypingIndicator chat={props.chat} />
       {posts.posts.map((post) => (
         <Post key={post} id={post} onReply={setReplyFromPost} />
@@ -123,6 +134,7 @@ type EnterPostProps = {
   chat: string;
   replies?: string[];
   setReplies?: (replies: string[]) => void;
+  onPost?: () => void;
 };
 const EnterPost = (props: EnterPostProps) => {
   const post = useAPI((state) => state.post);
@@ -132,10 +144,17 @@ const EnterPost = (props: EnterPostProps) => {
     attachments: string[],
   ) => {
     post(postContent, props.chat, replies, attachments);
+    props.onPost?.();
     return Promise.resolve({ error: false } as const);
   };
 
   return (
-    <MarkdownInput {...props} onSubmit={handleSubmit} dontDisableWhenPosting />
+    <div className="sticky top-0 z-[--z-enter-post] bg-white dark:bg-gray-950">
+      <MarkdownInput
+        {...props}
+        onSubmit={handleSubmit}
+        dontDisableWhenPosting
+      />
+    </div>
   );
 };

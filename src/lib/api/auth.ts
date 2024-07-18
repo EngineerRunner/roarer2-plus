@@ -37,6 +37,7 @@ export type AuthSlice = {
   storedAccounts: z.infer<typeof STORED_ACCOUNTS_SCHEMA>;
   storeAccount: (username: string, token: string) => void;
   removeStoredAccount: (username: string) => void;
+  finishedAuth: () => Promise<void>;
   logIn: (
     username: string,
     password: string,
@@ -51,9 +52,17 @@ export const createAuthSlice: Slice<AuthSlice> = (set, get) => {
   const parsedStoredAccounts = parseStoredAccounts(
     localStorage.getItem(STORED_ACCOUNTS_STORAGE) ?? "",
   );
+  const finishedAuthResolve: (() => void)[] = [];
+  const finishedAuthPromise = new Promise<void>((resolve) => {
+    finishedAuthResolve.push(resolve);
+  });
   const storedAccounts =
     parsedStoredAccounts.error ? {} : parsedStoredAccounts.accounts;
-  initCloudlink(localStorage.getItem(TOKEN_STORAGE));
+  const token = localStorage.getItem(TOKEN_STORAGE);
+  if (!token) {
+    finishedAuthResolve.forEach((fn) => fn());
+  }
+  initCloudlink(token);
   getCloudlink().then((cloudlink) => {
     cloudlink.on("packet", (packet: unknown) => {
       const parsed = AUTH_CL_RESPOSNE.safeParse(packet);
@@ -72,11 +81,13 @@ export const createAuthSlice: Slice<AuthSlice> = (set, get) => {
         }
         home.stopLoadingMore = false;
       });
+      finishedAuthResolve.forEach((fn) => fn());
     });
   });
   return {
     credentials: null,
     storedAccounts,
+    finishedAuth: () => finishedAuthPromise,
     logIn: async (username, password, options) => {
       const state = get();
       if (state.credentials) {

@@ -39,6 +39,6 @@ export const request = async <TSchema extends ZodSchema>(
   return { error: false, response };
 };
 
-export type Errorable<T> =
+export type Errorable<T = {}> =
   | (T & { error: false })
   | { error: true; message: string };

@@ -4,6 +4,7 @@
 
 @layer base {
   :root {
+    --z-enter-post: 5;
     --z-sidebar: 10;
     --z-above-sidebar: 20;
     --z-popup-bg: 30;

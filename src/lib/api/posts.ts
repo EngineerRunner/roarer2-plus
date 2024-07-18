@@ -34,6 +34,13 @@ const BASE_POST_SCHEMA = z.object({
   }),
   type: z.number(),
   u: z.string(),
+  reactions: z
+    .object({
+      count: z.number(),
+      emoji: z.string(),
+      user_reacted: z.boolean(),
+    })
+    .array(),
 });
 const POST_SCHEMA: z.ZodType<SchemaPost> = BASE_POST_SCHEMA.extend({
   reply_to: z.lazy(() => POST_SCHEMA.nullable().array()),
@@ -56,6 +63,15 @@ const MORE_POSTS_SCHEMA = z.object({
 const POST_PACKET_SCHEMA = z.object({
   cmd: z.literal("post"),
   val: POST_SCHEMA,
+});
+
+const POST_REACTION_PACKET_CHEMA = z.object({
+  cmd: z.literal("post_reaction_add").or(z.literal("post_reaction_remove")),
+  val: z.object({
+    emoji: z.string(),
+    post_id: z.string(),
+    username: z.string(),
+  }),
 });
 
 export type PostsSlice = {
@@ -94,6 +110,11 @@ export type PostsSlice = {
   deletePost: (
     id: string,
   ) => Promise<{ error: true; message: string } | { error: false }>;
+  reactToPost: (
+    id: string,
+    emoji: string,
+    type: "add" | "delete",
+  ) => Promise<Errorable>;
 };
 export const createPostsSlice: Slice<PostsSlice> = (set, get) => {
   getCloudlink().then((cloudlink) => {
@@ -168,6 +189,45 @@ export const createPostsSlice: Slice<PostsSlice> = (set, get) => {
           isDeleted: true,
           error: false,
         };
+      });
+    });
+    cloudlink.on("packet", (packet: unknown) => {
+      const parsed = POST_REACTION_PACKET_CHEMA.safeParse(packet);
+      if (!parsed.success) {
+        return;
+      }
+      set((draft) => {
+        const post = draft.posts[parsed.data.val.post_id];
+        if (!post || post.error || post.isDeleted) {
+          return;
+        }
+        const existingReaction = post.reactions.find(
+          (reaction) => reaction.emoji === parsed.data.val.emoji,
+        );
+        if (existingReaction) {
+          const newReactionCount =
+            existingReaction.count +
+            (parsed.data.cmd === "post_reaction_add" ? 1 : -1);
+          if (newReactionCount === 0) {
+            post.reactions = post.reactions.filter(
+              (reaction) => reaction !== existingReaction,
+            );
+          } else {
+            existingReaction.count +=
+              parsed.data.cmd === "post_reaction_add" ? 1 : -1;
+            if (parsed.data.val.username === draft.credentials?.username) {
+              existingReaction.user_reacted =
+                parsed.data.cmd === "post_reaction_add";
+            }
+          }
+        } else {
+          post.reactions.push({
+            count: parsed.data.cmd === "post_reaction_add" ? 1 : -1,
+            emoji: parsed.data.val.emoji,
+            user_reacted:
+              parsed.data.val.username === draft.credentials?.username,
+          });
+        }
       });
     });
   });
@@ -265,13 +325,15 @@ export const createPostsSlice: Slice<PostsSlice> = (set, get) => {
     },
     loadPosts: async (id: string, current: number) => {
       const state = get();
+      await state.finishedAuth();
+      const newState = get();
       const { page, remove } = loadMore(current);
       const response = await request(
         fetch(
           `${api}/${id === "home" ? "home" : `posts/${encodeURIComponent(id)}`}?page=${page}`,
           {
             headers:
-              state.credentials ? { Token: state.credentials.token } : {},
+              newState.credentials ? { Token: newState.credentials.token } : {},
           },
         ),
         MORE_POSTS_SCHEMA,
@@ -281,14 +343,14 @@ export const createPostsSlice: Slice<PostsSlice> = (set, get) => {
       }
       const posts = response.response.autoget.slice(remove);
       posts.forEach((post) => {
-        state.addPost(post);
+        newState.addPost(post);
       });
-      const newState = get();
+      const newNewState = get();
       return {
         error: false,
         posts: posts.map((post) => post.post_id),
         stop:
-          newState.credentials && id === "home" ?
+          newNewState.credentials && id === "home" ?
             false
           : page === response.response.pages,
       };
@@ -314,6 +376,7 @@ export const createPostsSlice: Slice<PostsSlice> = (set, get) => {
           error: false,
           optimistic: {},
           reply_to: replies,
+          reactions: [],
         };
         const chatPosts = draft.chatPosts[chat];
         if (chatPosts && !chatPosts.error) {
@@ -375,6 +438,25 @@ export const createPostsSlice: Slice<PostsSlice> = (set, get) => {
         }),
         z.object({}),
       );
+    },
+    reactToPost: async (id, emoji, type) => {
+      const state = get();
+      const response = await request(
+        fetch(
+          `https://api.meower.org/posts/${id}/reactions/${encodeURIComponent(emoji)}${type === "delete" ? "/@me" : ""}`,
+          {
+            headers: {
+              "Content-Type": "application/json",
+              ...(state.credentials ?
+                { Token: state.credentials.token }
+              : undefined),
+            },
+            method: type === "add" ? "POST" : "DELETE",
+          },
+        ),
+        z.object({}),
+      );
+      return response;
     },
   };
 };

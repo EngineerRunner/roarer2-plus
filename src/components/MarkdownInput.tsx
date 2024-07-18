@@ -1,5 +1,4 @@
 import { FormEvent, useState, useEffect, useRef } from "react";
-import * as Popover from "@radix-ui/react-popover";
 import { CirclePlus, SendHorizontal, Smile, X } from "lucide-react";
 import { twMerge } from "tailwind-merge";
 import { useAPI } from "../lib/api";
@@ -169,8 +168,9 @@ export const MarkdownInput = (props: MarkdownInputProps) => {
         }
         after={
           <div className="flex gap-2">
-            <Popover.Root>
-              <Popover.Trigger asChild>
+            <EmojiPicker
+              onEmoji={handleEmoji}
+              trigger={
                 <button
                   type="button"
                   aria-label="Pick an emoji"
@@ -178,14 +178,8 @@ export const MarkdownInput = (props: MarkdownInputProps) => {
                 >
                   <Smile aria-hidden />
                 </button>
-              </Popover.Trigger>
-              <Popover.Anchor />
-              <Popover.Portal>
-                <Popover.Content align="end" sideOffset={4}>
-                  <EmojiPicker onEmoji={handleEmoji} />
-                </Popover.Content>
-              </Popover.Portal>
-            </Popover.Root>
+              }
+            />
             <button
               type="submit"
               aria-label="Send"

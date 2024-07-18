@@ -9,6 +9,7 @@ const UNITS = [
   { ms: 1000 * 60 * 60 * 24, max: 7, unit: "days" },
   { ms: 1000 * 60 * 60 * 24, max: 4, unit: "weeks" },
   { ms: 1000 * 60 * 60 * 24 * 4, max: 12, unit: "months" },
+  { ms: 1000 * 60 * 60 * 24 * 4 * 12, max: Infinity, unit: "years" },
 ] as const satisfies {
   ms: number;
   max: number;
