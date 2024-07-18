@@ -176,7 +176,7 @@ export const Markdown = (mdProps: MarkdownProps) => {
                         id: match.groups?.emojiId ?? "",
                         isGif: !!match.groups?.emojiAnimated,
                       })}
-                      alt={match.groups?.emojiName}
+                      alt={`:${match.groups?.emojiName}:`}
                     />
                   : match[0]}
                 </Fragment>
