@@ -2055,7 +2055,7 @@ ede-java-classpath|ede-linux-load|ede-load-cache|ede-load-project-file|ede-make-
 |edebug-instrument-callee|edebug-instrument-function|edebug-interactive-p-name|edebug-kill-buffer|edebug-lambda-list-keywordp
 |edebug-last-sexp|edebug-list-form-args|edebug-list-form|edebug-make-after-form|edebug-make-before-and-after-form|edebug-make-enter-wrapper
 |edebug-make-form-wrapper|edebug-make-top-form-data-entry|edebug-mark-marker|edebug-mark|edebug-match-&define|edebug-match-&key
-|edebug-match-\xAC|edebug-match-&optional|edebug-match-&or|edebug-match-&rest|edebug-match-arg|edebug-match-body|edebug-match-colon-name
+|edebug-match-¬|edebug-match-&optional|edebug-match-&or|edebug-match-&rest|edebug-match-arg|edebug-match-body|edebug-match-colon-name
 |edebug-match-def-body|edebug-match-def-form|edebug-match-form|edebug-match-function|edebug-match-gate|edebug-match-lambda-expr
 |edebug-match-list|edebug-match-name|edebug-match-nil|edebug-match-one-spec|edebug-match-place|edebug-match-sexp|edebug-match-specs
 |edebug-match-string|edebug-match-sublist|edebug-match-symbol|edebug-match|edebug-menu|edebug-message|edebug-mode|edebug-modify-breakpoint

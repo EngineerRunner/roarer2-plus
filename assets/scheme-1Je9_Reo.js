@@ -104,7 +104,7 @@ vector(?:-length|-ref)
 (')\\s*
 ((\\()\\s*(\\)))
 `,name:"constant.other.empty-list.schem"},{begin:"(')\\s*",beginCaptures:{1:{name:"punctuation.section.quoted.scheme"}},comment:"quoted double-quoted string or s-expression",end:"(?=[\\s()])|(?<=\\n)",name:"string.other.quoted-object.scheme",patterns:[{include:"#quoted"}]}]},"quote-sexp":{begin:"(?<=\\()\\s*(quote)\\s+",beginCaptures:{1:{name:"keyword.control.quote.scheme"}},comment:`
-				Something quoted with (quote \xABthing\xBB).  In this case \xABthing\xBB
+				Something quoted with (quote «thing»).  In this case «thing»
 				will not be evaluated, so we are considering it a string.
 			`,contentName:"string.other.quote.scheme",end:"(?=[\\s)])|(?<=\\n)",patterns:[{include:"#quoted"}]},quoted:{patterns:[{include:"#string"},{begin:"(\\()",beginCaptures:{1:{name:"punctuation.section.expression.begin.scheme"}},end:"(\\))",endCaptures:{1:{name:"punctuation.section.expression.end.scheme"}},name:"meta.expression.scheme",patterns:[{include:"#quoted"}]},{include:"#quote"},{include:"#illegal"}]},sexp:{begin:"(\\()",beginCaptures:{1:{name:"punctuation.section.expression.begin.scheme"}},end:"(\\))(\\n)?",endCaptures:{1:{name:"punctuation.section.expression.end.scheme"},2:{name:"meta.after-expression.scheme"}},name:"meta.expression.scheme",patterns:[{include:"#comment"},{begin:`(?x)
 (?<=\\()

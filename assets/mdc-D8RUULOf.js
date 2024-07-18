@@ -73,4 +73,4 @@ $
 ([^{]*)
 (})
 )?
-\\s`,name:"span.component.mdc"}},scopeName:"text.markdown.mdc",embeddedLangs:["markdown","yaml","html-derivative"]});var n=[...e,...r,...t,a];export{n as default};
+\\s`,name:"span.component.mdc"}},scopeName:"text.markdown.mdc",embeddedLangs:["markdown","yaml","html-derivative"]});var u=[...e,...r,...t,a];export{u as default};

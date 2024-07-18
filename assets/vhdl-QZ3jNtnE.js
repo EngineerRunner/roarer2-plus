@@ -1,4 +1,4 @@
-const e=Object.freeze({displayName:"VHDL",fileTypes:["vhd","vhdl","vho","vht"],name:"vhdl",patterns:[{include:"#block_processing"},{include:"#cleanup"}],repository:{architecture_pattern:{patterns:[{begin:`(?x)
+const n=Object.freeze({displayName:"VHDL",fileTypes:["vhd","vhdl","vho","vht"],name:"vhdl",patterns:[{include:"#block_processing"},{include:"#cleanup"}],repository:{architecture_pattern:{patterns:[{begin:`(?x)
 
 
 \\b((?i:architecture))\\s+
@@ -512,4 +512,4 @@ const e=Object.freeze({displayName:"VHDL",fileTypes:["vhd","vhdl","vho","vht"],n
 
 
 (?=\\s*;)
-`,endCaptures:{1:{name:"keyword.language.vhdl"},3:{name:"keyword.language.vhdl"},4:{name:"invalid.illegal.loop.keyword.required.vhdl"},7:{name:"entity.name.tag.while.loop.vhdl"},8:{name:"invalid.illegal.mismatched.identifier"}},patterns:[{include:"#control_patterns"},{include:"#cleanup"}]}]}},scopeName:"source.vhdl"});var n=[e];export{n as default};
+`,endCaptures:{1:{name:"keyword.language.vhdl"},3:{name:"keyword.language.vhdl"},4:{name:"invalid.illegal.loop.keyword.required.vhdl"},7:{name:"entity.name.tag.while.loop.vhdl"},8:{name:"invalid.illegal.mismatched.identifier"}},patterns:[{include:"#control_patterns"},{include:"#cleanup"}]}]}},scopeName:"source.vhdl"});var e=[n];export{e as default};

@@ -45,7 +45,7 @@ const e=Object.freeze({displayName:"Haskell",fileTypes:["hs","hs-boot","hsig"],n
 )
 `,name:"meta.declaration.$2.generalized.haskell",patterns:[{include:"#comment_like"},{begin:`(?x)
 (?<!')\\b(where)
-\\s*(\\{)(?!-)`,beginCaptures:{1:{name:"keyword.other.where.haskell"},2:{name:"punctuation.brace.haskell"}},end:"(\\})",endCaptures:{1:{name:"punctuation.brace.haskell"}},patterns:[{include:"#comment_like"},{include:"#gadt_constructor"},{match:";",name:"punctuation.semicolon.haskell"}]},{match:"\\b(?<!')(where)\\b(?!')",name:"keyword.other.where.haskell"},{include:"#deriving"},{include:"#gadt_constructor"}]},{include:"#role_annotation"},{begin:"^(\\s*)(pattern)\\s+(.*?)\\s+(::|\u2237)(?![\\p{S}\\p{P}&&[^(),;\\[\\]`{}_\"']])",beginCaptures:{2:{name:"keyword.other.pattern.haskell"},3:{patterns:[{include:"#comma"},{include:"#data_constructor"}]},4:{name:"keyword.operator.double-colon.haskell"}},end:`(?x)
+\\s*(\\{)(?!-)`,beginCaptures:{1:{name:"keyword.other.where.haskell"},2:{name:"punctuation.brace.haskell"}},end:"(\\})",endCaptures:{1:{name:"punctuation.brace.haskell"}},patterns:[{include:"#comment_like"},{include:"#gadt_constructor"},{match:";",name:"punctuation.semicolon.haskell"}]},{match:"\\b(?<!')(where)\\b(?!')",name:"keyword.other.where.haskell"},{include:"#deriving"},{include:"#gadt_constructor"}]},{include:"#role_annotation"},{begin:"^(\\s*)(pattern)\\s+(.*?)\\s+(::|∷)(?![\\p{S}\\p{P}&&[^(),;\\[\\]`{}_\"']])",beginCaptures:{2:{name:"keyword.other.pattern.haskell"},3:{patterns:[{include:"#comma"},{include:"#data_constructor"}]},4:{name:"keyword.operator.double-colon.haskell"}},end:`(?x)
 (?=\\}|;)
 |^(?!
 \\1\\s+\\S
@@ -133,7 +133,7 @@ const e=Object.freeze({displayName:"Haskell",fileTypes:["hs","hs-boot","hsig"],n
 
 (?:
 (?<![\\p{S}\\p{P}&&[^(),;\\[\\]\`{}_"']])
-(?:=|--+|::|\u2237)
+(?:=|--+|::|∷)
 (?![\\p{S}\\p{P}&&[^(),;\\[\\]\`{}_"']])
 )
 
@@ -242,7 +242,7 @@ const e=Object.freeze({displayName:"Haskell",fileTypes:["hs","hs-boot","hsig"],n
 `,name:"string.quoted.single.haskell"},comma:{match:",",name:"punctuation.separator.comma.haskell"},comment_like:{patterns:[{include:"#cpp"},{include:"#pragma"},{include:"#comments"}]},comments:{patterns:[{begin:"^(\\s*)(--\\s[\\|\\$])",beginCaptures:{2:{name:"punctuation.whitespace.comment.leading.haskell"}},end:"(?=^(?!\\1--+(?![\\p{S}\\p{P}&&[^(),;\\[\\]`{}_\"']])))",name:"comment.block.documentation.haskell"},{begin:"(^[ \\t]+)?(--\\s[\\^\\*])",beginCaptures:{1:{name:"punctuation.whitespace.comment.leading.haskell"}},end:"\\n",name:"comment.line.documentation.haskell"},{applyEndPatternLast:1,begin:"\\{-\\s?[\\|\\$\\*\\^]",captures:{0:{name:"punctuation.definition.comment.haskell"}},end:"-\\}",name:"comment.block.documentation.haskell",patterns:[{include:"#block_comment"}]},{begin:"(^[ \\t]+)?(?=--+(?![\\p{S}\\p{P}&&[^(),;\\[\\]`{}_\"']]))",beginCaptures:{1:{name:"punctuation.whitespace.comment.leading.haskell"}},comment:"Operators may begin with '--' as long as they are not entirely composed of '-' characters. This means comments can't be immediately followed by an allowable operator character.",end:"(?!\\G)",patterns:[{begin:"--",beginCaptures:{0:{name:"punctuation.definition.comment.haskell"}},end:"\\n",name:"comment.line.double-dash.haskell"}]},{include:"#block_comment"}]},context:{captures:{1:{patterns:[{include:"#comment_like"},{include:"#type_signature"}]},2:{name:"keyword.operator.big-arrow.haskell"}},match:`(?x)
 (.*)
 (?<![\\p{S}\\p{P}&&[^(),;\\[\\]\`{}_"']])
-(=>|\u21D2)
+(=>|⇒)
 (?![\\p{S}\\p{P}&&[^(),;\\[\\]\`{}_"']])
 `},cpp:{captures:{1:{name:"punctuation.definition.preprocessor.c"}},comment:`In addition to Haskell's "native" syntax, GHC permits the C preprocessor to be run on a source file.`,match:"^(#).*$",name:"meta.preprocessor.c"},data_constructor:{match:"\\b(?<!')[\\p{Lu}\\p{Lt}][\\p{Ll}_\\p{Lu}\\p{Lt}\\p{Nd}']*(?![\\.'\\w])",name:"constant.other.haskell"},deriving:{patterns:[{begin:"^(\\s*)(deriving)\\s+(?:(via|stock|newtype|anyclass)\\s+)?",beginCaptures:{2:{name:"keyword.other.deriving.haskell"},3:{name:"keyword.other.deriving.strategy.$3.haskell"}},end:`(?x)
 
@@ -260,7 +260,7 @@ const e=Object.freeze({displayName:"Haskell",fileTypes:["hs","hs-boot","hsig"],n
 (deriving)(?:\\s+(stock|newtype|anyclass))?\\s+
 ([\\p{Lu}\\p{Lt}][\\p{Ll}_\\p{Lu}\\p{Lt}\\p{Nd}']*)
 (\\s+(via)\\s+(.*)$)?
-`,name:"meta.deriving.haskell"},{match:"(?<!')\\b(via)\\b(?!')",name:"keyword.other.deriving.strategy.via.haskell"}]},double_colon:{captures:{1:{name:"keyword.operator.double-colon.haskell"}},match:"\\s*(::|\u2237)(?![\\p{S}\\p{P}&&[^(),;\\[\\]`{}_\"']])\\s*"},export_constructs:{patterns:[{include:"#comment_like"},{begin:"\\b(?<!')(pattern)\\b(?!')",beginCaptures:{1:{name:"keyword.other.pattern.haskell"}},end:`(?x)
+`,name:"meta.deriving.haskell"},{match:"(?<!')\\b(via)\\b(?!')",name:"keyword.other.deriving.strategy.via.haskell"}]},double_colon:{captures:{1:{name:"keyword.operator.double-colon.haskell"}},match:"\\s*(::|∷)(?![\\p{S}\\p{P}&&[^(),;\\[\\]`{}_\"']])\\s*"},export_constructs:{patterns:[{include:"#comment_like"},{begin:"\\b(?<!')(pattern)\\b(?!')",beginCaptures:{1:{name:"keyword.other.pattern.haskell"}},end:`(?x)
 
 ([\\p{Lu}\\p{Lt}][\\p{Ll}_\\p{Lu}\\p{Lt}\\p{Nd}']*)
 
@@ -280,7 +280,7 @@ const e=Object.freeze({displayName:"Haskell",fileTypes:["hs","hs-boot","hsig"],n
 
 
 )
-`,name:"meta.$3.foreign.haskell",patterns:[{include:"#comment_like"},{captures:{1:{name:"keyword.other.calling-convention.$1.haskell"}},match:"\\b(?<!')(ccall|cplusplus|dotnet|jvm|stdcall|prim|capi)\\s+"},{begin:`(?=")|(?=\\b(?<!')([\\p{Ll}_][\\p{Ll}_\\p{Lu}\\p{Lt}\\p{Nd}']*)\\b(?!'))`,end:"(?=(::|\u2237)(?![\\p{S}\\p{P}&&[^(),;\\[\\]`{}_\"']]))",patterns:[{include:"#comment_like"},{captures:{1:{name:"keyword.other.safety.$1.haskell"},2:{name:"entity.name.foreign.haskell",patterns:[{include:"#string_literal"}]},3:{name:"entity.name.function.haskell"},4:{name:"entity.name.function.infix.haskell"}},match:`(?x)
+`,name:"meta.$3.foreign.haskell",patterns:[{include:"#comment_like"},{captures:{1:{name:"keyword.other.calling-convention.$1.haskell"}},match:"\\b(?<!')(ccall|cplusplus|dotnet|jvm|stdcall|prim|capi)\\s+"},{begin:`(?=")|(?=\\b(?<!')([\\p{Ll}_][\\p{Ll}_\\p{Lu}\\p{Lt}\\p{Nd}']*)\\b(?!'))`,end:"(?=(::|∷)(?![\\p{S}\\p{P}&&[^(),;\\[\\]`{}_\"']]))",patterns:[{include:"#comment_like"},{captures:{1:{name:"keyword.other.safety.$1.haskell"},2:{name:"entity.name.foreign.haskell",patterns:[{include:"#string_literal"}]},3:{name:"entity.name.function.haskell"},4:{name:"entity.name.function.infix.haskell"}},match:`(?x)
 \\b(?<!')(safe|unsafe|interruptible)\\b(?!')
 \\s*
 ("(?:\\\\"|[^"])*")?
@@ -308,7 +308,7 @@ const e=Object.freeze({displayName:"Haskell",fileTypes:["hs","hs-boot","hsig"],n
 (0[xX]_*[0-9a-fA-F][_0-9a-fA-F]*\\.[0-9a-fA-F][_0-9a-fA-F]*(?:[pP][-+]?[0-9][_0-9]*)?
 |0[xX]_*[0-9a-fA-F][_0-9a-fA-F]*[pP][-+]?[0-9][_0-9]*
 )
-)\\b(?!')`},forall:{begin:"\\b(?<!')(forall|\u2200)\\b(?!')",beginCaptures:{1:{name:"keyword.other.forall.haskell"}},end:"(\\.)|(->|\u2192)",endCaptures:{1:{name:"keyword.operator.period.haskell"},2:{name:"keyword.operator.arrow.haskell"}},patterns:[{include:"#comment_like"},{include:"#type_variable"},{include:"#type_signature"}]},fun_decl:{begin:`(?x)^(\\s*)
+)\\b(?!')`},forall:{begin:"\\b(?<!')(forall|∀)\\b(?!')",beginCaptures:{1:{name:"keyword.other.forall.haskell"}},end:"(\\.)|(->|→)",endCaptures:{1:{name:"keyword.operator.period.haskell"},2:{name:"keyword.operator.arrow.haskell"}},patterns:[{include:"#comment_like"},{include:"#type_variable"},{include:"#type_signature"}]},fun_decl:{begin:`(?x)^(\\s*)
 (?<fn>
 (?:
 [\\p{Ll}_][\\p{Ll}_\\p{Lu}\\p{Lt}\\p{Nd}']*\\#*
@@ -320,7 +320,7 @@ const e=Object.freeze({displayName:"Haskell",fileTypes:["hs","hs-boot","hsig"],n
 )
 (?:\\s*,\\s*\\g<fn>)?
 )
-\\s*(?<![\\p{S}\\p{P}&&[^\\),;\\]\`}_"']])(::|\u2237)(?![\\p{S}\\p{P}&&[^\\(,;\\[\`{_"']])
+\\s*(?<![\\p{S}\\p{P}&&[^\\),;\\]\`}_"']])(::|∷)(?![\\p{S}\\p{P}&&[^\\(,;\\[\`{_"']])
 `,beginCaptures:{2:{name:"entity.name.function.haskell",patterns:[{include:"#reserved_symbol"},{include:"#prefix_op"}]},3:{name:"keyword.operator.double-colon.haskell"}},end:`(?x)
 
 
@@ -328,7 +328,7 @@ const e=Object.freeze({displayName:"Haskell",fileTypes:["hs","hs-boot","hsig"],n
 
 (?<![\\p{S}\\p{P}&&[^(),;\\[\\]\`{}_"']])
 
-((<-|\u2190)|(=)|(-<|\u21A2)|(-<<|\u291B))
+((<-|←)|(=)|(-<|↢)|(-<<|⤛))
 
 ([(),;\\[\\]\`{}_"']|[^\\p{S}\\p{P}])
 )
@@ -442,13 +442,13 @@ as an infix expression (4 \`elem\` [1..10]).
 |(=)
 |(\\\\)
 |(\\|)
-|(<-|\u2190)
-|(->|\u2192)
-|(-<|\u21A2)
-|(-<<|\u291B)
-|(>-|\u291A)
-|(>>-|\u291C)
-|(\u2200)
+|(<-|←)
+|(->|→)
+|(-<|↢)
+|(-<<|⤛)
+|(>-|⤚)
+|(>>-|⤜)
+|(∀)
 )
 (?![\\p{S}\\p{P}&&[^(),;\\[\\]\`{}_"'']])`},{captures:{1:{name:"keyword.operator.postfix.hash.haskell"}},match:`(?x)
 (?<=[\\p{Ll}_\\p{Lu}\\p{Lt}\\p{Nd}\\p{S}\\p{P}&&[^\\#,;\\[\`{]])
@@ -470,7 +470,7 @@ as an infix expression (4 \`elem\` [1..10]).
 (?![\\p{S}\\p{P}&&[^(),;\\[\\]{}\`_"']]).*$)
 
 
-)`,name:"meta.role-annotation.haskell",patterns:[{include:"#comment_like"},{include:"#type_constructor"},{captures:{1:{name:"keyword.other.role.$1.haskell"}},match:"\\b(?<!')(nominal|representational|phantom)\\b(?!')"}]}]},start_type_signature:{patterns:[{begin:"^(\\s*)(::|\u2237)(?![\\p{S}\\p{P}&&[^\\(,;\\[`{_\"']])\\s*",beginCaptures:{2:{name:"keyword.operator.double-colon.haskell"}},end:`(?x)
+)`,name:"meta.role-annotation.haskell",patterns:[{include:"#comment_like"},{include:"#type_constructor"},{captures:{1:{name:"keyword.other.role.$1.haskell"}},match:"\\b(?<!')(nominal|representational|phantom)\\b(?!')"}]}]},start_type_signature:{patterns:[{begin:"^(\\s*)(::|∷)(?![\\p{S}\\p{P}&&[^\\(,;\\[`{_\"']])\\s*",beginCaptures:{2:{name:"keyword.operator.double-colon.haskell"}},end:`(?x)
 
 (?=
 \\#?\\)
@@ -480,11 +480,11 @@ as an infix expression (4 \`elem\` [1..10]).
 |
 (?<![\\p{S}\\p{P}&&[^(),;\\[\\]\`{}_"']])
 (?:
-(\\\\|\u03BB)
-|(<-|\u2190)
+(\\\\|λ)
+|(<-|←)
 |(=)
-|(-<|\u21A2)
-|(-<<|\u291B)
+|(-<|↢)
+|(-<<|⤛)
 )
 ([(),;\\[\\]\`{}_"']|[^\\p{S}\\p{P}])
 |(\\#|@)-\\}
@@ -500,7 +500,7 @@ as an infix expression (4 \`elem\` [1..10]).
 
 
 )
-)`,name:"meta.type-declaration.haskell",patterns:[{include:"#type_signature"}]},{begin:"(?<![\\p{S}\\p{P}&&[^\\(,;\\[`{_\"']])(::|\u2237)(?![\\p{S}\\p{P}&&[^\\(,;\\[`{_\"']])",beginCaptures:{1:{name:"keyword.operator.double-colon.haskell"}},end:`(?x)
+)`,name:"meta.type-declaration.haskell",patterns:[{include:"#type_signature"}]},{begin:"(?<![\\p{S}\\p{P}&&[^\\(,;\\[`{_\"']])(::|∷)(?![\\p{S}\\p{P}&&[^\\(,;\\[`{_\"']])",beginCaptures:{1:{name:"keyword.operator.double-colon.haskell"}},end:`(?x)
 
 (?=
 \\#?\\)
@@ -511,11 +511,11 @@ as an infix expression (4 \`elem\` [1..10]).
 |
 (?<![\\p{S}\\p{P}&&[^(),;\\[\\]\`{}_"']])
 (?:
-(\\\\|\u03BB)
-|(<-|\u2190)
+(\\\\|λ)
+|(<-|←)
 |(=)
-|(-<|\u21A2)
-|(-<<|\u291B)
+|(-<|↢)
+|(-<<|⤛)
 )
 ([(),;\\[\\]\`{}_"']|[^\\p{S}\\p{P}])
 
@@ -554,6 +554,6 @@ as an infix expression (4 \`elem\` [1..10]).
 
 ([\\p{Lu}\\p{Lt}][\\p{Ll}_\\p{Lu}\\p{Lt}\\p{Nd}']*)
 
-(\`)`}]},type_signature:{patterns:[{include:"#comment_like"},{captures:{1:{name:"keyword.operator.promotion.haskell"},2:{name:"punctuation.paren.haskell"},3:{name:"punctuation.paren.haskell"}},match:"(')?(\\()\\s*(\\))",name:"support.constant.unit.haskell"},{captures:{1:{name:"punctuation.paren.haskell"},2:{name:"keyword.operator.hash.haskell"},3:{name:"keyword.operator.hash.haskell"},4:{name:"punctuation.paren.haskell"}},match:"(\\()(#)\\s*(#)(\\))",name:"support.constant.unit.unboxed.haskell"},{captures:{1:{name:"keyword.operator.promotion.haskell"},2:{name:"punctuation.paren.haskell"},3:{name:"punctuation.paren.haskell"}},match:"(')?(\\()\\s*,[\\s,]*(\\))",name:"support.constant.tuple.haskell"},{captures:{1:{name:"punctuation.paren.haskell"},2:{name:"keyword.operator.hash.haskell"},3:{name:"keyword.operator.hash.haskell"},4:{name:"punctuation.paren.haskell"}},match:"(\\()(#)\\s*(#)(\\))",name:"support.constant.unit.unboxed.haskell"},{captures:{1:{name:"punctuation.paren.haskell"},2:{name:"keyword.operator.hash.haskell"},3:{name:"keyword.operator.hash.haskell"},4:{name:"punctuation.paren.haskell"}},match:"(\\()(#)\\s*,[\\s,]*(#)(\\))",name:"support.constant.tuple.unboxed.haskell"},{captures:{1:{name:"keyword.operator.promotion.haskell"},2:{name:"punctuation.bracket.haskell"},3:{name:"punctuation.bracket.haskell"}},match:"(')?(\\[)\\s*(\\])",name:"support.constant.empty-list.haskell"},{include:"#integer_literals"},{match:"(::|\u2237)(?![\\p{S}\\p{P}&&[^(),;\\[\\]`{}_\"']])",name:"keyword.operator.double-colon.haskell"},{include:"#forall"},{match:"=>|\u21D2",name:"keyword.operator.big-arrow.haskell"},{include:"#string_literal"},{match:"'[^']'",name:"invalid"},{include:"#type_application"},{include:"#reserved_symbol"},{include:"#type_operator"},{include:"#type_constructor"},{begin:"(\\()(#)",beginCaptures:{1:{name:"punctuation.paren.haskell"},2:{name:"keyword.operator.hash.haskell"}},end:"(#)(\\))",endCaptures:{1:{name:"keyword.operator.hash.haskell"},2:{name:"punctuation.paren.haskell"}},patterns:[{include:"#comma"},{include:"#type_signature"}]},{begin:"(')?(\\()",beginCaptures:{1:{name:"keyword.operator.promotion.haskell"},2:{name:"punctuation.paren.haskell"}},end:"(\\))",endCaptures:{1:{name:"punctuation.paren.haskell"}},patterns:[{include:"#comma"},{include:"#type_signature"}]},{begin:"(')?(\\[)",beginCaptures:{1:{name:"keyword.operator.promotion.haskell"},2:{name:"punctuation.bracket.haskell"}},end:"(\\])",endCaptures:{1:{name:"punctuation.bracket.haskell"}},patterns:[{include:"#comma"},{include:"#type_signature"}]},{include:"#type_variable"}]},type_variable:{match:"\\b(?<!')(?!(?:forall|deriving)\\b(?!'))[\\p{Ll}_][\\p{Ll}_\\p{Lu}\\p{Lt}\\p{Nd}']*",name:"variable.other.generic-type.haskell"},where:{patterns:[{begin:`(?x)
+(\`)`}]},type_signature:{patterns:[{include:"#comment_like"},{captures:{1:{name:"keyword.operator.promotion.haskell"},2:{name:"punctuation.paren.haskell"},3:{name:"punctuation.paren.haskell"}},match:"(')?(\\()\\s*(\\))",name:"support.constant.unit.haskell"},{captures:{1:{name:"punctuation.paren.haskell"},2:{name:"keyword.operator.hash.haskell"},3:{name:"keyword.operator.hash.haskell"},4:{name:"punctuation.paren.haskell"}},match:"(\\()(#)\\s*(#)(\\))",name:"support.constant.unit.unboxed.haskell"},{captures:{1:{name:"keyword.operator.promotion.haskell"},2:{name:"punctuation.paren.haskell"},3:{name:"punctuation.paren.haskell"}},match:"(')?(\\()\\s*,[\\s,]*(\\))",name:"support.constant.tuple.haskell"},{captures:{1:{name:"punctuation.paren.haskell"},2:{name:"keyword.operator.hash.haskell"},3:{name:"keyword.operator.hash.haskell"},4:{name:"punctuation.paren.haskell"}},match:"(\\()(#)\\s*(#)(\\))",name:"support.constant.unit.unboxed.haskell"},{captures:{1:{name:"punctuation.paren.haskell"},2:{name:"keyword.operator.hash.haskell"},3:{name:"keyword.operator.hash.haskell"},4:{name:"punctuation.paren.haskell"}},match:"(\\()(#)\\s*,[\\s,]*(#)(\\))",name:"support.constant.tuple.unboxed.haskell"},{captures:{1:{name:"keyword.operator.promotion.haskell"},2:{name:"punctuation.bracket.haskell"},3:{name:"punctuation.bracket.haskell"}},match:"(')?(\\[)\\s*(\\])",name:"support.constant.empty-list.haskell"},{include:"#integer_literals"},{match:"(::|∷)(?![\\p{S}\\p{P}&&[^(),;\\[\\]`{}_\"']])",name:"keyword.operator.double-colon.haskell"},{include:"#forall"},{match:"=>|⇒",name:"keyword.operator.big-arrow.haskell"},{include:"#string_literal"},{match:"'[^']'",name:"invalid"},{include:"#type_application"},{include:"#reserved_symbol"},{include:"#type_operator"},{include:"#type_constructor"},{begin:"(\\()(#)",beginCaptures:{1:{name:"punctuation.paren.haskell"},2:{name:"keyword.operator.hash.haskell"}},end:"(#)(\\))",endCaptures:{1:{name:"keyword.operator.hash.haskell"},2:{name:"punctuation.paren.haskell"}},patterns:[{include:"#comma"},{include:"#type_signature"}]},{begin:"(')?(\\()",beginCaptures:{1:{name:"keyword.operator.promotion.haskell"},2:{name:"punctuation.paren.haskell"}},end:"(\\))",endCaptures:{1:{name:"punctuation.paren.haskell"}},patterns:[{include:"#comma"},{include:"#type_signature"}]},{begin:"(')?(\\[)",beginCaptures:{1:{name:"keyword.operator.promotion.haskell"},2:{name:"punctuation.bracket.haskell"}},end:"(\\])",endCaptures:{1:{name:"punctuation.bracket.haskell"}},patterns:[{include:"#comma"},{include:"#type_signature"}]},{include:"#type_variable"}]},type_variable:{match:"\\b(?<!')(?!(?:forall|deriving)\\b(?!'))[\\p{Ll}_][\\p{Ll}_\\p{Lu}\\p{Lt}\\p{Nd}']*",name:"variable.other.generic-type.haskell"},where:{patterns:[{begin:`(?x)
 (?<!')\\b(where)
-\\s*(\\{)(?!-)`,beginCaptures:{1:{name:"keyword.other.where.haskell"},2:{name:"punctuation.brace.haskell"}},end:"(\\})",endCaptures:{1:{name:"punctuation.brace.haskell"}},patterns:[{include:"$self"},{match:";",name:"punctuation.semicolon.haskell"}]},{match:"\\b(?<!')(where)\\b(?!')",name:"keyword.other.where.haskell"}]}},scopeName:"source.haskell",aliases:["hs"]});var a=[e];export{a as default};
+\\s*(\\{)(?!-)`,beginCaptures:{1:{name:"keyword.other.where.haskell"},2:{name:"punctuation.brace.haskell"}},end:"(\\})",endCaptures:{1:{name:"punctuation.brace.haskell"}},patterns:[{include:"$self"},{match:";",name:"punctuation.semicolon.haskell"}]},{match:"\\b(?<!')(where)\\b(?!')",name:"keyword.other.where.haskell"}]}},scopeName:"source.haskell",aliases:["hs"]});var n=[e];export{n as default};

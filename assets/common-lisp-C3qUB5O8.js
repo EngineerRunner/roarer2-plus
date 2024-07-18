@@ -298,4 +298,4 @@ signed-byte|short-float|long-float|keyword|fixnum|extended-char|double-float|com
 (?=(\\s|\\(|\\)))`,name:"string.regexp.earmuffsasterisk.commonlisp"},{match:`(?xi)
 (?<=^|\\s|\\(|,@|,\\.|,)
 (?:\\*\\*\\*|\\*\\*|\\+\\+\\+|\\+\\+|\\/\\/\\/|\\/\\/)
-(?=(\\s|\\(|\\)))`,name:"variable.other.repl.commonlisp"}]}},scopeName:"source.commonlisp",aliases:["lisp"]});var a=[e];export{a as default};
+(?=(\\s|\\(|\\)))`,name:"variable.other.repl.commonlisp"}]}},scopeName:"source.commonlisp",aliases:["lisp"]});var n=[e];export{n as default};
