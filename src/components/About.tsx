@@ -1,5 +1,7 @@
 import { User } from "./User";
 import { api, cl, uploads } from "../lib/servers";
+import { Button } from "./Button";
+import { getCloudlink } from "../lib/api/cloudlink";
 
 export const About = () => {
   return (
@@ -62,6 +64,15 @@ export const About = () => {
         >
           GitHub
         </a>
+      </div>
+      <div>
+        <Button
+          onClick={() =>
+            getCloudlink().then((cloudlink) => cloudlink.disconnect())
+          }
+        >
+          Disconnect
+        </Button>
       </div>
     </div>
   );
