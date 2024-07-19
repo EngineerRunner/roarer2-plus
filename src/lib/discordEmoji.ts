@@ -139,6 +139,10 @@ export const discordEmoji = (
   { name: "snooga6", id: "1258860432719085638", isGif: false },
   { name: "snooga7", id: "1258860434497343590", isGif: false },
   { name: "snooga8", id: "1258860443468824616", isGif: false },
+  { name: "shipit", id: "1263937907824136282", isGif: false },
+  { name: "meowysob", id: "1263937906154799165", isGif: false },
+  { name: "xkcd", id: "1263937905080930428", isGif: false },
+  { name: "kyle", id: "1263937903487094846", isGif: false },
 ] satisfies DiscordEmoji[]
 ).sort((a, b) => (a.name > b.name ? 1 : a.name < b.name ? -1 : 0));
 
