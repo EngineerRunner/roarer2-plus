@@ -112,6 +112,7 @@ const PostBase = memo((props: PostBaseProps) => {
         ids: props.post.reply_to,
         postContent: props.post.p,
         replyText: "",
+        legacy: false,
       } satisfies PostWithReplies)
     : getReply(props.post.p);
 
@@ -286,7 +287,11 @@ const PostBase = memo((props: PostBaseProps) => {
                 Couldn't delete post. Message: {deleteError}
               </div>
             : undefined}
-            {!props.reply && reply?.ids ?
+            {(
+              !props.reply &&
+              reply?.ids &&
+              !(viewState === "source" && reply?.legacy)
+            ) ?
               <div className="my-1 flex flex-col gap-2">
                 {reply.ids.map((id) => (
                   <Post id={id} reply key={id} />

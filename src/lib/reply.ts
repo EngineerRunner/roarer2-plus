@@ -5,6 +5,7 @@ export type PostWithReplies = {
   ids: string[];
   postContent: string;
   replyText: string;
+  legacy: boolean;
 };
 export const getReply = (post: string): PostWithReplies | null => {
   const match = post.match(REPLY_REGEX);
@@ -28,6 +29,7 @@ export const getReply = (post: string): PostWithReplies | null => {
     ids: [id, ...(subReply?.ids ?? [])],
     postContent: subReply?.postContent ?? postContent,
     replyText: subReply ? replyText + subReply.replyText : replyText,
+    legacy: true
   };
 };
 
