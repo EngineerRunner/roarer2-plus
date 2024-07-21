@@ -81,6 +81,11 @@ export const Chats = (props: ChatsProps) => {
         onClick={props.onChatClick}
         current={props.currentChat === "livechat"}
       />
+      <Chat
+        chat="inbox"
+        onClick={props.onChatClick}
+        current={props.currentChat === "inbox"}
+      />
       {sortedChats.map((chat) => (
         <Chat
           key={chat}
@@ -106,15 +111,15 @@ const Chat = (props: ChatProps) => {
       state.loadChat,
     ]),
   );
-  if (props.chat !== "home" && props.chat !== "livechat") {
-    loadChat(props.chat);
-  }
+  loadChat(props.chat);
 
   const chat =
     props.chat === "home" ? "home"
     : props.chat === "livechat" ? "livechat"
+    : props.chat === "inbox" ? "inbox"
     : baseChat;
-  const isSpecialChat = chat === "home" || chat === "livechat";
+  const isSpecialChat =
+    chat === "home" || chat === "livechat" || chat === "inbox";
 
   if (!isSpecialChat && !chat) {
     return <>Loading chat...</>;
@@ -131,7 +136,8 @@ const Chat = (props: ChatProps) => {
     return <></>;
   }
 
-  const isDM = chat !== "home" && chat !== "livechat" && !chat.owner;
+  const isDM =
+    chat !== "home" && chat !== "livechat" && chat !== "inbox" && !chat.owner;
   const dmRecipient = (chat: APIChat) =>
     chat.members.find((member) => member !== credentials?.username);
 
@@ -153,7 +159,7 @@ const Chat = (props: ChatProps) => {
           username={dmRecipient(chat)}
           size="h-8 min-h-8 w-8 min-w-8"
         />
-      : chat !== "home" && chat !== "livechat" ?
+      : chat !== "home" && chat !== "livechat" && chat !== "inbox" ?
         <ChatProfilePicture chat={props.chat} size="h-8 min-h-8 w-8 min-w-8" />
       : undefined}
       <div className="grow">
@@ -164,6 +170,8 @@ const Chat = (props: ChatProps) => {
             "Home"
           : chat === "livechat" ?
             "Livechat"
+          : chat === "inbox" ?
+            "Inbox"
           : chat.nickname}
         </div>
         <div className="line-clamp-1 text-sm text-gray-500 dark:text-gray-400">

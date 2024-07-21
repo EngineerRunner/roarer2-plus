@@ -65,7 +65,7 @@ const POST_PACKET_SCHEMA = z.object({
   val: POST_SCHEMA,
 });
 
-const POST_REACTION_PACKET_CHEMA = z.object({
+const POST_REACTION_PACKET_SCHEMA = z.object({
   cmd: z.literal("post_reaction_add").or(z.literal("post_reaction_remove")),
   val: z.object({
     emoji: z.string(),
@@ -192,7 +192,7 @@ export const createPostsSlice: Slice<PostsSlice> = (set, get) => {
       });
     });
     cloudlink.on("packet", (packet: unknown) => {
-      const parsed = POST_REACTION_PACKET_CHEMA.safeParse(packet);
+      const parsed = POST_REACTION_PACKET_SCHEMA.safeParse(packet);
       if (!parsed.success) {
         return;
       }
@@ -330,7 +330,11 @@ export const createPostsSlice: Slice<PostsSlice> = (set, get) => {
       const { page, remove } = loadMore(current);
       const response = await request(
         fetch(
-          `${api}/${id === "home" ? "home" : `posts/${encodeURIComponent(id)}`}?page=${page}`,
+          `${api}/${
+            id === "home" ? "home"
+            : id === "inbox" ? "inbox"
+            : `posts/${encodeURIComponent(id)}`
+          }?page=${page}`,
           {
             headers:
               newState.credentials ? { Token: newState.credentials.token } : {},

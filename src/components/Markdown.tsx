@@ -211,7 +211,7 @@ const Link = (props: LinkProps) => {
   }
   return (
     <a
-      href={props.href}
+      href={urlFor(props.href)}
       className="font-bold text-lime-600"
       key={getKey()}
       target="_blank"
@@ -219,6 +219,15 @@ const Link = (props: LinkProps) => {
       {props.children}
     </a>
   );
+};
+
+const urlFor = (url: string) => {
+  try {
+    new URL(url);
+    return url;
+  } catch {
+    return `https://${url}`;
+  }
 };
 
 type SyntaxHighlightProps = {

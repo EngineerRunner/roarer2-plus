@@ -35,9 +35,7 @@ export const Chat = (props: ChatProps) => {
       state.updateChat,
     ]),
   );
-  if (props.chat !== "home" && props.chat !== "lievchat") {
-    loadChat(props.chat);
-  }
+  loadChat(props.chat);
   loadChatPosts(props.chat);
 
   const setReplyFromPost = useCallback((id: string) => {
@@ -73,6 +71,8 @@ export const Chat = (props: ChatProps) => {
           <div>
             {props.chat === "livechat" ?
               "Livechat"
+            : props.chat === "inbox" ?
+              "Inbox"
             : chat ?
               chat.error ?
                 `Failed getting chat. Message: ${chat.message}`
@@ -113,18 +113,22 @@ export const Chat = (props: ChatProps) => {
           : undefined}
         </p>
       }
-      <EnterPost
-        chat={props.chat}
-        replies={replies}
-        setReplies={setReplies}
-        onPost={() => {
-          if (!container.current || !container.current.parentElement) {
-            return;
-          }
-          container.current.parentElement.scrollTop = 0;
-        }}
-      />
-      <TypingIndicator chat={props.chat} />
+      {props.chat !== "inbox" ?
+        <>
+          <EnterPost
+            chat={props.chat}
+            replies={replies}
+            setReplies={setReplies}
+            onPost={() => {
+              if (!container.current || !container.current.parentElement) {
+                return;
+              }
+              container.current.parentElement.scrollTop = 0;
+            }}
+          />
+          <TypingIndicator chat={props.chat} />
+        </>
+      : undefined}
       {posts.posts.map((post) => (
         <Post key={post} id={post} onReply={setReplyFromPost} />
       ))}

@@ -114,7 +114,8 @@ export const createChatsSlice: Slice<ChatsSlice> = (set, get) => {
         chat in get().chats ||
         loadingChats.has(chat) ||
         chat === "home" ||
-        chat === "livechat"
+        chat === "livechat" ||
+        chat === "inbox"
       ) {
         return;
       }

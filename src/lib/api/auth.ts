@@ -9,7 +9,7 @@ const AUTH_RESPONSE = z.object({
   account: USER_SCHEMA,
   token: z.string(),
 });
-const AUTH_CL_RESPOSNE = z.object({
+const AUTH_CL_RESPONSE = z.object({
   cmd: z.literal("auth"),
   val: AUTH_RESPONSE,
 });
@@ -65,7 +65,7 @@ export const createAuthSlice: Slice<AuthSlice> = (set, get) => {
   initCloudlink(token);
   getCloudlink().then((cloudlink) => {
     cloudlink.on("packet", (packet: unknown) => {
-      const parsed = AUTH_CL_RESPOSNE.safeParse(packet);
+      const parsed = AUTH_CL_RESPONSE.safeParse(packet);
       if (!parsed.success) {
         return;
       }
