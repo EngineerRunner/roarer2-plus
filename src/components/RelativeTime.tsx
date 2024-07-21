@@ -7,9 +7,9 @@ const UNITS = [
   { ms: 1000 * 60, max: 60, unit: "minutes" },
   { ms: 1000 * 60 * 60, max: 24, unit: "hours" },
   { ms: 1000 * 60 * 60 * 24, max: 7, unit: "days" },
-  { ms: 1000 * 60 * 60 * 24, max: 4, unit: "weeks" },
-  { ms: 1000 * 60 * 60 * 24 * 4, max: 12, unit: "months" },
-  { ms: 1000 * 60 * 60 * 24 * 4 * 12, max: Infinity, unit: "years" },
+  { ms: 1000 * 60 * 60 * 24 * 7, max: 4, unit: "weeks" },
+  { ms: 1000 * 60 * 60 * 24 * 7 * 4, max: 12, unit: "months" },
+  { ms: 1000 * 60 * 60 * 24 * 7 * 4 * 12, max: Infinity, unit: "years" },
 ] as const satisfies {
   ms: number;
   max: number;
@@ -35,6 +35,7 @@ export const RelativeTime = (props: RelativeTimeProps) => {
 const formatter = new Intl.RelativeTimeFormat("en", { style: "short" });
 const calculateRelativeTime = (time: number) => {
   const diffMS = Date.now() - time * 1000;
-  const unit = UNITS.find((unit) => diffMS <= unit.ms * unit.max) ?? UNITS[0];
+  const unit =
+    UNITS.find((unit) => Math.round(diffMS / unit.ms) < unit.max) ?? UNITS[0];
   return formatter.format(-Math.round(diffMS / unit.ms), unit.unit);
 };
