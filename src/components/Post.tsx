@@ -455,6 +455,7 @@ export const AttachmentView = (props: AttachmentViewProps) => {
     return (
       <Popup
         triggerAsChild
+        wide
         trigger={
           <div className="flex flex-col items-center">
             {closeRow}
