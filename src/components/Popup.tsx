@@ -26,7 +26,7 @@ export const Popup = (props: PopupProps) => {
           className={twMerge(
             "absolute inset-0 z-[--z-popup] m-auto h-fit max-h-[90vh] w-fit overflow-auto rounded-xl bg-white px-4 py-2 dark:bg-gray-900",
             props.className,
-            props.wide ? "max-w-[90vw]" : "max-w-[40vw]",
+            props.wide ? "max-w-[90vw]" : "max-w-[min(90vw,30rem)]",
           )}
         >
           {props.children}
