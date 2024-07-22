@@ -23,7 +23,7 @@ import {
 export const PERMISSIONS = [
   {
     name: "Sysadmin",
-    description: "Administrator of Meower. Able to do anything.",
+    description: "System administrator of Meower.",
     icon: HardDrive,
   },
   {
