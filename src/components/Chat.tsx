@@ -115,17 +115,19 @@ export const Chat = (props: ChatProps) => {
       }
       {props.chat !== "inbox" ?
         <>
-          <EnterPost
-            chat={props.chat}
-            replies={replies}
-            setReplies={setReplies}
-            onPost={() => {
-              if (!container.current || !container.current.parentElement) {
-                return;
-              }
-              container.current.parentElement.scrollTop = 0;
-            }}
-          />
+          {credentials ?
+            <EnterPost
+              chat={props.chat}
+              replies={replies}
+              setReplies={setReplies}
+              onPost={() => {
+                if (!container.current || !container.current.parentElement) {
+                  return;
+                }
+                container.current.parentElement.scrollTop = 0;
+              }}
+            />
+          : undefined}
           <TypingIndicator chat={props.chat} />
         </>
       : undefined}

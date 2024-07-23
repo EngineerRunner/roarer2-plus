@@ -1,4 +1,11 @@
-import { File, Menu as MenuIcon, SmilePlus, Reply, X } from "lucide-react";
+import {
+  File,
+  Menu as MenuIcon,
+  SmilePlus,
+  Reply,
+  X,
+  FileVideo,
+} from "lucide-react";
 import * as Dialog from "@radix-ui/react-dialog";
 import { ReactNode, useRef, useState, memo } from "react";
 import { useShallow } from "zustand/react/shallow";
@@ -484,6 +491,42 @@ export const AttachmentView = (props: AttachmentViewProps) => {
             title={props.attachment.filename}
             width={props.attachment.width}
             height={props.attachment.height}
+          />
+        </div>
+      </Popup>
+    );
+  }
+
+  if (props.attachment.mime.startsWith("video/")) {
+    return (
+      <Popup
+        triggerAsChild
+        wide
+        trigger={
+          <button
+            type="button"
+            className="flex h-36 w-36 max-w-36 flex-col items-center justify-center gap-2 rounded-xl bg-lime-200 px-2 py-1 text-center dark:bg-lime-800"
+            title={props.attachment.filename}
+          >
+            <FileVideo className="h-14 w-14" strokeWidth={1.25} />
+            <div>
+              <div className="line-clamp-2 text-sm font-bold [overflow-wrap:anywhere]">
+                {props.attachment.filename}
+              </div>
+            </div>
+          </button>
+        }
+      >
+        <div className="flex flex-col gap-2">
+          <div className="flex gap-2">
+            <Dialog.Title className="grow text-xl font-bold">
+              {props.attachment.filename}
+            </Dialog.Title>
+          </div>
+          <video
+            src={`${uploads}/attachments/${props.attachment.id}/${props.attachment.filename}`}
+            controls
+            title={props.attachment.filename}
           />
         </div>
       </Popup>

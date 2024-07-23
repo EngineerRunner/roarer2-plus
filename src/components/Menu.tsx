@@ -19,7 +19,7 @@ export const Menu = (props: MenuProps) => {
           {...props.contentProps}
           className={twMerge(
             "z-[--z-above-sidebar] flex flex-col rounded-lg border border-gray-200 bg-white dark:border-gray-800 dark:bg-gray-950",
-            props.contextMenu ?? true ? "" : "px-2 py-1",
+            (props.contextMenu ?? true) ? "" : "px-2 py-1",
           )}
           align="end"
           sideOffset={4}

@@ -29,7 +29,7 @@ export const getReply = (post: string): PostWithReplies | null => {
     ids: [id, ...(subReply?.ids ?? [])],
     postContent: subReply?.postContent ?? postContent,
     replyText: subReply ? replyText + subReply.replyText : replyText,
-    legacy: true
+    legacy: true,
   };
 };
 

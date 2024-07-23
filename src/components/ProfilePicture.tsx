@@ -29,7 +29,7 @@ export const ProfilePicture = (props: ProfilePictureProps) => {
       pfp={user && !user.error ? user : NO_PROFILE_PICTURE}
       className={props.className}
       online={
-        props.dontShowOnline ?? false ? false
+        (props.dontShowOnline ?? false) ? false
         : props.username ?
           ulist.includes(props.username)
         : false
