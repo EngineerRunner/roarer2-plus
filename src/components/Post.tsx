@@ -469,7 +469,7 @@ export const AttachmentView = (props: AttachmentViewProps) => {
             <button type="button" aria-label={props.attachment.filename}>
               <img
                 key={props.attachment.id}
-                className="ounded-xl max-h-40"
+                className="max-h-40 rounded-xl"
                 src={`${uploads}/attachments/${props.attachment.id}/${props.attachment.filename}?preview`}
                 alt={props.attachment.filename}
                 title={props.attachment.filename}
@@ -499,37 +499,12 @@ export const AttachmentView = (props: AttachmentViewProps) => {
 
   if (props.attachment.mime.startsWith("video/")) {
     return (
-      <Popup
-        triggerAsChild
-        wide
-        trigger={
-          <button
-            type="button"
-            className="flex h-36 w-36 max-w-36 flex-col items-center justify-center gap-2 rounded-xl bg-lime-200 px-2 py-1 text-center dark:bg-lime-800"
-            title={props.attachment.filename}
-          >
-            <FileVideo className="h-14 w-14" strokeWidth={1.25} />
-            <div>
-              <div className="line-clamp-2 text-sm font-bold [overflow-wrap:anywhere]">
-                {props.attachment.filename}
-              </div>
-            </div>
-          </button>
-        }
-      >
-        <div className="flex flex-col gap-2">
-          <div className="flex gap-2">
-            <Dialog.Title className="grow text-xl font-bold">
-              {props.attachment.filename}
-            </Dialog.Title>
-          </div>
-          <video
-            src={`${uploads}/attachments/${props.attachment.id}/${props.attachment.filename}`}
-            controls
-            title={props.attachment.filename}
-          />
-        </div>
-      </Popup>
+      <video
+        src={`${uploads}/attachments/${props.attachment.id}/${props.attachment.filename}`}
+        className="max-h-40 rounded-xl"
+        controls
+        title={props.attachment.filename}
+      />
     );
   }
 
