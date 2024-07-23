@@ -1,11 +1,4 @@
-import {
-  File,
-  Menu as MenuIcon,
-  SmilePlus,
-  Reply,
-  X,
-  FileVideo,
-} from "lucide-react";
+import { File, Menu as MenuIcon, SmilePlus, Reply, X } from "lucide-react";
 import * as Dialog from "@radix-ui/react-dialog";
 import { ReactNode, useRef, useState, memo } from "react";
 import { useShallow } from "zustand/react/shallow";
