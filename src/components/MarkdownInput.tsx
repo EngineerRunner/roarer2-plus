@@ -16,6 +16,7 @@ import { Attachment } from "../lib/api/posts";
 import { Checkbox } from "./Checkbox";
 import { EmojiPicker } from "./EmojiPicker";
 import { Markdown } from "./Markdown";
+import { IconButton } from "./IconButton";
 
 export type MarkdownInputProps = {
   chat: string;
@@ -141,7 +142,7 @@ export const MarkdownInput = (props: MarkdownInputProps) => {
         before={
           <>
             {showAttachments ?
-              <button
+              <IconButton
                 type="button"
                 aria-label="Upload attachment"
                 disabled={state !== "writing"}
@@ -162,7 +163,7 @@ export const MarkdownInput = (props: MarkdownInputProps) => {
                   ref={fileInput}
                 />
                 <CirclePlus aria-hidden />
-              </button>
+              </IconButton>
             : undefined}
           </>
         }
@@ -171,22 +172,22 @@ export const MarkdownInput = (props: MarkdownInputProps) => {
             <EmojiPicker
               onEmoji={handleEmoji}
               trigger={
-                <button
+                <IconButton
                   type="button"
                   aria-label="Pick an emoji"
                   disabled={state !== "writing"}
                 >
                   <Smile aria-hidden />
-                </button>
+                </IconButton>
               }
             />
-            <button
+            <IconButton
               type="submit"
               aria-label="Send"
               disabled={state !== "writing"}
             >
               <SendHorizontal aria-hidden />
-            </button>
+            </IconButton>
           </div>
         }
         above={

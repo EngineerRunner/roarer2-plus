@@ -42,7 +42,7 @@ export const MenuItem = (props: MenuItemProps) => {
     <button
       type="button"
       className={
-        "px-2 py-1 text-left last:rounded-b-lg focus:outline-0 hover:enabled:bg-gray-100 disabled:opacity-70 dark:hover:enabled:bg-gray-800"
+        "px-2 py-1 text-left transition-[background-color] last:rounded-b-lg focus:outline-0 hover:enabled:bg-gray-100 disabled:opacity-70 dark:hover:enabled:bg-gray-800"
       }
       disabled={props.disabled}
       onClick={props.onClick}

@@ -5,6 +5,7 @@ import { Popup } from "./Popup";
 import { UserView } from "./UserView";
 import { useAPI } from "../lib/api";
 import * as Dialog from "@radix-ui/react-dialog";
+import { IconButton } from "./IconButton";
 
 export type StoredAccountsProps = {
   children: ReactNode;
@@ -60,13 +61,13 @@ const StoredAccount = (props: StoredAccountProps) => {
         text={props.isLoggedIn ? "Logged in" : undefined}
         className="px-4"
       />
-      <button
+      <IconButton
         aria-label="Remove"
         className="bg-white px-4 py-1 hover:bg-gray-100 dark:bg-gray-900 dark:hover:bg-gray-800"
         onClick={() => removeStoredAccount(props.username)}
       >
         <X aria-hidden />
-      </button>
+      </IconButton>
     </div>
   );
 };

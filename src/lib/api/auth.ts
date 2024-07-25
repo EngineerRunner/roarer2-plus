@@ -14,7 +14,10 @@ const AUTH_CL_RESPONSE = z.object({
   val: AUTH_RESPONSE,
 });
 
-const STORED_ACCOUNTS_SCHEMA = z.record(z.string(), z.string());
+const STORED_ACCOUNTS_SCHEMA = z.object({
+  newTokenSystem: z.literal(true),
+  accounts: z.record(z.string(), z.string()),
+});
 
 export const USERNAME_STORAGE = "roarer2:username";
 export const TOKEN_STORAGE = "roarer2:token";
@@ -23,7 +26,7 @@ export const STORED_ACCOUNTS_STORAGE = "roarer2:storedAccounts";
 const parseStoredAccounts = (maybeJSON: string) => {
   try {
     const parsed = STORED_ACCOUNTS_SCHEMA.parse(JSON.parse(maybeJSON));
-    return { error: false, accounts: parsed } as const;
+    return { error: false, accounts: parsed.accounts } as const;
   } catch {
     return { error: true } as const;
   }
@@ -34,7 +37,7 @@ export type AuthSlice = {
     username: string;
     token: string;
   } | null;
-  storedAccounts: z.infer<typeof STORED_ACCOUNTS_SCHEMA>;
+  storedAccounts: Record<string, string>;
   storeAccount: (username: string, token: string) => void;
   removeStoredAccount: (username: string) => void;
   finishedAuth: () => Promise<void>;
@@ -75,6 +78,7 @@ export const createAuthSlice: Slice<AuthSlice> = (set, get) => {
           username: parsed.data.val.account._id,
           token: parsed.data.val.token,
         };
+        draft.storeAccount(draft.credentials.username, draft.credentials.token);
         const home = draft.chatPosts.home;
         if (!home || home.error) {
           return;

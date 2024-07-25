@@ -20,6 +20,7 @@ import { RelativeTime } from "./RelativeTime";
 import { twMerge } from "tailwind-merge";
 import { EmojiPicker } from "./EmojiPicker";
 import { DiscordEmoji } from "../lib/discordEmoji";
+import { IconButton } from "./IconButton";
 
 export type PostProps = {
   id: string;
@@ -218,29 +219,29 @@ const PostBase = memo((props: PostBaseProps) => {
                         onEmoji={handleReaction}
                         discordEmoji={false}
                         trigger={
-                          <button type="button" aria-label="React">
+                          <IconButton type="button" aria-label="React">
                             <SmilePlus className="h-5 w-5" aria-hidden />
-                          </button>
+                          </IconButton>
                         }
                       />
                       {isInbox ?
                         undefined
-                      : <button
+                      : <IconButton
                           type="button"
                           aria-label="Reply"
                           onClick={doReply}
                         >
                           <Reply className="h-6 w-6" aria-hidden />
-                        </button>
+                        </IconButton>
                       }
                       <Menu
                         trigger={
-                          <button
+                          <IconButton
                             aria-label="Actions"
                             className="flex items-center"
                           >
                             <MenuIcon className="h-6 w-6" aria-hidden />
-                          </button>
+                          </IconButton>
                         }
                       >
                         <MenuItem disabled>Report</MenuItem>
@@ -320,6 +321,7 @@ const PostBase = memo((props: PostBaseProps) => {
                       props.reply === "topLevel" ? false : props.reply
                     }
                     inline={!!props.reply}
+                    bigEmoji={!props.reply}
                   >
                     {post}
                   </Markdown>
@@ -462,7 +464,7 @@ export const AttachmentView = (props: AttachmentViewProps) => {
             <button type="button" aria-label={props.attachment.filename}>
               <img
                 key={props.attachment.id}
-                className="max-h-40 rounded-xl"
+                className="max-h-40"
                 src={`${uploads}/attachments/${props.attachment.id}/${props.attachment.filename}?preview`}
                 alt={props.attachment.filename}
                 title={props.attachment.filename}
@@ -494,7 +496,7 @@ export const AttachmentView = (props: AttachmentViewProps) => {
     return (
       <video
         src={`${uploads}/attachments/${props.attachment.id}/${props.attachment.filename}`}
-        className="max-h-40 rounded-xl"
+        className="max-h-40"
         controls
         title={props.attachment.filename}
       />
@@ -505,7 +507,7 @@ export const AttachmentView = (props: AttachmentViewProps) => {
     <div className="relative inline-flex flex-col items-center">
       <a ref={download} download={props.attachment.filename} hidden />
       {closeRow}
-      <button
+      <Button
         onClick={async () => {
           const url = URL.createObjectURL(
             await (
@@ -521,7 +523,7 @@ export const AttachmentView = (props: AttachmentViewProps) => {
           download.current.click();
         }}
         type="button"
-        className="flex h-36 w-36 max-w-36 flex-col items-center justify-center gap-2 rounded-xl bg-lime-200 px-2 py-1 text-center dark:bg-lime-800"
+        className="flex h-36 w-36 max-w-36 flex-col items-center justify-center gap-2 text-center"
         title={props.attachment.filename}
       >
         <File className="h-14 w-14" strokeWidth={1.25} />
@@ -531,7 +533,7 @@ export const AttachmentView = (props: AttachmentViewProps) => {
           </div>
           <div className="text-sm">({byteToHuman(props.attachment.size)})</div>
         </div>
-      </button>
+      </Button>
     </div>
   );
 };

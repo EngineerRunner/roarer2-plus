@@ -5,6 +5,7 @@ import { useAPI } from "../lib/api";
 import { useShallow } from "zustand/react/shallow";
 import { Button } from "./Button";
 import { MarkdownInput } from "./MarkdownInput";
+import { Mention } from "./Mention";
 import { ChatSettings } from "./ChatSettings";
 import { Post } from "./Post";
 
@@ -78,11 +79,15 @@ export const Chat = (props: ChatProps) => {
                 `Failed getting chat. Message: ${chat.message}`
               : chat.deleted ?
                 ""
-              : (chat.nickname ??
-                "@" +
-                  chat.members.find(
-                    (member) => member !== credentials?.username,
-                  ))
+              : (chat.nickname ?? (
+                  <Mention
+                    username={
+                      chat.members.find(
+                        (member) => member !== credentials?.username,
+                      ) ?? ""
+                    }
+                  />
+                ))
 
             : "Loading chat name..."}
             <span className="ml-2 text-xs font-medium">({props.chat})</span>

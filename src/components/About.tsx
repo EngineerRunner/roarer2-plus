@@ -1,7 +1,7 @@
-import { User } from "./User";
 import { api, cl, uploads } from "../lib/servers";
 import { Button } from "./Button";
 import { getCloudlink } from "../lib/api/cloudlink";
+import { Mention } from "./Mention";
 
 export const About = () => {
   return (
@@ -12,13 +12,7 @@ export const About = () => {
         <a href="https://meower.org/" className="font-bold text-lime-600">
           Meower
         </a>{" "}
-        made by{" "}
-        <User username="EngineerRunner">
-          <button className="font-bold text-lime-600" type="button">
-            engineerrunner
-          </button>
-        </User>
-        .
+        made by <Mention username="engineerrunner" />.
       </p>
       <p>
         You're using Roarer 2+, which is a new version of Roarer 2 that's currently

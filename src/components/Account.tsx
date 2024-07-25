@@ -161,7 +161,11 @@ const AccountMenu = (props: AccountMenuProps) => {
     <Menu
       trigger={
         <button type="button" className="flex items-center gap-1">
-          <ProfilePicture username={props.username} dontShowOnline />
+          <ProfilePicture
+            size="w-7 h-7 min-w-7 min-h-7"
+            username={props.username}
+            dontShowOnline
+          />
           <ChevronDown />
         </button>
       }

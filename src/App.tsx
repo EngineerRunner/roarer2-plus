@@ -1,8 +1,7 @@
 import { useEffect, useState } from "react";
-import { ChevronLeft, Bell, BellOff, Moon, Sun, X } from "lucide-react";
+import { Bell, BellOff, Moon, Sun } from "lucide-react";
 import * as Dialog from "@radix-ui/react-dialog";
 import * as Tabs from "@radix-ui/react-tabs";
-import { twMerge } from "tailwind-merge";
 import { useShallow } from "zustand/react/shallow";
 import { useAPI } from "./lib/api";
 import { About } from "./components/About";
@@ -12,33 +11,25 @@ import { Chats } from "./components/Chats";
 import { Button } from "./components/Button";
 import { Ulist } from "./components/Ulist";
 import { Popup } from "./components/Popup";
+import { User } from "./components/User";
+import { IconButton } from "./components/IconButton";
 
 export const App = () => {
-  const [showSideNav, setShowSideNav] = useState(false);
   const [openChat, setOpenChat] = useAPI(
     useShallow((state) => [state.openChat, state.setOpenChat]),
   );
+  const user = new URLSearchParams(location.search).get("user");
 
   return (
-    <div className="flex h-screen max-h-screen divide-x divide-gray-200 overflow-auto bg-white dark:divide-gray-800 dark:bg-gray-950">
-      <div className="max-h-screen w-full min-w-[65%] overflow-auto bg-white p-2 dark:bg-gray-950">
-        <Button
-          className="absolute bottom-[50%] right-0 z-[--z-sidebar] h-14 rounded-none rounded-s-lg px-1 py-2 lg:hidden"
-          onClick={() => setShowSideNav((n) => !n)}
-          aria-label="Open navigation bar"
-        >
-          <ChevronLeft aria-hidden />
-        </Button>
+    <div className="flex h-[100dvh] max-h-[100dvh] w-screen snap-x snap-mandatory divide-x divide-gray-200 overflow-auto bg-white dark:divide-gray-800 dark:bg-gray-950">
+      <div className="max-h-full w-screen shrink-0 snap-start overflow-auto bg-white p-2 dark:bg-gray-950 lg:max-w-[65%]">
         <Chat chat={openChat} />
       </div>
       <Tabs.Root
         defaultValue="ulist"
-        className={twMerge(
-          "max-w-screen absolute right-0 top-0 z-[--z-sidebar] h-screen max-h-screen w-screen overflow-auto bg-white py-2 dark:bg-gray-950 lg:sticky lg:top-0 lg:block",
-          showSideNav ? "" : "hidden",
-        )}
+        className="z-[--z-sidebar] max-h-full w-screen shrink-0 snap-start overflow-auto bg-white pb-2 dark:bg-gray-950 lg:shrink"
       >
-        <Tabs.List className="mb-2 flex h-8 items-center justify-between px-2">
+        <Tabs.List className="sticky top-0 z-[--z-sidebar-top] flex items-center justify-between bg-white px-2 py-2 dark:bg-gray-950">
           <div className="flex items-center gap-2">
             <Tabs.Trigger
               className="border-b-2 border-transparent aria-selected:border-lime-500 aria-selected:font-bold dark:aria-selected:border-lime-600"
@@ -62,15 +53,9 @@ export const App = () => {
           <div className="flex gap-2">
             <NotificationToggle />
             <DarkMode />
-            <Account />
-            <button
-              type="button"
-              className="lg:hidden"
-              aria-label="Close"
-              onClick={() => setShowSideNav(false)}
-            >
-              <X aria-hidden />
-            </button>
+            <div className="ml-2">
+              <Account />
+            </div>
           </div>
         </Tabs.List>
         <Tabs.Content value="ulist">
@@ -83,6 +68,9 @@ export const App = () => {
           <About />
         </Tabs.Content>
       </Tabs.Root>
+      {user ?
+        <User username={user} children={undefined} openInitially />
+      : undefined}
     </div>
   );
 };
@@ -100,11 +88,11 @@ const DarkMode = () => {
   }, [darkMode]);
 
   return (
-    <button type="button" onClick={() => setDarkMode((d) => !d)}>
+    <IconButton type="button" onClick={() => setDarkMode((d) => !d)}>
       {darkMode ?
         <Sun />
       : <Moon />}
-    </button>
+    </IconButton>
   );
 };
 
@@ -119,31 +107,31 @@ const NotificationToggle = () => {
 
   return (
     notificationState === "disabled" ?
-      <button
+      <IconButton
         type="button"
         aria-label="Enable notifications"
         onClick={enableNotifications}
       >
         <BellOff aria-hidden />
-      </button>
+      </IconButton>
     : notificationState === "enabled" ?
-      <button
+      <IconButton
         type="button"
         aria-label="Disable notifications"
         onClick={disableNotifications}
       >
         <Bell aria-hidden />
-      </button>
+      </IconButton>
     : <Popup
         triggerAsChild
         trigger={
-          <button
+          <IconButton
             className="opacity-70"
             type="button"
             aria-label="Enable notifications"
           >
             <BellOff aria-hidden />
-          </button>
+          </IconButton>
         }
       >
         <div className="flex flex-col items-start gap-2">
