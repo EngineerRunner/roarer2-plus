@@ -195,7 +195,7 @@ export const MarkdownInput = (props: MarkdownInputProps) => {
             {replies.map((reply, index) => (
               <div className="flex gap-2" key={index}>
                 <div className="grow">
-                  <Post id={reply} reply="topLevel" />
+                  <Post id={reply} reply />
                 </div>
                 <button
                   type="button"

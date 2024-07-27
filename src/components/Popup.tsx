@@ -11,7 +11,7 @@ export type PopupProps = {
     onOpenChange: (open: boolean) => void;
   };
   className?: string;
-  wide?: boolean;
+  size?: "regular" | "extend" | "wide";
 };
 export const Popup = (props: PopupProps) => {
   return (
@@ -26,7 +26,9 @@ export const Popup = (props: PopupProps) => {
           className={twMerge(
             "absolute inset-0 z-[--z-popup] m-auto h-fit max-h-[80vh] w-fit overflow-auto rounded-xl bg-white px-4 py-2 focus:outline-0 dark:bg-gray-900",
             props.className,
-            props.wide ? "max-w-[90vw]" : "max-w-[min(90vw,30rem)]",
+            props.size === "wide" ? "max-w-[90vw]"
+            : props.size === "extend" ? "w-[min(90vw,30rem)]"
+            : "max-w-[min(90vw,30rem)]",
           )}
         >
           {props.children}

@@ -32,7 +32,7 @@ export const Chat = (props: ChatProps) => {
       state.loadChat,
       state.chatPosts[props.chat],
       state.loadChatPosts,
-      state.loadMore,
+      state.loadMorePosts,
       state.updateChat,
     ]),
   );

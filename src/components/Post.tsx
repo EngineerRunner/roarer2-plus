@@ -16,6 +16,7 @@ import { Markdown } from "./Markdown";
 import { Mention } from "./Mention";
 import { MarkdownInput } from "./MarkdownInput";
 import { ProfilePicture, ProfilePictureBase } from "./ProfilePicture";
+import { ReactionUsers } from "./ReactionUsers";
 import { RelativeTime } from "./RelativeTime";
 import { twMerge } from "tailwind-merge";
 import { EmojiPicker } from "./EmojiPicker";
@@ -24,7 +25,8 @@ import { IconButton } from "./IconButton";
 
 export type PostProps = {
   id: string;
-  reply?: boolean | "topLevel";
+  reply?: boolean;
+  topLevel?: boolean;
   onReply?: (id: string, content: string, username: string) => void;
 };
 export const Post = (props: PostProps) => {
@@ -42,7 +44,8 @@ export const Post = (props: PostProps) => {
             />
           }
           bubble="This post was deleted."
-          reply
+          reply={props.reply}
+          topLevel={props.topLevel}
         />
       );
     }
@@ -60,6 +63,7 @@ export const Post = (props: PostProps) => {
           />
         }
         reply={props.reply}
+        topLevel={props.topLevel}
         bubble="Loading..."
       />
     );
@@ -74,6 +78,7 @@ export const Post = (props: PostProps) => {
           />
         }
         reply={props.reply}
+        topLevel={props.topLevel}
         bubble={
           <>
             There was an error loading this post.
@@ -85,12 +90,20 @@ export const Post = (props: PostProps) => {
     );
   }
 
-  return <PostBase post={post} reply={props.reply} onReply={props.onReply} />;
+  return (
+    <PostBase
+      post={post}
+      reply={props.reply}
+      topLevel={props.topLevel}
+      onReply={props.onReply}
+    />
+  );
 };
 
 type PostBaseProps = {
   post: APIPost;
-  reply?: boolean | "topLevel";
+  reply?: boolean;
+  topLevel?: boolean;
   onReply?: (id: string, content: string, username: string) => void;
 };
 const PostBase = memo((props: PostBaseProps) => {
@@ -168,8 +181,9 @@ const PostBase = memo((props: PostBaseProps) => {
     <div>
       <SpeechBubble
         reply={props.reply}
+        topLevel={props.topLevel}
         transparent={!!props.post.optimistic}
-        arrow={false}
+        arrow={!props.reply}
         speaker={
           props.reply ? undefined : (
             <User username={props.post.u}>
@@ -272,6 +286,20 @@ const PostBase = memo((props: PostBaseProps) => {
                             <MenuItem onClick={handleDelete}>Delete</MenuItem>
                           </>
                         : undefined}
+                        <MenuItem
+                          onClick={() => {
+                            navigator.clipboard.writeText(
+                              `https://mybearworld.github.io/roarer-2?post=${props.post.post_id}`,
+                            );
+                          }}
+                        >
+                          Copy link
+                        </MenuItem>
+                        {props.post.reactions.length ?
+                          <ReactionUsers post={props.post.post_id}>
+                            <MenuItem dontClose>Reactions</MenuItem>
+                          </ReactionUsers>
+                        : undefined}
                       </Menu>
                     </>
                   : undefined}
@@ -295,7 +323,7 @@ const PostBase = memo((props: PostBaseProps) => {
             ) ?
               <div className="my-1 flex flex-col gap-2">
                 {reply.ids.map((id) => (
-                  <Post id={id} reply key={id} />
+                  <Post id={id} reply topLevel={false} key={id} />
                 ))}
               </div>
             : undefined}
@@ -317,9 +345,7 @@ const PostBase = memo((props: PostBaseProps) => {
               : viewState === "view" ?
                 <>
                   <Markdown
-                    secondaryBackground={
-                      props.reply === "topLevel" ? false : props.reply
-                    }
+                    secondaryBackground={props.topLevel ? false : props.reply}
                     inline={!!props.reply}
                     bigEmoji={!props.reply}
                   >
@@ -374,18 +400,20 @@ const PostBase = memo((props: PostBaseProps) => {
 });
 
 type SpeechBubbleProps = {
-  reply?: boolean | "topLevel";
+  reply?: boolean;
+  topLevel?: boolean;
   speaker: ReactNode;
   bubble: ReactNode;
   transparent?: boolean;
   arrow?: boolean;
 };
 const SpeechBubble = (props: SpeechBubbleProps) => {
+  const topLevel = props.topLevel ?? true;
   return (
     <div
       className={twMerge(
         "flex",
-        (props.arrow ?? true) ? "gap-3" : "gap-1",
+        (props.arrow ?? true) ? "gap-2" : "gap-1",
         props.reply ? "items-center" : "",
         props.transparent ? "opacity-70" : "",
       )}
@@ -394,9 +422,9 @@ const SpeechBubble = (props: SpeechBubbleProps) => {
       <div
         className={twMerge(
           "relative min-w-0 grow break-words rounded-lg px-2 py-1",
-          props.reply && props.reply !== "topLevel" ?
-            "bg-gray-200 dark:bg-gray-800"
-          : "bg-gray-100 dark:bg-gray-900",
+          topLevel ?
+            "bg-gray-100 dark:bg-gray-900"
+          : "bg-gray-200 dark:bg-gray-800",
           (props.arrow ?? true) ? "rounded-ss-none" : "",
         )}
       >
@@ -404,9 +432,9 @@ const SpeechBubble = (props: SpeechBubbleProps) => {
           <div
             className={twMerge(
               "absolute left-[calc(-0.5rem-theme(spacing.2))] top-0 box-content h-0 w-0 border-[length:0.5rem] border-transparent border-r-gray-100 contrast-more:hidden",
-              props.reply && props.reply !== "topLevel" ?
-                "border-r-gray-200 dark:border-r-gray-800"
-              : "border-r-gray-100 dark:border-r-gray-900",
+              topLevel ?
+                "border-r-gray-100 dark:border-r-gray-900"
+              : "border-r-gray-200 dark:border-r-gray-800",
             )}
             aria-hidden
           />
@@ -457,7 +485,7 @@ export const AttachmentView = (props: AttachmentViewProps) => {
     return (
       <Popup
         triggerAsChild
-        wide
+        size="wide"
         trigger={
           <div className="flex flex-col items-center">
             {closeRow}

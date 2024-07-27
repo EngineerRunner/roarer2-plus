@@ -46,17 +46,6 @@ export const Chats = (props: ChatsProps) => {
       </div>
     );
   }
-  if (userChats.chats.length === 0) {
-    return (
-      <div className="flex h-full flex-col items-center justify-center text-center">
-        <p className="text-lg font-bold">No chats yet!</p>
-        <p>
-          Ask someone on a better client than this to add you to one or to DM
-          you.
-        </p>
-      </div>
-    );
-  }
 
   const lastActive = (id: string) => {
     const chat = chats[id];

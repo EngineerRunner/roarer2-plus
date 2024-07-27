@@ -1,4 +1,4 @@
-import { ReactNode } from "react";
+import { ComponentPropsWithoutRef, forwardRef, ReactNode } from "react";
 import { twMerge } from "tailwind-merge";
 import * as Popover from "@radix-ui/react-popover";
 
@@ -31,26 +31,27 @@ export const Menu = (props: MenuProps) => {
   );
 };
 
-export type MenuItemProps = {
-  onClick?: () => void;
-  disabled?: boolean;
+export type MenuItemProps = ComponentPropsWithoutRef<"button"> & {
   dontClose?: boolean;
-  children: ReactNode;
 };
-export const MenuItem = (props: MenuItemProps) => {
-  const renderedButton = (
-    <button
-      type="button"
-      className={
-        "px-2 py-1 text-left transition-[background-color] last:rounded-b-lg focus:outline-0 hover:enabled:bg-gray-100 disabled:opacity-70 dark:hover:enabled:bg-gray-800"
-      }
-      disabled={props.disabled}
-      onClick={props.onClick}
-    >
-      {props.children}
-    </button>
-  );
-  return props.dontClose ? renderedButton : (
-      <Popover.Close children={renderedButton} asChild />
+export const MenuItem = forwardRef<HTMLButtonElement, MenuItemProps>(
+  (props: MenuItemProps, ref) => {
+    const buttonProps = { ...props };
+    delete buttonProps.dontClose;
+    const renderedButton = (
+      <button
+        type="button"
+        {...buttonProps}
+        ref={ref}
+        className={
+          "px-2 py-1 text-left transition-[background-color] last:rounded-b-lg focus:outline-0 hover:enabled:bg-gray-100 disabled:opacity-70 dark:hover:enabled:bg-gray-800"
+        }
+      >
+        {props.children}
+      </button>
     );
-};
+    return props.dontClose ? renderedButton : (
+        <Popover.Close children={renderedButton} asChild />
+      );
+  },
+);

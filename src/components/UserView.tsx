@@ -11,6 +11,7 @@ export type UserViewProps = {
   secondary?: boolean;
   className?: string;
   force?: boolean;
+  rightText?: string;
 };
 export const UserView = forwardRef<HTMLButtonElement, UserViewProps>(
   (props: UserViewProps, ref) => {
@@ -22,29 +23,35 @@ export const UserView = forwardRef<HTMLButtonElement, UserViewProps>(
       <button
         ref={ref}
         className={twMerge(
-          "flex w-full items-center gap-2 bg-white px-2 py-1 dark:bg-gray-950",
+          "flex items-center bg-white px-2 py-1 dark:bg-gray-950",
           props.secondary ?
             "bg-white dark:bg-gray-900"
           : "bg-white dark:bg-gray-950",
           props.disabled ? ""
           : props.secondary ? "hover:bg-gray-100 dark:hover:bg-gray-800"
           : "hover:bg-gray-100 dark:hover:bg-gray-900",
+          props.disabled ? "" : "group",
           props.className,
         )}
         onClick={props.onClick}
         disabled={props.disabled}
       >
-        <ProfilePicture
-          className="inline-block"
-          username={props.username}
-          size="h-8 min-h-8 w-8 min-w-8"
-        />
-        <div>
-          {props.username}{" "}
-          {props.text ?
-            <span className="text-sm">({props.text})</span>
-          : undefined}
+        <div className="flex w-full grow items-center gap-2">
+          <ProfilePicture
+            className="inline-block"
+            username={props.username}
+            size="h-8 min-h-8 w-8 min-w-8"
+          />
+          <div>
+            {props.username}{" "}
+            {props.text ?
+              <span className="text-sm">({props.text})</span>
+            : undefined}
+          </div>
         </div>
+        {props.rightText ?
+          <div className="text-sm">{props.rightText}</div>
+        : undefined}
       </button>
     );
   },
