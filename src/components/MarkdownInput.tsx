@@ -19,7 +19,7 @@ import { Markdown } from "./Markdown";
 import { IconButton } from "./IconButton";
 
 export type MarkdownInputProps = {
-  chat: string;
+  chat?: string;
   replies?: string[];
   setReplies?: (replies: string[]) => void;
   value?: string;
@@ -36,7 +36,11 @@ export const MarkdownInput = (props: MarkdownInputProps) => {
   const replies = props.replies ?? [];
 
   const [credentials, sendTyping] = useAPI(
-    useShallow((state) => [state.credentials, state.sendTyping]),
+    useShallow((state) => [
+      state.credentials,
+      state.sendTyping,
+      state.settings,
+    ]),
   );
   const [postContent, setPostContent] = useState(props.value ?? "");
   const [error, setError] = useState("");
@@ -50,6 +54,9 @@ export const MarkdownInput = (props: MarkdownInputProps) => {
   useEffect(() => {
     textArea.current?.focus?.();
   }, [props.replies]);
+  useEffect(() => {
+    setPostContent(props.value ?? "");
+  }, [props.value]);
 
   if (!credentials) {
     return <></>;
@@ -71,7 +78,9 @@ export const MarkdownInput = (props: MarkdownInputProps) => {
       setError(response.message);
     } else {
       props.onSuccess?.();
-      setPostContent("");
+      if (!props.value) {
+        setPostContent("");
+      }
       setAttachments([]);
       setError("");
       setPreview(false);
@@ -128,7 +137,11 @@ export const MarkdownInput = (props: MarkdownInputProps) => {
         ref={textArea}
         value={postContent}
         onChange={(e) => setPostContent(e.currentTarget.value)}
-        onInput={() => sendTyping(props.chat)}
+        onInput={() => {
+          if (props.chat) {
+            sendTyping(props.chat);
+          }
+        }}
         onKeyDown={(e) => {
           if (e.key === "Escape") {
             props.setReplies?.([]);

@@ -12,6 +12,7 @@ import { Button } from "./components/Button";
 import { Ulist } from "./components/Ulist";
 import { PostPopup } from "./components/PostPopup";
 import { Popup } from "./components/Popup";
+import { Settings } from "./components/Settings";
 import { User } from "./components/User";
 import { IconButton } from "./components/IconButton";
 
@@ -37,6 +38,9 @@ export const App = () => {
         <Tabs.Content className="grow" value="chats">
           <Chats onChatClick={setOpenChat} currentChat={openChat} />
         </Tabs.Content>
+        <Tabs.Content className="grow" value="settings">
+          <Settings />
+        </Tabs.Content>
         <Tabs.Content className="grow" value="about">
           <About />
         </Tabs.Content>
@@ -53,6 +57,12 @@ export const App = () => {
               value="chats"
             >
               Chats
+            </Tabs.Trigger>
+            <Tabs.Trigger
+              className="rounded-lg p-2 hover:bg-gray-100 aria-selected:border-lime-500 aria-selected:bg-gray-100 dark:hover:bg-gray-900 dark:aria-selected:bg-gray-900"
+              value="settings"
+            >
+              Settings
             </Tabs.Trigger>
             <Tabs.Trigger
               className="rounded-lg p-2 hover:bg-gray-100 aria-selected:border-lime-500 aria-selected:bg-gray-100 dark:hover:bg-gray-900 dark:aria-selected:bg-gray-900"

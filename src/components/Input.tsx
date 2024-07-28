@@ -8,6 +8,7 @@ import React, {
   useEffect,
 } from "react";
 import { twMerge } from "tailwind-merge";
+import { useAPI } from "../lib/api";
 
 export type InputProps = ComponentPropsWithoutRef<"input"> & { label: string };
 export const Input = forwardRef<HTMLInputElement, InputProps>(
@@ -49,6 +50,7 @@ export const Textarea = forwardRef<HTMLTextAreaElement | null, TextareaProps>(
     delete textareaProps.below;
     delete textareaProps.onEnter;
     delete textareaProps.replaceTextarea;
+    const settings = useAPI((state) => state.settings);
     const elementRef = useRef<HTMLTextAreaElement | null>(null);
 
     useImperativeHandle(ref, () => elementRef.current!);
@@ -65,6 +67,9 @@ export const Textarea = forwardRef<HTMLTextAreaElement | null, TextareaProps>(
       props.onInput?.(e);
     };
     const handleKeyDown: KeyboardEventHandler<HTMLTextAreaElement> = (e) => {
+      if (!settings.enterSend) {
+        return;
+      }
       if (e.key === "Enter" && !e.shiftKey) {
         e.preventDefault();
         props.onEnter?.();
