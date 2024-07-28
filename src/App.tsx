@@ -29,24 +29,33 @@ export const App = () => {
       </div>
       <Tabs.Root
         defaultValue="ulist"
-        className="z-[--z-sidebar] max-h-full w-screen shrink-0 snap-start overflow-auto bg-white pb-2 dark:bg-gray-950 lg:shrink"
+        className="z-[--z-sidebar] flex max-h-full w-screen shrink-0 snap-start flex-col overflow-auto bg-white pt-2 dark:bg-gray-950 lg:shrink"
       >
-        <Tabs.List className="sticky top-0 z-[--z-sidebar-top] flex items-center justify-between bg-white px-2 py-2 dark:bg-gray-950">
+        <Tabs.Content className="grow" value="ulist">
+          <Ulist />
+        </Tabs.Content>
+        <Tabs.Content className="grow" value="chats">
+          <Chats onChatClick={setOpenChat} currentChat={openChat} />
+        </Tabs.Content>
+        <Tabs.Content className="grow" value="about">
+          <About />
+        </Tabs.Content>
+        <Tabs.List className="sticky bottom-0 z-[--z-sidebar-top] flex items-center justify-between bg-white px-2 py-2 dark:bg-gray-950">
           <div className="flex items-center gap-2">
             <Tabs.Trigger
-              className="border-b-2 border-transparent aria-selected:border-lime-500 aria-selected:font-bold dark:aria-selected:border-lime-600"
+              className="rounded-lg p-2 hover:bg-gray-100 aria-selected:border-lime-500 aria-selected:bg-gray-100 dark:hover:bg-gray-900 dark:aria-selected:bg-gray-900"
               value="ulist"
             >
               Users
             </Tabs.Trigger>
             <Tabs.Trigger
-              className="border-b-2 border-transparent aria-selected:border-lime-500 aria-selected:font-bold dark:aria-selected:border-lime-600"
+              className="rounded-lg p-2 hover:bg-gray-100 aria-selected:border-lime-500 aria-selected:bg-gray-100 dark:hover:bg-gray-900 dark:aria-selected:bg-gray-900"
               value="chats"
             >
               Chats
             </Tabs.Trigger>
             <Tabs.Trigger
-              className="border-b-2 border-transparent aria-selected:border-lime-500 aria-selected:font-bold dark:aria-selected:border-lime-600"
+              className="rounded-lg p-2 hover:bg-gray-100 aria-selected:border-lime-500 aria-selected:bg-gray-100 dark:hover:bg-gray-900 dark:aria-selected:bg-gray-900"
               value="about"
             >
               About
@@ -60,15 +69,6 @@ export const App = () => {
             </div>
           </div>
         </Tabs.List>
-        <Tabs.Content value="ulist">
-          <Ulist />
-        </Tabs.Content>
-        <Tabs.Content value="chats">
-          <Chats onChatClick={setOpenChat} currentChat={openChat} />
-        </Tabs.Content>
-        <Tabs.Content value="about">
-          <About />
-        </Tabs.Content>
       </Tabs.Root>
       {user ?
         <User username={user} children={undefined} openInitially />

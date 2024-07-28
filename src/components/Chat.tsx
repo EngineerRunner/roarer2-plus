@@ -202,7 +202,7 @@ const EnterPost = (props: EnterPostProps) => {
       <MarkdownInput
         {...props}
         onSubmit={handleSubmit}
-        dontDisableWhenPosting
+        disableWhenSending={false}
       />
     </div>
   );

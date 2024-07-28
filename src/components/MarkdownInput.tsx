@@ -22,15 +22,15 @@ export type MarkdownInputProps = {
   chat: string;
   replies?: string[];
   setReplies?: (replies: string[]) => void;
-  basePostContent?: string;
+  value?: string;
   onSuccess?: () => void;
-  dontDisableWhenPosting?: boolean;
+  disableWhenSending?: boolean;
   onSubmit: (
     postContent: string,
     replies: string[],
     attachments: string[],
   ) => Promise<{ error: true; message: string } | { error: false }>;
-  noAttachments?: boolean;
+  attachments?: boolean;
 };
 export const MarkdownInput = (props: MarkdownInputProps) => {
   const replies = props.replies ?? [];
@@ -38,7 +38,7 @@ export const MarkdownInput = (props: MarkdownInputProps) => {
   const [credentials, sendTyping] = useAPI(
     useShallow((state) => [state.credentials, state.sendTyping]),
   );
-  const [postContent, setPostContent] = useState(props.basePostContent ?? "");
+  const [postContent, setPostContent] = useState(props.value ?? "");
   const [error, setError] = useState("");
   const [state, setState] = useState<"posting" | "writing" | "uploading">(
     "writing",
@@ -91,7 +91,7 @@ export const MarkdownInput = (props: MarkdownInputProps) => {
     );
   };
 
-  const showAttachments = !props.noAttachments;
+  const showAttachments = props.attachments ?? true;
 
   const upload = async (files: FileList) => {
     const errors: string[] = [];
@@ -136,7 +136,7 @@ export const MarkdownInput = (props: MarkdownInputProps) => {
         }}
         disabled={
           state === "uploading" ||
-          (!props.dontDisableWhenPosting && state === "posting")
+          ((props.disableWhenSending ?? true) && state === "posting")
         }
         onEnter={handlePost}
         before={

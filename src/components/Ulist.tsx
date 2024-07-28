@@ -10,6 +10,7 @@ export const Ulist = () => {
 
   return (
     <div>
+      <div className="px-2 text-sm">{ulist.length} users online:</div>
       {credentials ?
         <UlistUser username={credentials.username} you />
       : undefined}

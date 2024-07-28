@@ -23,7 +23,7 @@ export const UserView = forwardRef<HTMLButtonElement, UserViewProps>(
       <button
         ref={ref}
         className={twMerge(
-          "flex items-center bg-white px-2 py-1 dark:bg-gray-950",
+          "flex w-full items-center bg-white px-2 py-1 dark:bg-gray-950",
           props.secondary ?
             "bg-white dark:bg-gray-900"
           : "bg-white dark:bg-gray-950",
