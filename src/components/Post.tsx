@@ -1,6 +1,6 @@
 import { File, Menu as MenuIcon, SmilePlus, Reply, X } from "lucide-react";
 import * as Dialog from "@radix-ui/react-dialog";
-import { ReactNode, useRef, useState, memo } from "react";
+import { ReactNode, useRef, useState, memo, FormEventHandler } from "react";
 import { useShallow } from "zustand/react/shallow";
 import { useAPI } from "../lib/api";
 import { getReply, PostWithReplies } from "../lib/reply";
@@ -11,9 +11,11 @@ import { byteToHuman } from "../lib/byteToHuman";
 import { Button } from "./Button";
 import { Popup } from "./Popup";
 import { User } from "./User";
+import { Input } from "./Input";
 import { Menu, MenuItem } from "./Menu";
 import { Markdown } from "./Markdown";
 import { Mention } from "./Mention";
+import { Select, Option } from "./Select";
 import { MarkdownInput } from "./MarkdownInput";
 import { ProfilePicture, ProfilePictureBase } from "./ProfilePicture";
 import { ReactionUsers } from "./ReactionUsers";
@@ -22,6 +24,8 @@ import { twMerge } from "tailwind-merge";
 import { EmojiPicker } from "./EmojiPicker";
 import { DiscordEmoji } from "../lib/discordEmoji";
 import { IconButton } from "./IconButton";
+import { REPORT_REASONS } from "../lib/reportReasons";
+import { UserColor } from "./UserColor";
 
 export type PostProps = {
   id: string;
@@ -112,6 +116,7 @@ const PostBase = memo((props: PostBaseProps) => {
   const [viewState, setViewState] = useState<"view" | "edit" | "source">(
     "view",
   );
+  const [reportOpen, setReportOpen] = useState(false);
   const [credentials, editPost, deletePost, reactToPost] = useAPI(
     useShallow((state) => [
       state.credentials,
@@ -209,15 +214,17 @@ const PostBase = memo((props: PostBaseProps) => {
                   <Mention username={props.post.u} />
                 : <div className="space-x-2">
                     <User username={props.post.u}>
-                      <button
-                        className={twMerge(
-                          "text-nowrap text-left font-bold",
-                          props.reply ? "" : "text-sm",
-                        )}
-                      >
-                        {props.post.u}
-                        {props.post.u === "noodles" ? " 🧀" : undefined}
-                      </button>
+                      <UserColor username={props.post.u}>
+                        <button
+                          className={twMerge(
+                            "text-nowrap text-left font-bold",
+                            props.reply ? "" : "text-sm",
+                          )}
+                        >
+                          {props.post.u}
+                          {props.post.u === "noodles" ? " 🧀" : undefined}
+                        </button>
+                      </UserColor>
                     </User>
                     <span className="text-sm opacity-70">
                       <RelativeTime time={props.post.t.e} />
@@ -258,7 +265,21 @@ const PostBase = memo((props: PostBaseProps) => {
                           </IconButton>
                         }
                       >
-                        <MenuItem disabled>Report</MenuItem>
+                        {credentials ?
+                          <Popup
+                            trigger={<MenuItem dontClose>Report</MenuItem>}
+                            triggerAsChild
+                            controlled={{
+                              open: reportOpen,
+                              onOpenChange: setReportOpen,
+                            }}
+                          >
+                            <ReportModal
+                              post={props.post.post_id}
+                              onSuccess={() => setReportOpen(false)}
+                            />
+                          </Popup>
+                        : undefined}
                         {credentials.username !== props.post.u ?
                           <MenuItem
                             onClick={() =>
@@ -442,6 +463,54 @@ const SpeechBubble = (props: SpeechBubbleProps) => {
         {props.bubble}
       </div>
     </div>
+  );
+};
+
+type ReportModalProps = {
+  post: string;
+  onSuccess: () => void;
+};
+const ReportModal = (props: ReportModalProps) => {
+  const reportPost = useAPI((state) => state.reportPost);
+  const [reason, setReason] = useState<string>();
+  const [comment, setComment] = useState("");
+  const [error, setError] = useState<string>();
+
+  const handleReport: FormEventHandler = async (e) => {
+    e.preventDefault();
+    const response = await reportPost(props.post, reason, comment);
+    if (response.error) {
+      setError(response.message);
+      return;
+    }
+    props.onSuccess();
+  };
+
+  return (
+    <form className="flex flex-col gap-2" onSubmit={handleReport}>
+      <Dialog.Title className="text-lg font-bold">
+        Report this post
+      </Dialog.Title>
+      <Select label="Reason" onInput={(e) => setReason(e.currentTarget.value)}>
+        <Option selected disabled>
+          Choose a reason...
+        </Option>
+        {REPORT_REASONS.map((reason) => (
+          <Option value={reason} key={reason}>
+            {reason}
+          </Option>
+        ))}
+      </Select>
+      <Input
+        label="Comment"
+        value={comment}
+        onInput={(e) => setComment(e.currentTarget.value)}
+      />
+      <Button type="submit">Report</Button>
+      {error ?
+        <div className="text-red-500">{error}</div>
+      : undefined}
+    </form>
   );
 };
 

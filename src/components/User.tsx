@@ -8,6 +8,7 @@ import { Popup } from "./Popup";
 import { Markdown } from "./Markdown";
 import { ProfilePicture } from "./ProfilePicture";
 import { RelativeTime } from "./RelativeTime";
+import { Username } from "./Username";
 import { PERMISSIONS } from "../lib/permissions";
 import { IconButton } from "./IconButton";
 
@@ -73,7 +74,9 @@ export const User = (props: UserProps) => {
             <ProfilePicture username={props.username} />
             <div>
               <Dialog.Title>
-                <span className="text-xl font-bold">{props.username}</span>
+                <span className="text-xl font-bold">
+                  <Username username={props.username} />
+                </span>
               </Dialog.Title>
               {user.created ?
                 <p className="text-sm italic opacity-60">

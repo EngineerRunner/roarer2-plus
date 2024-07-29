@@ -11,8 +11,9 @@ import { Scratchblocks } from "./Scratchblocks";
 const MENTION_REGEX = /@(?<mention>[a-zA-Z0-9\-_]+)/g;
 const EMOJI_REGEX =
   /(?<emoji><(?<emojiAnimated>a?):(?<emojiName>\w+):(?<emojiId>\d+)>)/g;
+const ESCAPES_REGEX = /(?:(?<lt>&lt;)|(?<gt>&gt;))/;
 const TEXT_REGEX = new RegExp(
-  `(?:${MENTION_REGEX.source}|${EMOJI_REGEX.source}|[^@\<]+|.)`,
+  `(?:${MENTION_REGEX.source}|${EMOJI_REGEX.source}|${ESCAPES_REGEX.source}|[^@\<&]+|.)`,
   "g",
 );
 // It's inlined because Microsoft Edge literally crashes if I don't do that
@@ -192,6 +193,10 @@ export const Markdown = (mdProps: MarkdownProps) => {
                         alt={`:${match.groups?.emojiName}:`}
                         title={`:${match.groups?.emojiName}:`}
                       />
+                    : match.groups?.lt ?
+                      "<"
+                    : match.groups?.gt ?
+                      ">"
                     : match[0]}
                   </Fragment>
                 ))}

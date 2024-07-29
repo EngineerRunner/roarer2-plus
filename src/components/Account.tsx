@@ -1,5 +1,5 @@
 import { FormEvent, useState } from "react";
-import { ChevronDown } from "lucide-react";
+import { ChevronUp } from "lucide-react";
 import { Button } from "./Button";
 import { isCaptcha, Captcha } from "./Captcha";
 import { Checkbox } from "./Checkbox";
@@ -166,7 +166,7 @@ const AccountMenu = (props: AccountMenuProps) => {
             username={props.username}
             dontShowOnline
           />
-          <ChevronDown />
+          <ChevronUp />
         </button>
       }
     >

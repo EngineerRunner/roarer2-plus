@@ -1,6 +1,7 @@
 import { twMerge } from "tailwind-merge";
 import { MouseEventHandler, forwardRef } from "react";
 import { ProfilePicture } from "./ProfilePicture";
+import { Username } from "./Username";
 import { useAPI } from "../lib/api";
 
 export type UserViewProps = {
@@ -43,7 +44,7 @@ export const UserView = forwardRef<HTMLButtonElement, UserViewProps>(
             size="h-8 min-h-8 w-8 min-w-8"
           />
           <div>
-            {props.username}{" "}
+            <Username username={props.username} />{" "}
             {props.text ?
               <span className="text-sm">({props.text})</span>
             : undefined}

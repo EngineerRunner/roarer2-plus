@@ -2,6 +2,7 @@ import { api, cl, uploads } from "../lib/servers";
 import { Button } from "./Button";
 import { getCloudlink } from "../lib/api/cloudlink";
 import { Mention } from "./Mention";
+import { ChangeServers } from "./ChangeServers";
 
 export const About = () => {
   return (
@@ -59,7 +60,7 @@ export const About = () => {
           GitHub
         </a>
       </div>
-      <div>
+      <div className="flex gap-2">
         <Button
           onClick={() =>
             getCloudlink().then((cloudlink) => cloudlink.disconnect())
@@ -67,6 +68,9 @@ export const About = () => {
         >
           Disconnect
         </Button>
+        <ChangeServers>
+          <Button>Change servers</Button>
+        </ChangeServers>
       </div>
     </div>
   );

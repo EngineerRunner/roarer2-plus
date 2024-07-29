@@ -124,6 +124,11 @@ export type PostsSlice = {
     emoji: string,
     type: "add" | "delete",
   ) => Promise<Errorable>;
+  reportPost: (
+    id: string,
+    reason: string | undefined,
+    comment: string,
+  ) => Promise<Errorable>;
   loadMoreReactionUsers: (id: string, emoji: string) => Promise<Errorable>;
   loadReactionUsersByAmount: (
     id: string,
@@ -501,6 +506,21 @@ export const createPostsSlice: Slice<PostsSlice> = (set, get) => {
             method: type === "add" ? "POST" : "DELETE",
           },
         ),
+        z.object({}),
+      );
+      return response;
+    },
+    reportPost: async (id, comment, reason) => {
+      const state = get();
+      const response = await request(
+        fetch(`https://api.meower.org/posts/${id}/report`, {
+          headers: {
+            ...(state.credentials ? { Token: state.credentials.token } : {}),
+            "Content-Type": "application/json",
+          },
+          method: "POST",
+          body: JSON.stringify({ comment, reason }),
+        }),
         z.object({}),
       );
       return response;
