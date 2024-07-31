@@ -25,7 +25,6 @@ import { EmojiPicker } from "./EmojiPicker";
 import { DiscordEmoji } from "../lib/discordEmoji";
 import { IconButton } from "./IconButton";
 import { REPORT_REASONS } from "../lib/reportReasons";
-import { UserColor } from "./UserColor";
 
 export type PostProps = {
   id: string;
@@ -214,17 +213,15 @@ const PostBase = memo((props: PostBaseProps) => {
                   <Mention username={props.post.u} />
                 : <div className="space-x-2">
                     <User username={props.post.u}>
-                      <UserColor username={props.post.u}>
-                        <button
-                          className={twMerge(
-                            "text-nowrap text-left font-bold",
-                            props.reply ? "" : "text-sm",
-                          )}
-                        >
-                          {props.post.u}
-                          {props.post.u === "noodles" ? " 🧀" : undefined}
-                        </button>
-                      </UserColor>
+                      <button
+                        className={twMerge(
+                          "text-nowrap text-left font-bold",
+                          props.reply ? "" : "text-sm",
+                        )}
+                      >
+                        {props.post.u}
+                        {props.post.u === "noodles" ? " 🧀" : undefined}
+                      </button>
                     </User>
                     <span className="text-sm opacity-70">
                       <RelativeTime time={props.post.t.e} />

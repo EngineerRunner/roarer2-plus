@@ -11,14 +11,15 @@ import { Scratchblocks } from "./Scratchblocks";
 const MENTION_REGEX = /@(?<mention>[a-zA-Z0-9\-_]+)/g;
 const EMOJI_REGEX =
   /(?<emoji><(?<emojiAnimated>a?):(?<emojiName>\w+):(?<emojiId>\d+)>)/g;
+const NATIVE_EMOJI_REGEX = /(?:<:(?<nativeEmojiID>[a-zA-Z0-9]+)>)/;
 const ESCAPES_REGEX = /(?:(?<lt>&lt;)|(?<gt>&gt;))/;
 const TEXT_REGEX = new RegExp(
-  `(?:${MENTION_REGEX.source}|${EMOJI_REGEX.source}|${ESCAPES_REGEX.source}|[^@\<&]+|.)`,
+  `(?:${MENTION_REGEX.source}|${EMOJI_REGEX.source}|${ESCAPES_REGEX.source}|${NATIVE_EMOJI_REGEX.source}|[^@\<&]+|.)`,
   "g",
 );
 // It's inlined because Microsoft Edge literally crashes if I don't do that
 const BIG_REGEX =
-  /^(?:\p{Emoji_Presentation}|(?<emoji><(?<emojiAnimated>a?):(?<emojiName>\w+):(?<emojiId>\d+)>))+$/gu;
+  /^(?:\p{Emoji_Presentation}|(?<emoji><(?<emojiAnimated>a?):(?<emojiName>\w+):(?<emojiId>\d+)>)|(?:<:(?<nativeEmojiID>[a-zA-Z0-9]+)>)|\s)+$/gu;
 
 const HEADING_TO_SIZE = {
   1: "text-2xl",
@@ -192,6 +193,14 @@ export const Markdown = (mdProps: MarkdownProps) => {
                         })}
                         alt={`:${match.groups?.emojiName}:`}
                         title={`:${match.groups?.emojiName}:`}
+                      />
+                    : match.groups?.nativeEmojiID ?
+                      <img
+                        className={twMerge(
+                          "inline-block",
+                          isBig ? "h-9" : "h-6",
+                        )}
+                        src={`https://uploads.meower.org/emojis/${encodeURIComponent(match.groups.nativeEmojiID)}`}
                       />
                     : match.groups?.lt ?
                       "<"

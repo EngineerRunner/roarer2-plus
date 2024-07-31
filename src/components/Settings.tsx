@@ -56,6 +56,13 @@ const AccountSettings = () => {
             </div>
           </div>
         </label>
+        <label className="flex items-center gap-2">
+          <Checkbox
+            checked={settings.avatarBorders}
+            onInput={(avatarBorders) => setSettings({ avatarBorders })}
+          />
+          <div>Show colored borders on profile pictures</div>
+        </label>
       </div>
   );
 };

@@ -6,6 +6,7 @@ export const SETTINGS_STORAGE = "roarer2:settings";
 
 const FULL_SETTINGS_SCHEMA = z.object({
   enterSend: z.boolean(),
+  avatarBorders: z.boolean()
 });
 const SETTINGS_SCHEMA = FULL_SETTINGS_SCHEMA.partial();
 export type Settings = z.infer<typeof FULL_SETTINGS_SCHEMA>;
@@ -68,6 +69,7 @@ export const createRoarerSlice: Slice<RoarerSlice> = (set, get) => {
     },
     settings: {
       enterSend: settingsStorage.enterSend ?? true,
+      avatarBorders: settingsStorage.avatarBorders ?? false 
     },
     setSettings: (settings) => {
       set((draft) => {

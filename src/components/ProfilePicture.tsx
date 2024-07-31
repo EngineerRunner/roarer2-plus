@@ -1,3 +1,4 @@
+import { CSSProperties } from "react";
 import { twMerge } from "tailwind-merge";
 import { useShallow } from "zustand/react/shallow";
 import { useAPI } from "../lib/api";
@@ -84,6 +85,7 @@ export type ProfilePictureBaseProps = {
   placeholder?: number;
 };
 export const ProfilePictureBase = (props: ProfilePictureBaseProps) => {
+  const settings = useAPI((state) => state.settings);
   return (
     <div
       className={twMerge(
@@ -93,10 +95,23 @@ export const ProfilePictureBase = (props: ProfilePictureBaseProps) => {
     >
       <img
         className={twMerge(
-          "rounded-lg",
+          "rounded-lg border border-[--border-color] [border-style:--border-style]",
           props.className,
           props.size ?? "h-10 min-h-10 w-10 min-w-10",
         )}
+        style={
+          {
+            "--border-color": "#" + props.pfp.avatar_color,
+            "--border-style":
+              (
+                settings.avatarBorders &&
+                props.pfp.avatar &&
+                props.pfp.avatar_color !== "!color"
+              ) ?
+                "solid"
+              : "none",
+          } as CSSProperties
+        }
         src={
           props.pfp.avatar ?
             `${uploads}/icons/${props.pfp.avatar}`
