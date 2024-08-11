@@ -27,6 +27,7 @@ export const Mention = (props: MentionProps) => {
               username={props.username}
               dontShowOnline
               size="w-5 h-5 min-w-5 min-h-5"
+              smallBorderPadding
             />
           : undefined}
         </span>

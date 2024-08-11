@@ -11,6 +11,7 @@ export type ProfilePictureProps = {
   className?: string;
   dontShowOnline?: boolean;
   size?: string;
+  smallBorderPadding?: boolean;
 };
 export const ProfilePicture = (props: ProfilePictureProps) => {
   const [user, loadUser, ulist] = useAPI(
@@ -34,6 +35,7 @@ export const ProfilePicture = (props: ProfilePictureProps) => {
           ulist.includes(props.username)
         : false
       }
+      smallBorderPadding={props.smallBorderPadding}
       size={props.size}
     />
   );
@@ -43,6 +45,7 @@ export type ChatProfilePictureProps = {
   chat: string | undefined;
   className?: string;
   size?: string;
+  smallBorderPadding?: boolean;
 };
 export const ChatProfilePicture = (props: ChatProfilePictureProps) => {
   const [chat, loadChat] = useAPI(
@@ -68,6 +71,7 @@ export const ChatProfilePicture = (props: ChatProfilePictureProps) => {
       }
       className={props.className}
       size={props.size}
+      smallBorderPadding={props.smallBorderPadding}
       placeholder={22}
     />
   );
@@ -83,6 +87,7 @@ export type ProfilePictureBaseProps = {
   online?: boolean;
   size?: string;
   placeholder?: number;
+  smallBorderPadding?: boolean;
 };
 export const ProfilePictureBase = (props: ProfilePictureBaseProps) => {
   const settings = useAPI((state) => state.settings);
@@ -95,21 +100,21 @@ export const ProfilePictureBase = (props: ProfilePictureBaseProps) => {
     >
       <img
         className={twMerge(
-          "rounded-lg border border-[--border-color] [border-style:--border-style]",
+          "rounded-lg bg-[--border-color]",
           props.className,
+          props.smallBorderPadding ? "p-[0.0625rem]" : "p-0.5",
           props.size ?? "h-10 min-h-10 w-10 min-w-10",
         )}
         style={
           {
-            "--border-color": "#" + props.pfp.avatar_color,
-            "--border-style":
+            "--border-color":
               (
                 settings.avatarBorders &&
                 props.pfp.avatar &&
                 props.pfp.avatar_color !== "!color"
               ) ?
-                "solid"
-              : "none",
+                "#" + props.pfp.avatar_color
+              : "transparent",
           } as CSSProperties
         }
         src={

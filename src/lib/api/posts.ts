@@ -510,7 +510,7 @@ export const createPostsSlice: Slice<PostsSlice> = (set, get) => {
       );
       return response;
     },
-    reportPost: async (id, comment, reason) => {
+    reportPost: async (id, reason, comment) => {
       const state = get();
       const response = await request(
         fetch(`https://api.meower.org/posts/${id}/report`, {

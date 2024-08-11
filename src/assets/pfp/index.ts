@@ -1,9 +1,8 @@
+import blank from "./blank.png";
 import iconNeg3 from "./-3.svg";
-import icon1 from "./1.svg";
 import icon2 from "./2.svg";
 import icon3 from "./3.svg";
 import icon4 from "./4.svg";
-import icon5 from "./5.svg";
 import icon6 from "./6.svg";
 import icon7 from "./7.svg";
 import icon8 from "./8.svg";
@@ -38,11 +37,11 @@ import icon102 from "./102.svg";
 import icon500 from "./500.svg";
 
 export const profilePictures = new Map([
-  [1, icon1],
+  [1, blank],
   [2, icon2],
   [3, icon3],
   [4, icon4],
-  [5, icon5],
+  [5, blank],
   [6, icon6],
   [7, icon7],
   [8, icon8],
