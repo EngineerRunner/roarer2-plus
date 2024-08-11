@@ -44,7 +44,7 @@ export const User = (props: UserProps) => {
 
   const copy = () => {
     navigator.clipboard.writeText(
-      `https://mybearworld.github.io/roarer-2?user=${encodeURIComponent(props.username)}`,
+      `https://engineerrunner.github.io/roarer2-plus?user=${encodeURIComponent(props.username)}`,
     );
     setCopiedUser(true);
     setTimeout(() => {
