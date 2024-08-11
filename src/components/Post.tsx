@@ -307,7 +307,7 @@ const PostBase = memo((props: PostBaseProps) => {
                         <MenuItem
                           onClick={() => {
                             navigator.clipboard.writeText(
-                              `https://mybearworld.github.io/roarer-2?post=${props.post.post_id}`,
+                              `https://engineerrunner.github.io/roarer2-plus?post=${props.post.post_id}`,
                             );
                           }}
                         >
