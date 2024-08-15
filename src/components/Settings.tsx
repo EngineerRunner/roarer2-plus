@@ -41,7 +41,11 @@ const AccountSettings = () => {
         <p className="font-bold">Quote:</p>
         <MarkdownInput
           onSubmit={async (quote: string) => updateMe({ quote })}
-          value={user.quote ?? ""}
+          value={
+            user.quote ?
+              user.quote + (user.pronouns ? `\n[${user.pronouns}]` : "")
+            : ""
+          }
           attachments={false}
         />
         <label className="flex items-center gap-2">

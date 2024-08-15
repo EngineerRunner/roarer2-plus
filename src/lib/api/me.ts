@@ -8,6 +8,7 @@ type UpdateConfig = {
   avatar?: string;
   avatar_color?: string;
   quote?: string;
+  pronouns?: string;
 };
 
 export type MeSlice = {

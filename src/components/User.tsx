@@ -73,10 +73,11 @@ export const User = (props: UserProps) => {
           <div className="flex items-center gap-4">
             <ProfilePicture username={props.username} />
             <div>
-              <Dialog.Title>
+              <Dialog.Title className="flex items-center gap-2">
                 <span className="text-xl font-bold">
                   <Username username={props.username} />
                 </span>
+                <span className="text-sm italic">{user.pronouns}</span>
               </Dialog.Title>
               {user.created ?
                 <p className="text-sm italic opacity-60">

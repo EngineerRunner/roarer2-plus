@@ -19,7 +19,8 @@ export const USER_SCHEMA = z.object({
   quote: z.string().nullable(),
   uuid: z.string().nullable(),
 });
-export type User = z.infer<typeof USER_SCHEMA>;
+type SchemaUser = z.infer<typeof USER_SCHEMA>;
+export type User = SchemaUser & { pronouns: string };
 
 const UPDATE_USER_SCHEMA = z.object({
   cmd: z.literal("update_profile"),
@@ -30,7 +31,7 @@ const UPDATE_USER_SCHEMA = z.object({
 
 export type UsersSlice = {
   users: Record<string, Errorable<User>>;
-  addUser: (user: User) => void;
+  addUser: (user: SchemaUser) => void;
   loadUser: (username: string, options?: { force?: boolean }) => Promise<void>;
 };
 export const createUsersSlice: Slice<UsersSlice> = (set, get) => {
@@ -46,7 +47,11 @@ export const createUsersSlice: Slice<UsersSlice> = (set, get) => {
         return;
       }
       set((draft) => {
-        draft.users[username] = { ...user, ...parsed.data.val };
+        draft.users[username] = {
+          ...user,
+          ...parsed.data.val,
+          ...pronounsFromQuote(parsed.data.val.quote),
+        };
       });
     });
   });
@@ -56,7 +61,11 @@ export const createUsersSlice: Slice<UsersSlice> = (set, get) => {
     users: {},
     addUser: (user) => {
       set((state) => {
-        state.users[user._id] = { ...user, error: false };
+        state.users[user._id] = {
+          ...user,
+          error: false,
+          ...pronounsFromQuote(user.quote),
+        };
       });
     },
     loadUser: async (username: string, options) => {
@@ -74,11 +83,22 @@ export const createUsersSlice: Slice<UsersSlice> = (set, get) => {
         fetch(`${api}/users/${encodeURIComponent(username)}`),
         USER_SCHEMA,
       );
-      set((state) => {
-        state.users[username] =
-          response.error ? response : { error: false, ...response.response };
-      });
       loadingUsers.delete(username);
+      if (response.error) {
+        set((state) => {
+          state.users[username] = response;
+        });
+        return;
+      }
+      get().addUser(response.response);
     },
   };
+};
+
+const pronounsFromQuote = (quote?: string | null) => {
+  const [_, newQuote, pronouns] =
+    quote?.match(/^(.*)\n+\[([^\]\n]+)\]$/s) ?? [];
+  return newQuote && pronouns ?
+      { quote: newQuote, pronouns }
+    : { pronouns: "" };
 };
