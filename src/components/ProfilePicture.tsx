@@ -16,7 +16,7 @@ export type ProfilePictureProps = {
 export const ProfilePicture = (props: ProfilePictureProps) => {
   const [user, loadUser, ulist] = useAPI(
     useShallow((state) => [
-      props.username ? state.users[props.username] : undefined,
+      props.username ? state.users[props.username.toLowerCase()] : undefined,
       state.loadUser,
       state.ulist,
     ]),
@@ -100,7 +100,7 @@ export const ProfilePictureBase = (props: ProfilePictureBaseProps) => {
     >
       <img
         className={twMerge(
-          "rounded-lg bg-[--border-color]",
+          "rounded-lg bg-[--border-color] object-cover",
           props.className,
           props.smallBorderPadding ? "p-[0.0625rem]" : "p-0.5",
           props.size ?? "h-10 min-h-10 w-10 min-w-10",

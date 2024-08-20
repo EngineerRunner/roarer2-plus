@@ -10,7 +10,7 @@ export const Username = (props: UsernameProps) => {
   );
   loadUser(props.username);
 
-  const user = users[props.username];
+  const user = users[props.username.toLowerCase()];
 
   return user && !user.error ? user._id : props.username;
 };

@@ -21,7 +21,7 @@ export const User = (props: UserProps) => {
   const [credentials, user, loadUser, setOpenChat, getDM] = useAPI(
     useShallow((state) => [
       state.credentials,
-      state.users[props.username],
+      state.users[props.username.toLowerCase()],
       state.loadUser,
       state.setOpenChat,
       state.getDM,
@@ -70,18 +70,25 @@ export const User = (props: UserProps) => {
           Message: {user.message}
         </>
       : <div className="max-w-full">
-          <div className="flex items-center gap-4">
-            <ProfilePicture username={props.username} />
+          <div className="flex max-w-full items-center gap-4">
             <div>
+              <ProfilePicture username={props.username} />
+            </div>
+            <div className="max-w-full shrink">
               <Dialog.Title className="flex items-center gap-2">
                 <span className="text-xl font-bold">
                   <Username username={props.username} />
                 </span>
-                <span className="text-sm italic">{user.pronouns}</span>
               </Dialog.Title>
               {user.created ?
                 <p className="text-sm italic opacity-60">
                   Joined <RelativeTime time={user.created} />
+                  {user.pronouns ?
+                    <>
+                      {" "}
+                      - <span className="break-all">{user.pronouns}</span>
+                    </>
+                  : undefined}
                 </p>
               : undefined}
             </div>

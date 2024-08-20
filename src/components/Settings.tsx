@@ -27,7 +27,7 @@ const AccountSettings = () => {
     return;
   }
   loadUser(credentials.username);
-  const user = users[credentials.username];
+  const user = users[credentials.username.toLowerCase()];
 
   return (
     !user ? "Loading profile..."

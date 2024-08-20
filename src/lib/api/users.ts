@@ -41,7 +41,7 @@ export const createUsersSlice: Slice<UsersSlice> = (set, get) => {
       if (!parsed.success) {
         return;
       }
-      const username = parsed.data.val._id;
+      const username = parsed.data.val._id.toLowerCase();
       const user = get().users[username];
       if (!user || user.error) {
         return;
@@ -61,7 +61,7 @@ export const createUsersSlice: Slice<UsersSlice> = (set, get) => {
     users: {},
     addUser: (user) => {
       set((state) => {
-        state.users[user._id] = {
+        state.users[user._id.toLowerCase()] = {
           ...user,
           error: false,
           ...pronounsFromQuote(user.quote),
@@ -69,24 +69,25 @@ export const createUsersSlice: Slice<UsersSlice> = (set, get) => {
       });
     },
     loadUser: async (username: string, options) => {
+      const lowerUsername = username.toLowerCase();
       const force = options?.force ?? false;
       const state = get();
       if (
-        (username in state.users &&
-          (!state.users[username]?.error || !force)) ||
-        loadingUsers.has(username)
+        (lowerUsername in state.users &&
+          (!state.users[lowerUsername]?.error || !force)) ||
+        loadingUsers.has(lowerUsername)
       ) {
         return;
       }
-      loadingUsers.add(username);
+      loadingUsers.add(lowerUsername);
       const response = await request(
-        fetch(`${api}/users/${encodeURIComponent(username)}`),
+        fetch(`${api}/users/${encodeURIComponent(lowerUsername)}`),
         USER_SCHEMA,
       );
-      loadingUsers.delete(username);
+      loadingUsers.delete(lowerUsername);
       if (response.error) {
         set((state) => {
-          state.users[username] = response;
+          state.users[lowerUsername] = response;
         });
         return;
       }
