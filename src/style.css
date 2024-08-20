@@ -24,6 +24,6 @@
 
   @font-face {
     font-family: "Noto Color Emoji";
-    src: url("./assets/fonts/emoji/NotoColorEmoji-Regular.ttf");
+    src: url("./assets/fonts/emoji/NotoColorEmoji-Regular-NoSVG.ttf");
   }
 }
