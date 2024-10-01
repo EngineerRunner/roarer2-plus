@@ -13,14 +13,14 @@ export const About = () => {
         <a href="https://meower.org/" className="font-bold text-lime-600">
           Meower
         </a>{" "}
-        made by <Mention username="engineerrunner" />.
+        made by <Mention username="EngineerRunz" />.
       </p>
       <p>
         You're using Roarer 2+, which is a new version of Roarer 2 that's currently
         in development. It may be unstable. Please let me know what you think!
-        You can access the original version of Roarer{" "}
+        You can access the original version of Roarer 2{" "}
         <a
-          href="https://engineerrunner.github.io/roarer-2/?#/home"
+          href="https://mybearworld.github.io/roarer-2/?#/home"
           target="_blank"
           className="font-bold text-lime-600"
         >
