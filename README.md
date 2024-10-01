@@ -1,3 +1,3 @@
-# Roarer 2
+# Roarer 2+
 
-The second version of Roarer, a simple and mobile friendly client.
+The updated version of Roarer 2, a simple and mobile friendly client.
