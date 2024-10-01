@@ -7,7 +7,12 @@ export default {
   theme: {
     extend: {
       fontFamily: {
-        sans: ["Inter", "Noto Color Emoji", ...defaultTheme.fontFamily.sans],
+        sans: [
+          "Inter",
+          "Noto Color Emoji",
+          "nasin nanpa",
+          ...defaultTheme.fontFamily.sans,
+        ],
         mono: ["monospace"],
       },
     },

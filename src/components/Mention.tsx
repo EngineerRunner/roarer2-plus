@@ -15,7 +15,7 @@ export const Mention = (props: MentionProps) => {
     <User username={props.username}>
       <button
         className={twMerge(
-          "inline-flex items-center gap-1 align-top font-bold",
+          "inline-flex items-center gap-1 text-nowrap align-top font-bold",
           props.username === credentials?.username ?
             "text-yellow-600"
           : "text-lime-600",
