@@ -588,12 +588,15 @@ export const AttachmentView = (props: AttachmentViewProps) => {
 
   if (props.attachment.mime.startsWith("video/")) {
     return (
-      <video
-        src={`${uploads}/attachments/${props.attachment.id}/${props.attachment.filename}`}
-        className="max-h-40"
-        controls
-        title={props.attachment.filename}
-      />
+      <div className="flex flex-col items-center">
+        {closeRow}
+        <video
+          src={`${uploads}/attachments/${props.attachment.id}/${props.attachment.filename}`}
+          className="max-h-40"
+          controls
+          title={props.attachment.filename}
+        />
+      </div>
     );
   }
 
