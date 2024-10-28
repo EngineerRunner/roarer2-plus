@@ -26,6 +26,13 @@ export type Post = Omit<SchemaPost, "reply_to"> & {
 const BASE_POST_SCHEMA = z.object({
   attachments: ATTACHMENT_SCHEMA.array(),
   edited_at: z.number().optional(),
+  emojis: z
+    .object({
+      _id: z.string(),
+      name: z.string(),
+    })
+    .array()
+    .optional(),
   isDeleted: z.literal(false),
   p: z.string(),
   post_id: z.string(),

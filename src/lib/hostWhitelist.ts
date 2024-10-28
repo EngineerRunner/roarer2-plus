@@ -6,16 +6,16 @@
 // IP grabber sites exist, and I don't know if hosting a proxy is feasible
 // WARNING: Put a / at the end of each URL so it can't be bypassed
 // (like https://http.meower.org@evilsite.bad)!
-export const hostWhitelist = [
+export const hostWhitelist: (string | { url: string; autolink: boolean })[] = [
   // Meower
-  "https://meower.org/",
+  { url: "https://meower.org/", autolink: false },
   "https://http.meower.org/",
   "https://assets.meower.org/",
   "https://forums.meower.org/",
   "https://go.meower.org/", // not everyone can add urls to go.meower.org, should be fine
   "https://hedgedoc.meower.org/",
   "https://docs.meower.org/",
-  "https://uploads.meower.org/", // soon™️
+  "https://uploads.meower.org/", // now™
 
   // cubeupload
   "https://u.cubeupload.com/",

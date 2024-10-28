@@ -47,7 +47,12 @@ export const ReactionUsers = (props: ReactionUsersProps) => {
                   className="border-b-2 border-transparent text-xl aria-selected:border-lime-500 dark:aria-selected:border-lime-600"
                   key={reaction.emoji}
                 >
-                  {reaction.emoji}
+                  {reaction.emoji.length === 24 ?
+                    <img
+                      src={`https://uploads.meower.org/emojis/${encodeURIComponent(reaction.emoji)}`}
+                      className="mb-1 h-6 min-h-6 w-6 min-w-6"
+                    />
+                  : reaction.emoji}
                 </Tabs.Trigger>
               ))}
             </Tabs.List>

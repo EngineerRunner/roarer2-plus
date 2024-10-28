@@ -1,4 +1,4 @@
-import { Fragment, ReactNode, useState } from "react";
+import { Fragment, useState } from "react";
 import { twMerge } from "tailwind-merge";
 import Marked from "marked-react";
 import { codeToHtml } from "shiki";
@@ -38,6 +38,7 @@ export type MarkdownProps = {
   secondaryBackground?: boolean;
   inline?: boolean;
   bigEmoji?: boolean;
+  knownEmoji?: { _id: string; name: string }[];
 };
 export const Markdown = (mdProps: MarkdownProps) => {
   const md = mdProps.children;
@@ -159,15 +160,68 @@ export const Markdown = (mdProps: MarkdownProps) => {
             );
           },
           link: (href, text) => {
-            return <Link href={href} children={text} key={getKey()} />;
+            const match = href.match(
+              /^https?:\/\/app.meower.org\/users\/([a-z0-9\-_]+)$/i,
+            );
+            if (match) {
+              const username = match[1]!;
+              return (
+                <User username={username} key={getKey()}>
+                  <button type="button" className="font-bold text-lime-600">
+                    {text}
+                  </button>
+                </User>
+              );
+            }
+            // meo has a bug where invalid URLs within images crash meo.
+            // instead of fixing this, meo now does not support markdown
+            // images. meo also supports simply putting an image url to load an
+            // image. this leads to most meo users just sending links instead
+            // of using the proper syntax. this copies meo's behavior for this
+            // such that images sent using meo still look correct.
+            // todo: if this is ever properly fixed in meo, this should be
+            // removed
+            if (
+              !mdProps.inline &&
+              hostWhitelist.some((host) => {
+                if (typeof host !== "string" && !host.autolink) {
+                  return;
+                }
+                const url = typeof host === "string" ? host : host.url;
+                return url !== href && href.startsWith(url);
+              })
+            ) {
+              return (
+                <img
+                  className="inline-block max-h-40"
+                  src={href}
+                  alt={href}
+                  title={href}
+                />
+              );
+            }
+            return (
+              <a
+                href={urlFor(href)}
+                className="font-bold text-lime-600"
+                key={getKey()}
+                target="_blank"
+              >
+                {text}
+              </a>
+            );
           },
           image: (src, alt, title) =>
             mdProps.inline ? <></>
-            : hostWhitelist.some((host) => src.startsWith(host)) ?
+            : (
+              hostWhitelist.some((host) =>
+                src.startsWith(typeof host === "string" ? host : host.url),
+              )
+            ) ?
               <img
                 src={src}
                 alt={alt}
-                title={title ?? ""}
+                title={title ?? alt}
                 className="inline-block max-h-40"
                 key={getKey()}
               />
@@ -178,12 +232,16 @@ export const Markdown = (mdProps: MarkdownProps) => {
             const matches = [...(text?.toString() ?? "").matchAll(TEXT_REGEX)];
             return (
               <Fragment key={getKey()}>
-                {matches.map((match) => (
-                  <Fragment key={getKey()}>
-                    {match.groups?.mention ?
-                      <Mention username={match[0].slice(1)} />
-                    : match.groups?.emoji ?
+                {matches.map((match) => {
+                  if (match.groups?.mention) {
+                    return (
+                      <Mention key={getKey()} username={match[0].slice(1)} />
+                    );
+                  }
+                  if (match.groups?.emoji) {
+                    return (
                       <img
+                        key={getKey()}
                         className="inline-block"
                         src={urlFromDiscordEmoji({
                           name: match.groups?.emojiName ?? "",
@@ -194,21 +252,32 @@ export const Markdown = (mdProps: MarkdownProps) => {
                         alt={`:${match.groups?.emojiName}:`}
                         title={`:${match.groups?.emojiName}:`}
                       />
-                    : match.groups?.nativeEmojiID ?
+                    );
+                  }
+                  if (match.groups?.nativeEmojiID) {
+                    const name = mdProps.knownEmoji?.find(
+                      (e) => e._id === match.groups?.nativeEmojiID,
+                    )?.name;
+                    return (
                       <img
                         className={twMerge(
                           "inline-block",
                           isBig ? "h-9" : "h-6",
                         )}
                         src={`https://uploads.meower.org/emojis/${encodeURIComponent(match.groups.nativeEmojiID)}`}
+                        alt={name}
+                        title={name}
                       />
-                    : match.groups?.lt ?
-                      "<"
-                    : match.groups?.gt ?
-                      ">"
-                    : match[0]}
-                  </Fragment>
-                ))}
+                    );
+                  }
+                  if (match.groups?.lt) {
+                    return "<";
+                  }
+                  if (match.groups?.gt) {
+                    return ">";
+                  }
+                  return match[0];
+                })}
               </Fragment>
             );
           },
@@ -217,36 +286,6 @@ export const Markdown = (mdProps: MarkdownProps) => {
         {md}
       </Marked>
     </div>
-  );
-};
-
-type LinkProps = {
-  href: string;
-  children?: ReactNode;
-};
-const Link = (props: LinkProps) => {
-  const match = props.href.match(
-    /^https?:\/\/app.meower.org\/users\/([a-z0-9\-_]+)$/i,
-  );
-  if (match) {
-    const username = match[1]!;
-    return (
-      <User username={username} key={getKey()}>
-        <button type="button" className="font-bold text-lime-600">
-          {props.children}
-        </button>
-      </User>
-    );
-  }
-  return (
-    <a
-      href={urlFor(props.href)}
-      className="font-bold text-lime-600"
-      key={getKey()}
-      target="_blank"
-    >
-      {props.children}
-    </a>
   );
 };
 
