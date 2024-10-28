@@ -150,7 +150,7 @@ export const discordEmoji = (
   { name: "hidingcar", id: "1266027448869322793", isGif: false },
   { name: "mikehmm", id: "1266027099433472061", isGif: false },
   { name: "proton", id: "1266027095042166864", isGif: false },
-  
+  { name: "biau", id: "1300575859371016243", isGif: false },
 ] satisfies DiscordEmoji[]
 ).sort((a, b) => (a.name > b.name ? 1 : a.name < b.name ? -1 : 0));
 
